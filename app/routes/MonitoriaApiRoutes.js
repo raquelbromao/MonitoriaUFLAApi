@@ -1,13 +1,13 @@
 'use strict';
 
 module.exports = function(app) {
-  //var todoList = require('../controllers/MonitoriaApiController');
+  var metodosAlun = require('../controllers/AlunoController');
+  var metodosProf = require('../controllers/ProfessorController')
 
   // todoList Routes
   app.get('/', function(req, res, next) {
     res.render('index')
-      /*
-      // This isn't part of API and is just used from a browser or curl to test that
+      /*// This isn't part of API and is just used from a browser or curl to test that
       var testObject = {
           "AppName": "MonitoriaUFLAApi",
           "Version": '1.0'
@@ -15,34 +15,29 @@ module.exports = function(app) {
       res.json(testObject);*/
   });
 
-  /*app.route('/alunos')
-    .get(todoList.list_all_tasks)
-    .post(todoList.create_a_task);
-
-  app.route('/professores')
-    .get(todoList.list_all_tasks)
-    .post(todoList.create_a_task);
-
-  app.route('/monitorias')
-    .get(todoList.list_all_tasks)
-    .post(todoList.create_a_task);
-
-  app.route('/teste')
-    .get(function(req, res) {
-        res.render('teste')
-    });
+  app.route('/alunos')
+    .get(metodosAlun.listar_todos_objetos)
+    .post(metodosAlun.criar_objeto);
 
   app.route('/alunos/:alunoId')
-    .get(todoList.read_a_task)
-    .put(todoList.update_a_task)
-    .delete(todoList.delete_a_task);
+    .get(metodosAlun.ler_objeto)
+    .put(metodosAlun.atualizar_objeto)
+    .delete(metodosAlun.deletar_objeto);
+
+  app.route('/professores')
+    .get(metodosProf.listar_todos_objetos)
+    .post(metodosProf.criar_objeto);
 
   app.route('/professores/:professorId')
-    .get(todoList.read_a_task)
-    .put(todoList.update_a_task)
-    .delete(todoList.delete_a_task);
+    .get(metodosProf.ler_objeto)
+    .put(metodosProf.atualizar_objeto)
+    .delete(metodosProf.deletar_objeto);
 
-  app.route('/monitorias/:monitoriaId')
+  /*app.route('/monitorias')
+    .get(todoList.list_all_tasks)
+    .post(todoList.create_a_task);
+
+  /*app.route('/monitorias/:monitoriaId')
     .get(todoList.read_a_task)
     .put(todoList.update_a_task)
     .delete(todoList.delete_a_task);*/
