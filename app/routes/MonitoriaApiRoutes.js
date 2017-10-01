@@ -2,7 +2,9 @@
 
 module.exports = function(app) {
   var metodosAlun = require('../controllers/AlunoController');
-  var metodosProf = require('../controllers/ProfessorController')
+  var metodosProf = require('../controllers/ProfessorController');
+  var metodosMon = require('../controllers/MonitoriaController');
+
 
   // todoList Routes
   app.get('/', function(req, res, next) {
@@ -33,12 +35,12 @@ module.exports = function(app) {
     .put(metodosProf.atualizar_objeto)
     .delete(metodosProf.deletar_objeto);
 
-  /*app.route('/monitorias')
-    .get(todoList.list_all_tasks)
-    .post(todoList.create_a_task);
+  app.route('/monitorias')
+    .get(metodosMon.listar_todos_objetos)
+    .post(metodosMon.criar_objeto);
 
-  /*app.route('/monitorias/:monitoriaId')
-    .get(todoList.read_a_task)
-    .put(todoList.update_a_task)
-    .delete(todoList.delete_a_task);*/
+  app.route('/monitorias/:monitoriaId')
+    .get(metodosMon.ler_objeto)
+    .put(metodosMon.atualizar_objeto)
+    .delete(metodosMon.deletar_objeto);
 };
