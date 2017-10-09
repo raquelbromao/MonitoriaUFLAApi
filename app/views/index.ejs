@@ -51,13 +51,15 @@
             <tr>
               <th>Nome</th>
               <th>Matrícula</th>
+              <th>ID</th>
               <th>Delete</th>
             </tr>
             <% alunos.forEach(function (aluno) { %>
             <tr>
               <th><%= aluno.nome %></th>
               <th><%= aluno.matricula %></th>
-              <th><button type="button" class="btn btn-danger btn-block" href="delete/<% aluno._Id %>"  onclick="return confirm('Tem certeza que deseja excluir o aluno?');">Delete?</button></th>
+              <th><%= aluno._id %></th>
+              <th><button type="button" class="btn btn-danger btn-block" href="delete/<% aluno._id %>"  onclick="return confirm('Tem certeza que deseja excluir o aluno?');">Delete?</button></th>
             </tr>
             <% }); %>
           </thead>
