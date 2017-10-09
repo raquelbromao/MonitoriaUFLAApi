@@ -57,7 +57,7 @@
             <tr>
               <th><%= aluno.nome %></th>
               <th><%= aluno.matricula %></th>
-              <th><button type="button" class="btn btn-danger btn-block">Delete?</button></th>
+              <th><button type="button" class="btn btn-danger btn-block" href="delete/<% aluno._Id %>"  onclick="return confirm('Tem certeza que deseja excluir o aluno?');">Delete?</button></th>
             </tr>
             <% }); %>
           </thead>
