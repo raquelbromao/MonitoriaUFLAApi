@@ -2,17 +2,21 @@
 
 var mongoose = require('mongoose');
 var Aluno = mongoose.model('Alunos');
-//var Professor = mongoose.model('Professores');
-//var Monitoria = mongoose.model('Monitorias');
 
+/*
+  Lista todos os objetos do BD da coleção Alunos
+*/
 exports.listar_todos_objetos = function(req, res) {
-  Aluno.find({}, function(err,aluno) {
+  Aluno.find({}, function(err,alunos) {
     if (err)
       res.send(err);
-    res.json(aluno);
+    res.json(alunos);
   });
 };
 
+/*
+  Cria objetos do tipo ALuno
+*/
 exports.criar_objeto = function(req, res) {
   var new_task = new Aluno(req.body);
   new_task.save(function(err, aluno) {
@@ -43,5 +47,13 @@ exports.deletar_objeto = function(req, res) {
     if (err)
       res.send(err);
     res.json({ message: 'Aluno foi deletado com sucesso' });
+  });
+};
+
+exports.lista_alunos = function(req, res) {
+  Aluno.find({}, function(err, alunos) {
+    if (err)
+      res.send(err);
+    callback(err, alunos); 
   });
 };

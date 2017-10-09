@@ -15,7 +15,6 @@ mongoose.connect('mongodb://pipoca:123456@ds141464.mlab.com:41464/api_monitoria'
   }
 });
 
-
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 

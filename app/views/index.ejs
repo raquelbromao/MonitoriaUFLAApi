@@ -19,7 +19,7 @@
     }
 
     tr:nth-child(even) {
-        background-color: #33cc33;
+        background-color: #dddddd;
     }
   </style>
 </head>
@@ -49,11 +49,17 @@
         <table>
           <thead>
             <tr>
-              <th>Task</th>
-              <th>Status</th>
+              <th>Nome</th>
+              <th>Matrícula</th>
+              <th>Delete</th>
+            </tr>
+            <% alunos.forEach(function (aluno) { %>
+            <tr>
+              <th><%= aluno.nome %></th>
+              <th><%= aluno.matricula %></th>
               <th><button type="button" class="btn btn-danger btn-block">Delete?</button></th>
             </tr>
-
+            <% }); %>
           </thead>
           <tbody>
           </tbody>

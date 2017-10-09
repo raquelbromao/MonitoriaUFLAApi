@@ -1,5 +1,8 @@
 'use strict';
 
+var mongoose = require('mongoose');
+var Aluno = mongoose.model('Alunos');
+
 module.exports = function(app) {
   var metodosAlun = require('../controllers/AlunoController');
   var metodosProf = require('../controllers/ProfessorController');
@@ -7,14 +10,12 @@ module.exports = function(app) {
 
 
   // todoList Routes
-  app.get('/', function(req, res, next) {
-    res.render('index')
-      /*// This isn't part of API and is just used from a browser or curl to test that
-      var testObject = {
-          "AppName": "MonitoriaUFLAApi",
-          "Version": '1.0'
-      }
-      res.json(testObject);*/
+  app.get('/', function(req, res) {
+    Aluno.find({}, function(err,alunos) {
+      if (err)
+        res.send(err);
+       res.render('index', { "alunos": alunos });
+    });
   });
 
   app.route('/alunos')
