@@ -8,27 +8,33 @@ module.exports = function(app) {
   var metodosProf = require('../controllers/ProfessorController');
   var metodosMon = require('../controllers/MonitoriaController');
 
-
-  // todoList Routes
+  //  MonitoriaApi Routes
+  //  Encontra no BD todos os alunos e os lista
   app.get('/', function(req, res) {
     Aluno.find({}, function(err,alunos) {
-      if (err)
+      if (err) {
         res.json(err);
-      res.render('index', { "alunos": alunos });
+      } else {
+        res.render('index', {"alunos": alunos});
+      }
     });
   });
 
+  //  Deleta o aluno da lista com base em seu ID
   app.get('/alunos/deletar/:alunoId', function(req, res) {
     Aluno.remove({_id: req.params.alunoId}, function(err, aluno) {
-      if (err)
+      //  ERRO
+      if (err) {
         res.json(err);
-      //res.json({ message: 'Offer Deleted!'});
-      else
+      //  SUCESSO
+      } else {
         console.log('Aluno deletado com sucesso');
         res.redirect('/');
+      }
     });
   });
 
+  //  Cria e insere no BD um novo aluno
   app.post('/', function(req, res) {
     //  Cria novo objeto Aluno
     var aluno_cadastro = new Aluno();
@@ -39,16 +45,56 @@ module.exports = function(app) {
     aluno_cadastro.login = req.body.login;
     aluno_cadastro.senha = req.body.senha;
     aluno_cadastro.nota = req.body.nota;
+
+    //  Verifica se não existe aluno com mesma matrícula
+    /*Aluno.find({matricula: aluno_cadastro.matricula}, function(err, aluno) {
+      if (err) {
+        res.json(err);
+      } else {
+        console.log('Aluno já existente com esta matrícula');
+        var erro1 = true;
+      }
+    });*/
+
+    //  Verifica se não existe aluno com mesmo login/matrícula
+    /*Aluno.find({login: aluno_cadastro.login, matricula: aluno_cadastro.matricula}, function(err, aluno) {
+      if (err) {
+        res.json(err);
+      } else {
+        console.log('Aluno já existente com este login ou matrícula');
+        var erro = true;
+      }
+    });
+
+    if (erro == true) {
+      console.log('Login ou matrícula já existentes!');
+    }*/
+
     //  Salva aluno no BD
     aluno_cadastro.save(function(err, aluno) {
       //  ERRO
-      if (err)
+      if (err) {
         res.json(err);
       //  SUCESSO
-      else
+      } else {
         console.log('Aluno cadastrado com sucesso');
         res.redirect('/');
+      }
     });
+  });
+
+  //  Edita aluno e salva no BD
+  app.get('/alunos/editar/:alunoId', function(req, res) {
+      Aluno.find({_id: req.params.alunoId}, function(err, aluno) {
+        //  EROO
+        if (err) {
+          res.json(err);
+        //  SUCESSO
+        } else {
+          //  parametro aluno é um array de alunos, então para pegar um único se acessa a posição 0
+          res.render('edicao', {"aluno": aluno[0]} );
+        }
+      });
   });
 
   app.route('/alunos')
