@@ -20,20 +20,6 @@ module.exports = function(app) {
     });
   });
 
-  //  Deleta o aluno da lista com base em seu ID
-  app.get('/alunos/deletar/:alunoId', function(req, res) {
-    Aluno.remove({_id: req.params.alunoId}, function(err, aluno) {
-      //  ERRO
-      if (err) {
-        res.json(err);
-      //  SUCESSO
-      } else {
-        console.log('Aluno deletado com sucesso');
-        res.redirect('/');
-      }
-    });
-  });
-
   //  Cria e insere no BD um novo aluno
   app.post('/', function(req, res) {
     //  Cria novo objeto Aluno
@@ -83,10 +69,24 @@ module.exports = function(app) {
     });
   });
 
+  //  Deleta o aluno da lista com base em seu ID
+  app.get('/alunos/deletar/:alunoId', function(req, res) {
+    Aluno.remove({_id: req.params.alunoId}, function(err, aluno) {
+      //  ERRO
+      if (err) {
+        res.json(err);
+      //  SUCESSO
+      } else {
+        console.log('Aluno deletado com sucesso');
+        res.redirect('/');
+      }
+    });
+  });
+
   //  Edita aluno e salva no BD
   app.get('/alunos/editar/:alunoId', function(req, res) {
       Aluno.find({_id: req.params.alunoId}, function(err, aluno) {
-        //  EROO
+        //  ERRO
         if (err) {
           res.json(err);
         //  SUCESSO
@@ -95,6 +95,11 @@ module.exports = function(app) {
           res.render('edicao', {"aluno": aluno[0]} );
         }
       });
+  });
+
+  app.get('/login', function(req, res) {
+    //  Verificar se é aluno, professor ou admnistrador
+    res.render('login');
   });
 
   app.route('/alunos')

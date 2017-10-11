@@ -1,0 +1,56 @@
+<!-- views/pages/about.ejs -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>UFLA Monitoria API</title>
+  <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+  <style>
+  body {
+    background-color: #ddd;
+  }
+
+  .jumbotron {
+    background-color: #fff;
+    max-width: 480px;
+  }
+
+  .div-login {
+    margin-top: 40px;
+    margin-bottom: 40px;
+    height: 100px;
+  }
+
+  .form-login {
+    max-width: 400px;
+    padding: 15px 35px 35px;
+    background-color: #ddd;
+    border: 1px solid rgba(0,0,0,0.1);
+  }
+
+  .remember {
+    margin-left: 20px;
+  }
+  </style>
+</head>
+<body>
+
+   <main>
+     <div class="container div-login">
+       <div class="jumbotron">
+         <form method="post" class="form-horizontal form-login">
+           <input type="email" placeholder="E-mail acadêmico"  class="form-control form-control-sm" name="login">
+           <input type="password" placeholder="Senha"  class="form-control form-control-sm" name="senha">
+           <label class="checkbox remember">
+             <input type="checkbox" name="remember"> Lembrar
+           </label>
+           <button class="btn btn-lg btn-primary btn-block btn-login" type="submit">Fazer login</button>
+         </form>
+       </div>
+     </div>
+   </main>
+
+  <footer>
+  </footer>
+</body>
+</html>
