@@ -13,8 +13,41 @@ module.exports = function(app) {
   app.get('/', function(req, res) {
     Aluno.find({}, function(err,alunos) {
       if (err)
-        res.send(err);
-       res.render('index', { "alunos": alunos });
+        res.json(err);
+      res.render('index', { "alunos": alunos });
+    });
+  });
+
+  app.get('/alunos/deletar/:alunoId', function(req, res) {
+    Aluno.remove({_id: req.params.alunoId}, function(err, aluno) {
+      if (err)
+        res.json(err);
+      //res.json({ message: 'Offer Deleted!'});
+      else
+        console.log('Aluno deletado com sucesso');
+        res.redirect('/');
+    });
+  });
+
+  app.post('/', function(req, res) {
+    //  Cria novo objeto Aluno
+    var aluno_cadastro = new Aluno();
+    //  Salva todos as info da requisição em cada componente de Aluno
+    aluno_cadastro.nome = req.body.nome;
+    aluno_cadastro.matricula = req.body.matricula;
+    aluno_cadastro.telefone = req.body.telefone;
+    aluno_cadastro.login = req.body.login;
+    aluno_cadastro.senha = req.body.senha;
+    aluno_cadastro.nota = req.body.nota;
+    //  Salva aluno no BD
+    aluno_cadastro.save(function(err, aluno) {
+      //  ERRO
+      if (err)
+        res.json(err);
+      //  SUCESSO
+      else
+        console.log('Aluno cadastrado com sucesso');
+        res.redirect('/');
     });
   });
 

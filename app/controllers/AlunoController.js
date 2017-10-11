@@ -50,10 +50,20 @@ exports.deletar_objeto = function(req, res) {
   });
 };
 
+exports.deletar_objetoID = function(req, res) {
+  Aluno.remove({_id: req.params.alunoId}, function(err, aluno) {
+    if (err)
+      res.send(err);
+    //res.json({ message: 'Offer Deleted!'});
+    console.log('Aluno deletado com sucesso');
+    res.redirect('/');
+  });
+};
+
 exports.lista_alunos = function(req, res) {
   Aluno.find({}, function(err, alunos) {
     if (err)
       res.send(err);
-    callback(err, alunos); 
+    callback(err, alunos);
   });
 };
