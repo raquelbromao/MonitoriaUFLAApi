@@ -1,0 +1,51 @@
+{
+    "_id": {
+        "$oid": "59d1363c9a15d60e9468f868"
+    },
+    "nome": "Raquel Barbosa Romao",
+    "matricula": "201120863",
+    "login": "201120863@computacao.ufla.br",
+    "senha": "123456",
+    "nota": null,
+    "telefone": "35991744666",
+    "__v": 0
+}
+
+{
+    "_id": {
+        "$oid": "59d141424a248c1a08540bfc"
+    },
+    "nome": "Luciano Da Roz Dalessandre",
+    "matricula": "201120568",
+    "login": "201120568@computacao.ufla.br",
+    "senha": "020192",
+    "nota": 6,
+    "telefone": "3599177373",
+    "__v": 0
+}
+
+{
+    "_id": {
+        "$oid": "59d1419e4a248c1a08540bfd"
+    },
+    "nome": "Isabella Shiraiwa Cruz",
+    "matricula": "201120009",
+    "login": "201120009@computacao.ufla.br",
+    "senha": "0989aa",
+    "nota": 8,
+    "telefone": "12998672323",
+    "__v": 0
+}
+
+{
+    "_id": {
+        "$oid": "59d142f8bf7e3507c4710966"
+    },
+    "nome": "Tales Fernando Segundo",
+    "matricula": "201110998",
+    "login": "201110998@computacao.ufla.br",
+    "senha": "bagaco001",
+    "nota": null,
+    "telefone": "35990064323",
+    "__v": 0
+}

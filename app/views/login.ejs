@@ -6,6 +6,7 @@
   <title>UFLA Monitoria API</title>
   <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
   <style>
+
   body {
     background-color: #ddd;
   }
@@ -16,6 +17,7 @@
   }
 
   .div-login {
+    padding: auto;
     margin-top: 40px;
     margin-bottom: 40px;
     height: 100px;
@@ -23,9 +25,11 @@
 
   .form-login {
     max-width: 400px;
-    padding: 15px 35px 35px;
+    /*top padding / righ and left padding / bottom padding */
+    padding: 35px 25px 35px;
     background-color: #ddd;
     border: 1px solid rgba(0,0,0,0.1);
+    border-radius: 15px 50px 30px;
   }
 
   .remember {
@@ -39,7 +43,7 @@
      <div class="container div-login">
        <div class="jumbotron">
          <form method="post" class="form-horizontal form-login">
-           <input type="email" placeholder="E-mail acadêmico"  class="form-control form-control-sm" name="login">
+           <input type="email" placeholder="E-mail acadêmico" pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$" class="form-control form-control-sm" name="login">
            <input type="password" placeholder="Senha"  class="form-control form-control-sm" name="senha">
            <label class="checkbox remember">
              <input type="checkbox" name="remember"> Lembrar

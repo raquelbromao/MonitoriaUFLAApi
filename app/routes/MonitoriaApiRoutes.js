@@ -100,6 +100,17 @@ module.exports = function(app) {
   app.get('/login', function(req, res) {
     //  Verificar se é aluno, professor ou admnistrador
     res.render('login');
+    var login_acesso = req.body.login;
+    var senha_acesso = req.body.senha;
+
+    Aluno.find({login: login_acesso, matricula: senha_acesso}, function(err, aluno) {
+      if (err) {
+        res.json(err);
+      } else {
+        console.log('Login aceito! Permissão concedida!');
+        res.redirect('/');
+      }
+    });
   });
 
   app.route('/alunos')

@@ -10,6 +10,7 @@
     "mongoose": "^4.11.14"
   },
   "devDependencies": {
+    "bcrypt": "^1.0.3"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
