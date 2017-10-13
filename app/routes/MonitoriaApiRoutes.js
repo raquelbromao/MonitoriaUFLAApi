@@ -103,14 +103,14 @@ module.exports = function(app) {
     var login_acesso = req.body.login;
     var senha_acesso = req.body.senha;
 
-    Aluno.find({login: login_acesso, matricula: senha_acesso}, function(err, aluno) {
+    /*Aluno.find({login: login_acesso, matricula: senha_acesso}, function(err, aluno) {
       if (err) {
         res.json(err);
       } else {
         console.log('Login aceito! Permissão concedida!');
         res.redirect('/');
       }
-    });
+    });*/
   });
 
   app.route('/alunos')
