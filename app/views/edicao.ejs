@@ -34,26 +34,26 @@
      <div class="container cadastro">
        <div class="jumbotron">
         <p>Editar [<%= aluno.nome %>]: </p>
-        <form  method="post" class="form-horizontal">
+        <form action="/alunos/editar/<%= aluno._id %>" method="post" class="form-horizontal">
           <div class="form-group">
-            <label>Nome:</label><input type="text" class="form-control form-control-sm" name="nome">
+            <label>Nome:</label><input type="text" value="<%= aluno.nome %>" class="form-control form-control-sm" name="nome">
           </div>
           <div class="form-group">
-            <label>Matrícula:</label><input type="text" class="form-control" name="matricula">
+            <label>Matrícula:</label><input type="text" value="<%= aluno.matricula %>" class="form-control" name="matricula">
           </div>
           <div class="form-group">
-            <label>Telefone:</label><input type="text" class="form-control" name="telefone">
+            <label>Telefone:</label><input type="text" value="<%= aluno.telefone %>" class="form-control" name="telefone">
           </div>
           <div class="form-group">
-            <label>Login (e-mail):</label><input type="email" class="form-control" name="login">
+            <label>Login (e-mail):</label><input type="email" value="<%= aluno.login %>" class="form-control" name="login">
           </div>
           <div class="form-group">
             <label>Senha:</label><input type="password" class="form-control" name="senha">
           </div>
           <div class="form-group">
-            <label>Nota:</label><input type="number" class="form-control" name="nota">
+            <label>Nota:</label><input type="number" value="<%= aluno.nota %>" class="form-control" name="nota">
           </div>
-          <button type="submit" class="btn btn-default">Editar</button>
+          <button type="submit" onclick="return confirm('Tem certeza que deseja excluir o aluno? Esta ação não poderá ser desfeita!');" class="btn btn-default">Enviar</button>
         </form>
      </div>
      </div>

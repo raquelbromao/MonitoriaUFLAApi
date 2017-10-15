@@ -97,20 +97,37 @@ module.exports = function(app) {
       });
   });
 
+  app.post('/alunos/editar/:alunoId', function(req, res) {
+    //  Salva todos as info da requisição em cada componente de Aluno
+    var nome = req.body.nome;
+    var matricula = req.body.matricula;
+    var telefone = req.body.telefone;
+    var login = req.body.login;
+    var senha = req.body.senha;
+    var nota = req.body.nota;
+
+    Aluno.findOneAndUpdate({_id: req.params.alunoId}, {nome, matricula, telefone, login, senha, nota}, function(err, result)  {
+        if (err) {
+          return console.log(err);
+        }
+        res.redirect('/');
+    });
+  });
+
   app.get('/login', function(req, res) {
     //  Verificar se é aluno, professor ou admnistrador
     res.render('login');
     var login_acesso = req.body.login;
     var senha_acesso = req.body.senha;
 
-    /*Aluno.find({login: login_acesso, matricula: senha_acesso}, function(err, aluno) {
+    Aluno.find({$and: [{login: login_acesso, matricula: senha_acesso}]}, function(err, aluno) {
       if (err) {
         res.json(err);
       } else {
         console.log('Login aceito! Permissão concedida!');
         res.redirect('/');
       }
-    });*/
+    });
   });
 
   app.route('/alunos')
