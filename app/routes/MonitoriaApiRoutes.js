@@ -2,6 +2,7 @@
 
 var mongoose = require('mongoose');
 var Aluno = mongoose.model('Alunos');
+var Professor = mongoose.model('Professores');
 
 module.exports = function(app) {
   var metodosAlun = require('../controllers/AlunoController');
@@ -33,28 +34,22 @@ module.exports = function(app) {
     aluno_cadastro.nota = req.body.nota;
 
     //  Verifica se não existe aluno com mesma matrícula
-    /*Aluno.find({matricula: aluno_cadastro.matricula}, function(err, aluno) {
+    Aluno.findOne({matricula: aluno_cadastro.matricula}, function(err, aluno) {
       if (err) {
         res.json(err);
       } else {
         console.log('Aluno já existente com esta matrícula');
-        var erro1 = true;
       }
-    });*/
+    });
 
     //  Verifica se não existe aluno com mesmo login/matrícula
-    /*Aluno.find({login: aluno_cadastro.login, matricula: aluno_cadastro.matricula}, function(err, aluno) {
+    Aluno.findOne({login: aluno_cadastro.login, matricula: aluno_cadastro.matricula}, function(err, aluno) {
       if (err) {
         res.json(err);
       } else {
         console.log('Aluno já existente com este login ou matrícula');
-        var erro = true;
       }
     });
-
-    if (erro == true) {
-      console.log('Login ou matrícula já existentes!');
-    }*/
 
     //  Salva aluno no BD
     aluno_cadastro.save(function(err, aluno) {
@@ -106,7 +101,7 @@ module.exports = function(app) {
     var senha = req.body.senha;
     var nota = req.body.nota;
 
-    Aluno.findOneAndUpdate({_id: req.params.alunoId}, {nome, matricula, telefone, login, senha, nota}, function(err, result)  {
+    Aluno.findOneAndUpdate({_id: req.params.alunoId}, {nome, matricula, telefone, login, senha, nota}, function(err, aluno)  {
         if (err) {
           return console.log(err);
         }
@@ -115,19 +110,67 @@ module.exports = function(app) {
   });
 
   app.get('/login', function(req, res) {
-    //  Verificar se é aluno, professor ou admnistrador
     res.render('login');
+  });
+
+  app.post('/login', function(req, res) {
+    var tipo_usuario = req.body.tipo
     var login_acesso = req.body.login;
     var senha_acesso = req.body.senha;
+    var erro;
 
-    Aluno.find({$and: [{login: login_acesso, matricula: senha_acesso}]}, function(err, aluno) {
-      if (err) {
-        res.json(err);
-      } else {
-        console.log('Login aceito! Permissão concedida!');
-        res.redirect('/');
-      }
-    });
+    //  Analisa tipo de usuário que requeriu entrada no sistema
+    if (tipo_usuario === 'aluno') {
+      console.log('[Usuário] Aluno identificado. Analisando Permissão...');
+      //  VERIFICA SE ALUNO EXISTE PELO LOGIN
+      Aluno.findOne({login: login_acesso}, function(err,aluno) {
+        if (err) {
+          console.log(err);
+          res.redirect('/login');
+        } else if (aluno === null) {
+          console.log('Login não encontrado no banco de dados!');
+          res.redirect('/login');
+        } else {
+          console.log('Login aceito');
+          console.log(aluno);
+          //  VERIFICA A SENHA CASO O LOGIN SEJA ACEITO (ENCONTRADO)
+          if (aluno.senha === senha_acesso) {
+            console.log('Senha aceita!');
+            res.redirect('/');
+          } else {
+            console.log('Senha não aceita!');
+            res.redirect('/login');
+          }
+        }
+      });
+    } else if (tipo_usuario === 'professor') {
+      console.log('[Usuário] Professor identificado. Analisando Permissão...');
+      //  VERIFICA SE ALUNO EXISTE PELO LOGIN
+      Professor.findOne({login: login_acesso}, function(err,professor) {
+        if (err) {
+          console.log(err);
+          res.redirect('/login');
+        } else if (professor === null) {
+          console.log('Login não encontrado no banco de dados!');
+          res.redirect('/login');
+        } else {
+          console.log('Login aceito');
+          console.log(professor);
+          //  VERIFICA A SENHA CASO O LOGIN SEJA ACEITO (ENCONTRADO)
+          if (professor.senha === senha_acesso) {
+            console.log('Senha aceita!');
+            res.redirect('/');
+          } else {
+            console.log('Senha não aceita!');
+            res.redirect('/login');
+          }
+        }
+      });
+    } else if (tipo_usuario === 'prg') {
+      console.log('[Usuário] PRG identificado. Analisando Permissão...');
+    } else {
+      console.log('Tipo de usuário não identificado!');
+    }
   });
 
   app.route('/alunos')
