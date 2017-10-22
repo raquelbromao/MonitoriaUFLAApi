@@ -1,0 +1,119 @@
+<!-- views/pages/about.ejs -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>UFLA Monitoria API</title>
+  <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+  <style>
+    table {
+        font-family: arial, sans-serif;
+        border-collapse: collapse;
+        width: 100%;
+        text-align: center;
+    }
+
+    td, th {
+        border: 1px solid #dddddd;
+        text-align: left;
+        padding: 8px;
+    }
+
+    tr:nth-child(even) {
+        background-color: #dddddd;
+    }
+  </style>
+</head>
+<body>
+  <header>
+     <nav class="navbar navbar-inverse navbar-static-top">
+        <div class="navbar-collapse">
+          <ul class="nav navbar-nav">
+            <li><a href="/">Home</a></li>
+            <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                Cadastros
+              </a>
+              <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                <a class="dropdown-item" href="#">Alunos</a>
+                <a class="dropdown-item" href="#">Monitorias</a>
+                <div class="dropdown-divider"></div>
+                <a class="dropdown-item" href="#">Professores</a>
+              </div>
+            </li>
+          </ul>
+        </div><!-- /.navbar-collapse -->
+     </nav>
+  </header>
+
+   <main>
+     <div class="container">
+
+    <div class="jumbotron listaMonitorias">
+     <p>Lista de Monitorias</p>
+     <table>
+       <thead>
+         <tr>
+           <th>Nome</th>
+           <th>Código</th>
+           <th>Local</th>
+           <th>Oferta</th>
+           <th>ID</th>
+           <th>Editar</th>
+           <th>Deletar</th>
+         </tr>
+         <% monitorias.forEach(function (monitoria) { %>
+         <tr>
+           <th><%= monitoria.nome %></th>
+           <th><%= monitoria.codigo %></th>
+           <th><%= monitoria.local %></th>
+           <th><%= monitoria.oferta %></th>
+           <th><%= monitoria._id %></th>
+           <th><a class="btn btn-warning" href="/monitorias/editar/<%= monitoria._id %>">Editar</a></th>
+           <th><a class="btn btn-raised btn-danger" onclick="return confirm('Tem certeza que deseja excluir o aluno? Esta ação não poderá ser desfeita!');" href="/monitorias/deletar/<%= monitoria._id %>">Deletar</a></th>
+         </tr>
+         <% }); %>
+       </thead>
+       <tbody>
+       </tbody>
+     </table>
+   </div>
+
+    <div class="jumbotron cadastroMonitorias">
+        <p>Cadastro de Monitorias</p>
+        <form action="/adm/monitorias" method="post" class="form-horizontal">
+          <div class="form-group">
+            <label>Nome:</label><input type="text" class="form-control form-control-sm" name="nome">
+          </div>
+          <div class="form-group">
+            <label>Código:</label><input type="text" class="form-control" name="codigo">
+          </div>
+          <!--<div class="form-group">
+            <label>Alunos:</label><input type="text" class="form-control" name="alunos">
+          </div>
+          <div class="form-group">
+            <label>Monitores:</label><input type="text" class="form-control" name="monitores">
+          </div>-->
+          <div class="form-group">
+            <label>Oferta:</label><input type="text" class="form-control" name="oferta">
+          </div>
+          <div class="form-group">
+            <label>Local:</label><input type="text" class="form-control" name="local">
+          </div>
+          <div class="form-group">
+            <label>Horários:</label><input type="text" class="form-control" name="horarios">
+          </div>
+          <div class="form-group">
+            <label>GoogleMaps:</label><input type="text" class="form-control" name="googlemaps">
+          </div>
+          <button type="submit" class="btn btn-default">Cadastrar</button>
+        </form>
+     </div>
+
+     </div>
+   </main>
+
+  <footer>
+  </footer>
+</body>
+</html>

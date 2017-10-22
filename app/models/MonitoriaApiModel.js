@@ -86,22 +86,29 @@ var MonitoriaSchema = new Schema({
     type: String,
     required: 'Por favor, entre com o código da monitoria',
   },
-  alunos: [{
+  /*alunos: [{
     type: Schema.Types.ObjectId,
     ref: 'Alunos'
   }],
   monitores: [{
     type: Schema.Types.ObjectId,
-    ref: 'Alunos'
-  }],
+     ref: 'Alunos'
+  }],*/
   oferta: {
-    type: String
+    type: String,
+    default: '2017-02'
   },
   local: {
-    type: String
+    type: String,
+    default: null
+  },
+  googlemaps: {
+    type: String,
+    default: null
   },
   Horarios: {
     type: [String],
+    default: null
   }
 });
 

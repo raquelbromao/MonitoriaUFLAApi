@@ -27,25 +27,29 @@
 <body>
   <header>
      <nav class="navbar navbar-inverse navbar-static-top">
-        <div class="collapse navbar-collapse">
+        <div class="navbar-collapse">
           <ul class="nav navbar-nav">
             <li><a href="/">Home</a></li>
-            <li><a href="/about">About</a></li>
-            <li><a href="/contact">Contact</a></li>
+            <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                Cadastros
+              </a>
+              <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                <a class="dropdown-item" href="#">Alunos</a>
+                <a class="dropdown-item" href="#">Monitorias</a>
+                <div class="dropdown-divider"></div>
+                <a class="dropdown-item" href="#">Professores</a>
+              </div>
+            </li>
           </ul>
-          <form class="navbar-form navbar-left">
-            <div class="form-group">
-              <input type="text" class="form-control" placeholder="Search">
-            </div>
-            <button type="submit" class="btn btn-default">Submit</button>
-          </form>
         </div><!-- /.navbar-collapse -->
      </nav>
   </header>
 
    <main>
-     <div class="container listagem">
-       <div class="jumbotron">
+     <div class="container">
+
+       <div class="jumbotron listaAlunos">
         <p>Lista de Alunos</p>
         <table>
           <thead>
@@ -63,20 +67,19 @@
               <th><%= aluno.matricula %></th>
               <th><%= aluno.login %></th>
               <th><%= aluno._id %></th>
-              <th><a class="btn btn-warning" href="alunos/editar/<%= aluno._id %>">Editar</a></th>
-              <th><a class="btn btn-raised btn-danger" onclick="return confirm('Tem certeza que deseja excluir o aluno? Esta ação não poderá ser desfeita!');" href="alunos/deletar/<%= aluno._id %>">Deletar</a></th>
+              <th><a class="btn btn-warning" href="/alunos/editar/<%= aluno._id %>">Editar</a></th>
+              <th><a class="btn btn-raised btn-danger" onclick="return confirm('Tem certeza que deseja excluir o aluno? Esta ação não poderá ser desfeita!');" href="/alunos/deletar/<%= aluno._id %>">Deletar</a></th>
             </tr>
             <% }); %>
           </thead>
           <tbody>
           </tbody>
         </table>
-     </div>
-     </div>
-     <div class="container cadastro">
-       <div class="jumbotron">
+      </div>
+
+     <div class="jumbotron cadastroAlunos">
         <p>Cadastro de Alunos</p>
-        <form action="/" method="post" class="form-horizontal">
+        <form action="/adm/alunos" method="post" class="form-horizontal">
           <div class="form-group">
             <label>Nome:</label><input type="text" class="form-control form-control-sm" name="nome">
           </div>
@@ -97,9 +100,9 @@
           </div>
           <button type="submit" class="btn btn-default">Cadastrar</button>
         </form>
-     </div>
-     </div>
-   </main>
+    </div>
+
+    </main>
 
   <footer>
   </footer>
