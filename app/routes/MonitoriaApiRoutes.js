@@ -1,18 +1,20 @@
 'use strict';
 
+//  REQUISITA BD
 var mongoose = require('mongoose');
-
+//  EXPORTA TODAS AS COLEÇÕES DO BD
 var Aluno = mongoose.model('Alunos');
 var Professor = mongoose.model('Professores');
 var Monitoria = mongoose.model('Monitorias');
 
+//  EXPORTA TODAS AS FUNÇÕES DE CADA CONTROLLER
 module.exports = function(app) {
   var metodosAlun = require('../controllers/AlunoController');
   var metodosProf = require('../controllers/ProfessorController');
   var metodosMon = require('../controllers/MonitoriaController');
   var metodosLog = require('../controllers/LoginController');
 
-  //  MonitoriaApi Routes
+  //  ROTAS DA API
   //  Mostra Index
   app.route('/adm')
     .get(function(req, res) {
@@ -67,6 +69,18 @@ module.exports = function(app) {
   //  Index do usuário tipo Aluno
   app.route('/indexAlunos/:alunoId')
     .get(metodosAlun.mostrarAlunoIndex);
+
+  //  Pesquisa as monitorias existentes
+  app.route('/monitorias/pesquisar')
+    .get(metodosMon.pesquisarMonitoria);
+
+  /*
+    ██████   ██████  ████████  █████  ███████     ██████  ███████ ███████  █████  ██    ██ ██   ████████
+    ██   ██ ██    ██    ██    ██   ██ ██          ██   ██ ██      ██      ██   ██ ██    ██ ██      ██
+    ██████  ██    ██    ██    ███████ ███████     ██   ██ █████   █████   ███████ ██    ██ ██      ██
+    ██   ██ ██    ██    ██    ██   ██      ██     ██   ██ ██      ██      ██   ██ ██    ██ ██      ██
+    ██   ██  ██████     ██    ██   ██ ███████     ██████  ███████ ██      ██   ██  ██████  ███████ ██
+  */
 
   app.route('/alunos')
     .get(metodosAlun.listar_todos_objetos)

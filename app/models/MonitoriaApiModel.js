@@ -18,7 +18,7 @@ var AlunoSchema = new Schema({
   },
   matricula: {
     type: String,
-    required: true,
+    required: true
   },
   telefone: {
     type: String,
@@ -84,16 +84,8 @@ var MonitoriaSchema = new Schema({
   },
   codigo: {
     type: String,
-    required: 'Por favor, entre com o código da monitoria',
+    required: 'Por favor, entre com o código da monitoria'
   },
-  /*alunos: [{
-    type: Schema.Types.ObjectId,
-    ref: 'Alunos'
-  }],
-  monitores: [{
-    type: Schema.Types.ObjectId,
-     ref: 'Alunos'
-  }],*/
   oferta: {
     type: String,
     default: '2017-02'

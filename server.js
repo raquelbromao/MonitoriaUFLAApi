@@ -6,8 +6,8 @@ var mongoose = require('mongoose');
 var BD = require('./app/models/MonitoriaApiModel'); //created model loading here
 
 //  mongoose instance connection url connection
-mongoose.connect('mongodb://pipoca:123456@ds141464.mlab.com:41464/api_monitoria', function(err) {
-//mongoose.connect('mongodb://localhost/MonitoriaUflaDB', function(err) {
+//mongoose.connect('mongodb://pipoca:123456@ds141464.mlab.com:41464/api_monitoria', function(err) {
+mongoose.connect('mongodb://localhost/MonitoriaUflaDB', function(err) {
   if(err) {
     console.log('connection error', err);
   }

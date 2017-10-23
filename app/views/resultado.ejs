@@ -1,0 +1,71 @@
+<!-- views/pages/about.ejs -->
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <title>UFLA Monitoria API</title>
+  <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+  <style>
+    table {
+        font-family: arial, sans-serif;
+        border-collapse: collapse;
+        width: 100%;
+        text-align: center;
+    }
+
+    td, th {
+        border: 1px solid #dddddd;
+        text-align: left;
+        padding: 8px;
+    }
+
+    tr:nth-child(even) {
+        background-color: #dddddd;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <% include partials/navebar %>
+  </header>
+
+   <main>
+     <div class="container listagem">
+
+      <div class="jumbotron pesquisaMonitorias">
+       <p>Monitorias:</p>
+       <table>
+         <thead>
+           <tr>
+             <th>Nome</th>
+             <th>Código</th>
+             <th>Local</th>
+             <th>Mais Informações</th>
+             <th>Cadastrar</th>
+           </tr>
+           <% monitorias.forEach(function (monitoria) { %>
+           <tr>
+             <th><%= monitoria.nome %></th>
+             <th><%= monitoria.codigo %></th>
+             <th><%= monitoria.local %></th>
+             <th><a href="#" class="btn btn-info" role="button"> Informações </a></th>
+             <th><a href="#" class="btn btn-success" role="button"> Cadastrar </a></th>
+           </tr>
+           <tr>
+             <iframe width="900" height="400" frameborder="0" style="border:0" src="https://www.google.com/maps/embed/v1/place?key=AIzaSyABavoCKgp1-bPzJI_mWdrP2ka2mDtfTqE&q=<%= monitoria.googlemaps %>" allowfullscreen>
+             </iframe>
+           </tr>
+           <% }); %>
+         </thead>
+         <tbody>
+         </tbody>
+       </table>
+     </div>
+
+     </div>
+   </main>
+
+  <footer>
+  </footer>
+</body>
+</html>

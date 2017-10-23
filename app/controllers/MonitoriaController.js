@@ -15,7 +15,6 @@ exports.listarMonitorias = function(req, res) {
     }
   });
 };
-
 /*
   Cadastra monitoria no BD
 */
@@ -89,11 +88,32 @@ exports.editarMonitoria = function(req, res) {
   var horarios = null;
   var googlemaps = req.body.googlemaps;
 
-  Monitoria.findOneAndUpdate({_id: req.params.monitoriaId}, {nome, codigo, local, oferta, horarios, googlemaps}, function(err, monitoria)  {
+  Monitoria.findOneAndUpdate({_id: req.params.monitoriaId}, {nome, codigo, local, oferta, horarios, googlemaps},
+    function(err, monitoria)  {
       if (err) {
         return console.log(err);
       }
       res.redirect('/adm/monitorias');
+  });
+};
+
+/*
+  Pesquisa monitoria pelo nome
+*/
+exports.pesquisarMonitoria = function(req, res) {
+  var monitoria = req.query.nomeMonitoria;
+  console.log(monitoria);
+  console.log(req.query);
+  //console.log(JSON.parse(req.query.nomeMonitoria));
+  //var nome2 = JSON.stringify(req.query.nomeMonitoria);
+
+  Monitoria.find({nome: req.query.nomeMonitoria}, function(err, monitorias) {
+    if (err) {
+      res.json(err);
+    } else {
+      //console.log(monitorias);
+      res.render('resultado', {"monitorias": monitorias} );
+    }
   });
 };
 
