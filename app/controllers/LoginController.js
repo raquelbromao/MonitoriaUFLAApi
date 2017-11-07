@@ -2,6 +2,7 @@
 
 var mongoose = require('mongoose');
 var Aluno = mongoose.model('Alunos');
+var Professor = mongoose.model('Professores');
 
 /*
   Autentica login e verifica tipo de usuário

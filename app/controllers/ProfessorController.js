@@ -20,9 +20,9 @@ exports.listarProfessores = function(req, res) {
   Cadastra professores no BD
 */
 exports.criarProfessor = function(req, res) {
-  //  Cria novo objeto Aluno
+  //  Cria novo objeto Professor
   var professor_cadastro = new Professor();
-  //  Salva todos as info da requisição em cada componente de Aluno
+  //  Salva todos as info da requisição em cada componente de Professor
   professor_cadastro.nome = req.body.nome;
   professor_cadastro.codigo = req.body.codigo;
   professor_cadastro.telefone = req.body.telefone;
@@ -42,6 +42,56 @@ exports.criarProfessor = function(req, res) {
   });
 };
 
+/*
+  Deleta Professor do BD
+*/
+exports.deletarProfessor = function(req, res) {
+  Professor.remove({_id: req.params.professorId}, function(err, professor) {
+    //  ERRO
+    if (err) {
+      res.json(err);
+    //  SUCESSO
+    } else {
+      console.log('Professor deletado com sucesso');
+      res.redirect('/adm/professores');
+    }
+  });
+};
+
+/*
+  Mostra Professor da edição
+*/
+exports.mostrarProfessorEdicao = function(req, res) {
+  Professor.find({_id: req.params.professorId}, function(err, professor) {
+    //  ERRO
+    if (err) {
+      res.json(err);
+    //  SUCESSO
+    } else {
+      //  parametro aluno é um array de alunos, então para pegar um único se acessa a posição 0
+      res.render('edicaoProfessor', {"professor": professor[0]} );
+    }
+  });
+};
+
+/*
+  Edita Professor e salva mudanças no BD
+*/
+exports.editarProfessor = function(req, res) {
+  //  Salva todos as info da requisição em cada componente de Prof
+  var nome = req.body.nome;
+  var codigo = req.body.codigo;
+  var telefone = req.body.telefone;
+  var login = req.body.login;
+  var senha = req.body.senha;
+
+  Professor.findOneAndUpdate({_id: req.params.professorId}, {nome, codigo, telefone, login, senha}, function(err, professor)  {
+      if (err) {
+        return console.log(err);
+      }
+      res.redirect('/adm/professores');
+  });
+};
 
 /*
   Mostra Professor do index

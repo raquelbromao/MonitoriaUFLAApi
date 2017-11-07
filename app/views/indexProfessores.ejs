@@ -56,7 +56,7 @@
         <div class="list-group">
           <div class="list-group">
             <a href="#" class="list-group-item list-group-item-action active">Index</a>
-            <a href="#" class="list-group-item list-group-item-action disabled">Editar Dados</a>
+            <a href="/professores/editar/<%= professor._id %>" class="list-group-item list-group-item-action">Editar Dados</a>
             <a href="/monitorias/lista" class="list-group-item list-group-item-action disabled">Lista de Monitorias</a>
             <a href="#" class="list-group-item list-group-item-action disabled">Pesquisar Monitorias</a>
             <a href="#" class="list-group-item list-group-item-action disabled">Orientados</a>
@@ -67,7 +67,7 @@
 
       <div class="jumbotron pesquisaMonitorias">
        <p>Procurar Monitoria</p>
-       <form action="/monitorias/pesquisar/<%= aluno._id %>" method="get" class="form-inline">
+       <form action="#" method="get" class="form-inline">
          <label class="sr-only" for="nomeMonitoria">Nome da Monitoria</label>
          <input type="text" class="form-control" id="nomeMonitoria" name="nomeMonitoria" placeholder="Cálculo I...">
          <button type="submit" class="btn btn-primary">Pesquisar</button>

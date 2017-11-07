@@ -39,6 +39,14 @@ module.exports = function(app) {
   app.route('/alunos/deletar/:alunoId')
     .get(metodosAlun.deletarAluno);
 
+  //  Deleta o professore da lista com base em seu ID
+  app.route('/professores/deletar/:professorId')
+    .get(metodosProf.deletarProfessor);
+
+  //  Deleta a monitoria da lista com base em seu ID
+  app.route('/monitorias/deletar/:monitoriaId')
+    .get(metodosMon.deletarMonitoria);
+
   //  Edita aluno e salva no BD
   app.route('/alunos/editar/:alunoId')
     //  Coloca aluno em edição
@@ -46,16 +54,19 @@ module.exports = function(app) {
     //  Altera info do aluno e atualiza no BD
     .post(metodosAlun.editarAluno);
 
+  //  Edita Professor e salva no BD
+  app.route('/professores/editar/:professorId')
+    //  Coloca Professor em edição
+    .get(metodosProf.mostrarProfessorEdicao)
+    //  Altera info do Professor e atualiza no BD
+    .post(metodosProf.editarProfessor);
+
   //  Mostra monitorias e oferece cadastro
   app.route('/adm/monitorias')
     //  Encontra no BD todos as monitorias e as lista
     .get(metodosMon.listarMonitorias)
     //  Cria e insere no BD uma nova monitoria
     .post(metodosMon.criarMonitoria);
-
-  //  Deleta a monitoria da lista com base em seu ID
-  app.route('/monitorias/deletar/:monitoriaId')
-    .get(metodosMon.deletarMonitoria);
 
   //  Edita aluno e salva no BD
   app.route('/monitorias/editar/:monitoriaId')
