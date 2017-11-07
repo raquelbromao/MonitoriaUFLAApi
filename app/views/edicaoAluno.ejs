@@ -48,10 +48,13 @@
             <label>Login (e-mail):</label><input type="email" value="<%= aluno.login %>" class="form-control" name="login">
           </div>
           <div class="form-group">
-            <label>Senha:</label><input type="password" class="form-control" name="senha">
+            <label>Senha:</label><input type="password" value="<%= aluno.senha %>" class="form-control" name="senha">
           </div>
           <div class="form-group">
             <label>Nota:</label><input type="number" value="<%= aluno.nota %>" class="form-control" name="nota">
+          </div>
+          <div class="form-group">
+            <label>Monitorias:</label><input type="text" value="<%= aluno.monitorias %>" class="form-control" name="monitorias">
           </div>
           <button type="submit" onclick="return confirm('Tem certeza que deseja editar essas informações? Esta ação não poderá ser desfeita!');" class="btn btn-default">Enviar</button>
         </form>

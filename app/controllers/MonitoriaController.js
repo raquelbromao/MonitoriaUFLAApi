@@ -3,6 +3,8 @@
 var mongoose = require('mongoose');
 var Monitoria = mongoose.model('Monitorias');
 
+var url = require('url');
+
 /*
   Lista todos as monitorias presentes no BD
 */
@@ -18,11 +20,11 @@ exports.listarMonitorias = function(req, res) {
 /*
   Cadastra monitoria no BD
 */
-exports.cadastrarMonitoria = function(req, res) {
+exports.criarMonitoria = function(req, res) {
   //  Cria novo objeto Monitoria
   var novaMonitoria = new Monitoria();
   //  Salva todos as info da requisição em cada componente de Aluno
-  novaMonitoria.nome = req.body.nome;
+  novaMonitoria.nome = req.body.nome.toUpperCase();
   novaMonitoria.codigo = req.body.codigo;
   //novaMonitoria.alunos = req.body.alunos;
   //novaMonitoria.monitores = req.body.monitores;
@@ -101,18 +103,39 @@ exports.editarMonitoria = function(req, res) {
   Pesquisa monitoria pelo nome
 */
 exports.pesquisarMonitoria = function(req, res) {
+  //  Recebe a query dada e armazena numa variável
   var monitoria = req.query.nomeMonitoria;
-  console.log(monitoria);
-  console.log(req.query);
-  //console.log(JSON.parse(req.query.nomeMonitoria));
-  //var nome2 = JSON.stringify(req.query.nomeMonitoria);
+  //  Pega a url dada e separa o pathname que é a url - query
+  //  Imprime a url
+  //console.log(req.url);
+  //  Analisa a url e separa cada coisa pelo seu campo
+  var aux_url = url.parse(req.url, true);
+  //  Separa o pathname da url que é a { url - query }
+  //console.log(aux_url.pathname);
+  //  Esse pathname é passado para uma string para sofrer split em '/' e
+  //  retirar a id do aluno
+  var endereco = aux_url.pathname;
+  var aux = endereco.split("/");
+  //console.log(aux);
+
+
+  //  Separa a id do aluno e armazena numa variável
+  var aluno;
+  aux.forEach(function(entrada) {
+    if (((entrada === 'monitorias') === false) && ((entrada === 'pesquisar') === false)) {
+      //console.log(entrada);
+      aluno = entrada.trim();
+      //console.log(aluno);
+    }
+  });
 
   Monitoria.find({nome: req.query.nomeMonitoria}, function(err, monitorias) {
     if (err) {
       res.json(err);
     } else {
       //console.log(monitorias);
-      res.render('resultado', {"monitorias": monitorias} );
+      //JSON.stringify(aluno);
+      res.render('resultado', {"monitorias": monitorias, aluno: aluno} );
     }
   });
 };
@@ -135,6 +158,7 @@ exports.criar_objeto = function(req, res) {
 };
 
 exports.ler_objeto = function(req, res) {
+  var aluno = req.params.alunoId;
   Monitoria.findById(req.params.monitoriaId, function(err, monitoria) {
     if (err)
       res.send(err);

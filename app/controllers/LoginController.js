@@ -25,10 +25,10 @@ exports.autenticarLogin = function(req, res) {
         res.redirect('/login');
       } else {
         //console.log('Login aceito');
-        console.log(aluno);
+        //console.log(aluno);
         //  VERIFICA A SENHA CASO O LOGIN SEJA ACEITO (ENCONTRADO)
         if (aluno.senha === senha_acesso) {
-          console.log('Senha aceita!');
+          //console.log('Senha aceita!');
           res.redirect('/indexAlunos/' + aluno._id);
         } else {
           //console.log('Senha não aceita!');
@@ -49,10 +49,10 @@ exports.autenticarLogin = function(req, res) {
         res.redirect('/login');
       } else {
         //console.log('Login aceito');
-        console.log(professor);
+        //console.log(professor);
         //  VERIFICA A SENHA CASO O LOGIN SEJA ACEITO (ENCONTRADO)
         if (professor.senha === senha_acesso) {
-          console.log('Senha aceita!');
+          //console.log('Senha aceita!');
           res.redirect('/indexProfessores/' + professor._id);
         } else {
           //console.log('Senha não aceita!');
@@ -62,7 +62,9 @@ exports.autenticarLogin = function(req, res) {
     });
   } else if (tipo_usuario === 'prg') {
     console.log('[Usuário] PRG identificado. Analisando Permissão...');
+    res.redirect('/login');
   } else {
     console.log('Tipo de usuário não identificado!');
+    res.redirect('/login');
   }
 };

@@ -35,7 +35,11 @@ var AlunoSchema = new Schema({
   senha: {
     type: String,
     required: true
-  }
+  },
+  monitorias: [{
+    type: Schema.Types.ObjectId,
+    ref: 'Monitoria'
+  }]
 });
 
 /*
@@ -53,7 +57,7 @@ var ProfessorSchema = new Schema({
   },
   codigo: {
     type: String,
-    required: 'Por favor, entre com o código do professor',
+    required: 'Por favor, entre com o código do professor'
   },
   telefone: {
     type: String,
@@ -88,7 +92,7 @@ var MonitoriaSchema = new Schema({
   },
   oferta: {
     type: String,
-    default: '2017-02'
+    default: "2017-02"
   },
   local: {
     type: String,
@@ -101,9 +105,15 @@ var MonitoriaSchema = new Schema({
   Horarios: {
     type: [String],
     default: null
-  }
+  },
+  alunosInscritos: [{
+    type: Schema.Types.ObjectId,
+    ref: 'Aluno'
+  }]
 });
 
+var Monitoria = mongoose.model('Monitorias', MonitoriaSchema);
+var Aluno = mongoose.model('Alunos', AlunoSchema);
 module.exports = mongoose.model('Alunos', AlunoSchema);
 module.exports = mongoose.model('Professores', ProfessorSchema);
 module.exports = mongoose.model('Monitorias', MonitoriaSchema);

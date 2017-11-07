@@ -26,7 +26,14 @@ module.exports = function(app) {
     //  Encontra no BD todos os alunos e os lista
     .get(metodosAlun.listarAlunos)
     //  Cria e insere no BD um novo aluno
-    .post(metodosAlun.cadastraAluno);
+    .post(metodosAlun.criarAluno);
+
+  //  Mostra alunos e oferece cadastro
+  app.route('/adm/professores')
+    //  Encontra no BD todos os professores e os lista
+    .get(metodosProf.listarProfessores)
+    //  Cria e insere no BD um novo aluno
+    .post(metodosProf.criarProfessor);
 
   //  Deleta o aluno da lista com base em seu ID
   app.route('/alunos/deletar/:alunoId')
@@ -44,7 +51,7 @@ module.exports = function(app) {
     //  Encontra no BD todos as monitorias e as lista
     .get(metodosMon.listarMonitorias)
     //  Cria e insere no BD uma nova monitoria
-    .post(metodosMon.cadastrarMonitoria);
+    .post(metodosMon.criarMonitoria);
 
   //  Deleta a monitoria da lista com base em seu ID
   app.route('/monitorias/deletar/:monitoriaId')
@@ -60,9 +67,7 @@ module.exports = function(app) {
   //  Realiza e autentica Login
   app.route('/login')
     //  Renderiza a página
-    .get(function(req, res) {
-    res.render('login');
-  })
+    .get(function(req, res) {res.render('login');})
     //  Autentica o login e define tipo de usuário
     .post(metodosLog.autenticarLogin);
 
@@ -70,9 +75,17 @@ module.exports = function(app) {
   app.route('/indexAlunos/:alunoId')
     .get(metodosAlun.mostrarAlunoIndex);
 
+  //  Index do usuário tipo Professor
+  app.route('/indexProfessores/:professorId')
+    .get(metodosProf.mostrarProfIndex);
+
   //  Pesquisa as monitorias existentes
-  app.route('/monitorias/pesquisar')
+  app.route('/monitorias/pesquisar/:alunoId')
     .get(metodosMon.pesquisarMonitoria);
+
+  // Cadastra o aluno na monitoria para poder receber notificações e horários próximos
+  app.route('/cadastrarMonitoria/:alunoId/:monitoriaId')
+    .get(metodosAlun.cadastrarMonitoria);
 
   /*
     ██████   ██████  ████████  █████  ███████     ██████  ███████ ███████  █████  ██    ██ ██   ████████
@@ -82,7 +95,7 @@ module.exports = function(app) {
     ██   ██  ██████     ██    ██   ██ ███████     ██████  ███████ ██      ██   ██  ██████  ███████ ██
   */
 
-  app.route('/alunos')
+  /*app.route('/alunos')
     .get(metodosAlun.listar_todos_objetos)
     .post(metodosAlun.criar_objeto);
 
@@ -107,5 +120,5 @@ module.exports = function(app) {
   app.route('/monitorias/:monitoriaId')
     .get(metodosMon.ler_objeto)
     .put(metodosMon.atualizar_objeto)
-    .delete(metodosMon.deletar_objeto);
+    .delete(metodosMon.deletar_objeto);*/
 };

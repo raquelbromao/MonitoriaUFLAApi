@@ -33,19 +33,19 @@
      <div class="container listagem">
 
        <div class="jumbotron">
-        <p>Bem-vinda(o), <%= aluno.nome %></p>
+        <p>Bem-vinda(o), <%= professor.nome %></p>
         <table>
           <thead>
             <tr>
               <th>Nome</th>
-              <th>Matrícula</th>
+              <th>Código</th>
               <th>E-mail</th>
               <!-- <th>Editar Dados</th> -->
             </tr>
             <tr>
-              <th><%= aluno.nome %></th>
-              <th><%= aluno.matricula %></th>
-              <th><%= aluno.login %></th>
+              <th><%= professor.nome %></th>
+              <th><%= professor.codigo %></th>
+              <th><%= professor.login %></th>
               <!-- <th><a class="btn btn-warning" href="#">Editar</a></th> -->
             </tr>
           </thead>
@@ -56,10 +56,10 @@
         <div class="list-group">
           <div class="list-group">
             <a href="#" class="list-group-item list-group-item-action active">Index</a>
-            <a href="/alunos/editar/<%= aluno._id %>" class="list-group-item list-group-item-action">Editar Dados</a>
+            <a href="#" class="list-group-item list-group-item-action disabled">Editar Dados</a>
             <a href="/monitorias/lista" class="list-group-item list-group-item-action disabled">Lista de Monitorias</a>
             <a href="#" class="list-group-item list-group-item-action disabled">Pesquisar Monitorias</a>
-            <a href="#" class="list-group-item list-group-item-action disabled">Monitorias Cadastradas</a>
+            <a href="#" class="list-group-item list-group-item-action disabled">Orientados</a>
             <a href="/login" class="list-group-item list-group-item-action">Sair</a>
           </div>
         </div>
@@ -72,30 +72,6 @@
          <input type="text" class="form-control" id="nomeMonitoria" name="nomeMonitoria" placeholder="Cálculo I...">
          <button type="submit" class="btn btn-primary">Pesquisar</button>
        </form>
-     </div>
-
-     <div class="jumbotron">
-       <p>Monitorias Cadastradas</p>
-       <table>
-         <thead>
-           <tr>
-             <th>Matéria</th>
-             <th>Código</th>
-             <th>Local</th>
-             <th>Cancelar</th>
-           </tr>
-         </thead>
-         <tbody>
-           <% monitorias.forEach(function(monitoria) { %>
-           <tr>
-             <th><%= monitoria.nome %></th>
-             <th><%= monitoria.codigo %></th>
-             <th><%= monitoria.local %></th>
-             <th><a class="btn btn-warning" href="/monitorias/cancelar/<%= aluno._id %>">Cancelar Inscrição</a></th>
-           </tr>
-           <% }) %>
-         </tbody>
-       </table>
      </div>
 
      <div class="jumbotron">

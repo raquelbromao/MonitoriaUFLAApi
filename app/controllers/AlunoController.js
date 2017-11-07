@@ -2,6 +2,7 @@
 
 var mongoose = require('mongoose');
 var Aluno = mongoose.model('Alunos');
+var Monitoria = mongoose.model('Monitorias');
 
 /*
   Lista todos os alunos presentes no BD
@@ -19,7 +20,7 @@ exports.listarAlunos = function(req, res) {
 /*
   Cadastra alunos no BD
 */
-exports.cadastraAluno = function(req, res) {
+exports.criarAluno = function(req, res) {
   //  Cria novo objeto Aluno
   var aluno_cadastro = new Aluno();
   //  Salva todos as info da requisição em cada componente de Aluno
@@ -129,8 +130,9 @@ exports.editarAluno = function(req, res) {
   var login = req.body.login;
   var senha = req.body.senha;
   var nota = req.body.nota;
+  var monitorias = req.body.monitorias;
 
-  Aluno.findOneAndUpdate({_id: req.params.alunoId}, {nome, matricula, telefone, login, senha, nota}, function(err, aluno)  {
+  Aluno.findOneAndUpdate({_id: req.params.alunoId}, {nome, matricula, telefone, login, senha, nota, monitorias}, function(err, aluno)  {
       if (err) {
         return console.log(err);
       }
@@ -142,65 +144,80 @@ exports.editarAluno = function(req, res) {
   Mostra Aluno do index
 */
 exports.mostrarAlunoIndex = function(req, res) {
-  Aluno.find({_id: req.params.alunoId}, function(err, aluno) {
+  //  Array criado para adicionar as Ids das monitorias no qual o aluno se cadastrou
+  var arrayIds = [];
+  //  Encontra aluno que requisitou o login
+  Aluno.findById({_id: req.params.alunoId}, function(err, aluno) {
     //  ERRO
     if (err) {
       res.json(err);
     //  SUCESSO
     } else {
-      //  parametro aluno é um array de alunos, então para pegar um único se acessa a posição 0
-      res.render('indexAlunos', {"aluno": aluno[0]} );
+      //  Percorre o array das monitorias cadastradas pelo aluno
+      for (var i = 0; i < aluno.monitorias.length; i++) {
+        arrayIds.push(aluno.monitorias[i])
+      }
+
+      //  Encontra cada monitoria e adiciona num array
+      Monitoria.find({_id:{ $in: arrayIds }}, function(err, monitorias) {
+        //  ERRO
+        if (err) {
+          res.json(err);
+        //  SUCESSO
+        } else {
+          res.render('indexAlunos', {"aluno": aluno, "monitorias": monitorias});
+        }
+      });
+    }
+
+  });
+
+};
+
+/*
+  Cadastra monitoria em aluno
+*/
+exports.cadastrarMonitoria = function(req, res) {
+  //var aluno = req.params.alunoId;
+  //var monitoria = req.params.monitoriaId;
+  //console.log('Aluno ID: ' + aluno);
+  //console.log('Monitoria ID: ' + monitoria);
+
+  //  Encontra monitoria para cadastro
+  Monitoria.findById({_id: req.params.monitoriaId}, function(err, monitoria) {
+    //  ERRO
+    if (err) {
+      res.json(err);
+    //  SUCESSO
+    } else {
+      //  Encontra aluno que quer se cadastrar na monitoria e atualiza seu campo Monitorias
+      // com a ID da monitoria desejada
+      Aluno.findByIdAndUpdate(
+        {_id: req.params.alunoId},
+        {$push: {monitorias: req.params.monitoriaId}},
+        {safe: true, upsert: true},
+        function(err, aluno) {
+          if (err) {
+            console.log(err);
+          } else {
+            console.log(aluno.monitorias);
+          }
+      });
     }
   });
-};
 
-exports.listar_todos_objetos = function(req, res) {
-  Aluno.find({}, function(err,alunos) {
-    if (err)
-      res.send(err);
-    res.json(alunos);
-  });
-};
+  //  Insere o aluno na lista de alunosInscritos da Monitoria
+  /*Monitoria.findByIdAndUpdate(
+    {_id: req.params.monitoriaId},
+    {$push: {alunosInscritos: req.params.alunoId}},
+    {safe: true, upsert: true},
+    function(err, monitoria) {
+      if (err) {
+        console.log(err);
+      } else {
+        console.log(monitoria.alunosInscritos);
+      }
+  });*/
 
-exports.criar_objeto = function(req, res) {
-  var new_task = new Aluno(req.body);
-  new_task.save(function(err, aluno) {
-    if (err)
-      res.send(err);
-    res.json(aluno);
-  });
-};
-
-exports.ler_objeto = function(req, res) {
-  Aluno.findById(req.params.alunoId, function(err, aluno) {
-    if (err)
-      res.send(err);
-    res.json(aluno);
-  });
-};
-
-exports.atualizar_objeto = function(req, res) {
-  Aluno.findOneAndUpdate({_id: req.params.alunoId}, req.body, {new: true}, function(err, aluno) {
-    if (err)
-      res.send(err);
-    res.json(aluno);
-  });
-};
-
-exports.deletar_objeto = function(req, res) {
-  Aluno.remove({_id: req.params.alunoId}, function(err, aluno) {
-    if (err)
-      res.send(err);
-    res.json({ message: 'Aluno foi deletado com sucesso' });
-  });
-};
-
-exports.deletar_objetoID = function(req, res) {
-  Aluno.remove({_id: req.params.alunoId}, function(err, aluno) {
-    if (err)
-      res.send(err);
-    //res.json({ message: 'Offer Deleted!'});
-    console.log('Aluno deletado com sucesso');
-    res.redirect('/');
-  });
+    res.redirect('/indexAlunos/' + req.params.alunoId);
 };
