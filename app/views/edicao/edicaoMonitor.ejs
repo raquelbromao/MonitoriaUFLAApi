@@ -1,0 +1,49 @@
+<!-- views/pages/about.ejs -->
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <title>UFLA Monitoria API</title>
+  <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+  <style>
+
+  </style>
+</head>
+
+<body>
+  <header>
+    <% include partials/navebar %>
+
+  </header>
+
+   <main>
+     <div class="container cadastro">
+       <div class="jumbotron">
+        <p>Editar [<%= monitor.nome %>]: </p>
+        <form action="/monitores/editar/<%= monitor._id %>" method="post" class="form-horizontal">
+          <div class="form-group">
+            <label>Nome:</label><input type="text" value="<%= monitor.nome %>" class="form-control form-control-sm" name="nome">
+          </div>
+          <div class="form-group">
+            <label>Matrícula:</label><input type="text" value="<%= monitor.matricula %>" class="form-control" name="matricula">
+          </div>
+          <div class="form-group">
+            <label>Login (e-mail):</label><input type="email" value="<%= monitor.login %>" class="form-control" name="login">
+          </div>
+          <div class="form-group">
+            <label>Senha:</label><input type="password" value="<%= monitor.senha %>" class="form-control" name="senha">
+          </div>
+          <div class="form-group">
+            <label>Matéria Monitorada:</label><input type="text" value="<%= monitor.materiaMonitorada %>" class="form-control" name="materiaMonitorada">
+          </div>
+          <button type="submit" onclick="return confirm('Tem certeza que deseja editar essas informações? Esta ação não poderá ser desfeita!');" class="btn btn-default">Enviar</button>
+        </form>
+     </div>
+     </div>
+   </main>
+
+  <footer>
+  </footer>
+</body>
+</html>

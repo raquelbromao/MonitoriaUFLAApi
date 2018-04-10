@@ -31,60 +31,17 @@ exports.criarAluno = function(req, res) {
   aluno_cadastro.senha = req.body.senha;
   aluno_cadastro.nota = req.body.nota;
 
-  //  Salva aluno no BD
+/**
+ * Salva aluno no BD
+ */
   aluno_cadastro.save(function(err, aluno) {
-    //  ERRO
     if (err) {
       res.json(err);
-    //  SUCESSO
     } else {
       console.log('Aluno cadastrado com sucesso');
       res.redirect('/adm/alunos');
     }
   });
-
-
-  /*var erro1 = new Boolean(false);
-  var erro2 = new Boolean(false);
-
-  //  Verifica se não existe aluno com mesma matrícula
-  Aluno.find({matricula: aluno_cadastro.matricula}, function(err, aluno) {
-    if (err) {
-      res.json(err);
-    } else {
-      erro1 = true;
-    }
-  });
-
-  //  Verifica se não existe aluno com mesmo login
-  Aluno.find({login: aluno_cadastro.login}, function(err, aluno) {
-    if (err) {
-      res.json(err);
-    } else {
-      console.log('Aluno já existente com este login ou matrícula');
-      erro2 = true;
-    }
-  });*/
-
-    /*if (erro1) {
-      console.log('Aluno já existente com esta matrícula');
-      res.redirect('/');
-    } else if (erro2) {
-      console.log('Aluno já existente com este login');
-      res.redirect('/');
-    } else {
-      //  Salva aluno no BD
-      aluno_cadastro.save(function(err, aluno) {
-        //  ERRO
-        if (err) {
-          res.json(err);
-        //  SUCESSO
-        } else {
-          console.log('Aluno cadastrado com sucesso');
-          res.redirect('/');
-        }
-      });
-    }*/
 };
 
 /*
@@ -92,10 +49,8 @@ exports.criarAluno = function(req, res) {
 */
 exports.deletarAluno = function(req, res) {
   Aluno.remove({_id: req.params.alunoId}, function(err, aluno) {
-    //  ERRO
     if (err) {
       res.json(err);
-    //  SUCESSO
     } else {
       console.log('Aluno deletado com sucesso');
       res.redirect('/adm/alunos');
@@ -108,13 +63,11 @@ exports.deletarAluno = function(req, res) {
 */
 exports.mostrarAlunoEdicao = function(req, res) {
   Aluno.find({_id: req.params.alunoId}, function(err, aluno) {
-    //  ERRO
     if (err) {
       res.json(err);
-    //  SUCESSO
     } else {
       //  parametro aluno é um array de alunos, então para pegar um único se acessa a posição 0
-      res.render('edicaoAluno', {"aluno": aluno[0]} );
+      res.render('edicao/edicaoAluno', {"aluno": aluno[0]} );
     }
   });
 };
@@ -123,7 +76,6 @@ exports.mostrarAlunoEdicao = function(req, res) {
   Edita aluno e salva mudanças no BD
 */
 exports.editarAluno = function(req, res) {
-  //  Salva todos as info da requisição em cada componente de Aluno
   var nome = req.body.nome;
   var matricula = req.body.matricula;
   var telefone = req.body.telefone;
@@ -146,12 +98,10 @@ exports.editarAluno = function(req, res) {
 exports.mostrarAlunoIndex = function(req, res) {
   //  Array criado para adicionar as Ids das monitorias no qual o aluno se cadastrou
   var arrayIds = [];
-  //  Encontra aluno que requisitou o login
+
   Aluno.findById({_id: req.params.alunoId}, function(err, aluno) {
-    //  ERRO
     if (err) {
       res.json(err);
-    //  SUCESSO
     } else {
       //  Percorre o array das monitorias cadastradas pelo aluno
       for (var i = 0; i < aluno.monitorias.length; i++) {
@@ -160,12 +110,10 @@ exports.mostrarAlunoIndex = function(req, res) {
 
       //  Encontra cada monitoria e adiciona num array
       Monitoria.find({_id:{ $in: arrayIds }}, function(err, monitorias) {
-        //  ERRO
         if (err) {
           res.json(err);
-        //  SUCESSO
         } else {
-          res.render('indexAlunos', {"aluno": aluno, "monitorias": monitorias});
+          res.render('index/indexAlunos', {"aluno": aluno, "monitorias": monitorias});
         }
       });
     }
@@ -178,20 +126,18 @@ exports.mostrarAlunoIndex = function(req, res) {
   Cadastra monitoria em aluno
 */
 exports.cadastrarMonitoria = function(req, res) {
-  //var aluno = req.params.alunoId;
-  //var monitoria = req.params.monitoriaId;
-  //console.log('Aluno ID: ' + aluno);
-  //console.log('Monitoria ID: ' + monitoria);
+  var aluno = req.params.alunoId;
+  var monitoria = req.params.monitoriaId;
+  console.log('Aluno ID: ' + aluno);
+  console.log('Monitoria ID: ' + monitoria);
 
   //  Encontra monitoria para cadastro
   Monitoria.findById({_id: req.params.monitoriaId}, function(err, monitoria) {
-    //  ERRO
     if (err) {
       res.json(err);
-    //  SUCESSO
     } else {
       //  Encontra aluno que quer se cadastrar na monitoria e atualiza seu campo Monitorias
-      // com a ID da monitoria desejada
+      //  com a ID da monitoria desejada
       Aluno.findByIdAndUpdate(
         {_id: req.params.alunoId},
         {$push: {monitorias: req.params.monitoriaId}},

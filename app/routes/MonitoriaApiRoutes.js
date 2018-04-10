@@ -1,102 +1,138 @@
-'use strict';
+"use strict";
 
 //  REQUISITA BD
-var mongoose = require('mongoose');
+var mongoose = require("mongoose");
+
 //  EXPORTA TODAS AS COLEÇÕES DO BD
-var Aluno = mongoose.model('Alunos');
-var Professor = mongoose.model('Professores');
-var Monitoria = mongoose.model('Monitorias');
+var Aluno = mongoose.model("Alunos");
+var Professor = mongoose.model("Professores");
+var Monitor = mongoose.model("Monitores");
+var Monitoria = mongoose.model("Monitorias");
 
 //  EXPORTA TODAS AS FUNÇÕES DE CADA CONTROLLER
 module.exports = function(app) {
-  var metodosAlun = require('../controllers/AlunoController');
-  var metodosProf = require('../controllers/ProfessorController');
-  var metodosMon = require('../controllers/MonitoriaController');
-  var metodosLog = require('../controllers/LoginController');
+  var metodosAlun = require("../controllers/AlunoController");
+  var metodosProf = require("../controllers/ProfessorController");
+  var metodosMoni = require("../controllers/MonitorController");
+  var metodosAtiv = require("../controllers/AtividadeController");
+  var metodosMon = require("../controllers/MonitoriaController");
+  var metodosLog = require("../controllers/LoginController");
 
-  //  ROTAS DA API
-  //  Mostra Index
-  app.route('/adm')
-    .get(function(req, res) {
-    res.render('indexAdm');
-  });
-
-  //  Mostra alunos e oferece cadastro
-  app.route('/adm/alunos')
-    //  Encontra no BD todos os alunos e os lista
-    .get(metodosAlun.listarAlunos)
-    //  Cria e insere no BD um novo aluno
-    .post(metodosAlun.criarAluno);
-
-  //  Mostra alunos e oferece cadastro
-  app.route('/adm/professores')
-    //  Encontra no BD todos os professores e os lista
-    .get(metodosProf.listarProfessores)
-    //  Cria e insere no BD um novo aluno
-    .post(metodosProf.criarProfessor);
-
-  //  Deleta o aluno da lista com base em seu ID
-  app.route('/alunos/deletar/:alunoId')
-    .get(metodosAlun.deletarAluno);
-
-  //  Deleta o professore da lista com base em seu ID
-  app.route('/professores/deletar/:professorId')
-    .get(metodosProf.deletarProfessor);
-
-  //  Deleta a monitoria da lista com base em seu ID
-  app.route('/monitorias/deletar/:monitoriaId')
-    .get(metodosMon.deletarMonitoria);
-
-  //  Edita aluno e salva no BD
-  app.route('/alunos/editar/:alunoId')
-    //  Coloca aluno em edição
-    .get(metodosAlun.mostrarAlunoEdicao)
-    //  Altera info do aluno e atualiza no BD
-    .post(metodosAlun.editarAluno);
-
-  //  Edita Professor e salva no BD
-  app.route('/professores/editar/:professorId')
-    //  Coloca Professor em edição
-    .get(metodosProf.mostrarProfessorEdicao)
-    //  Altera info do Professor e atualiza no BD
-    .post(metodosProf.editarProfessor);
-
-  //  Mostra monitorias e oferece cadastro
-  app.route('/adm/monitorias')
-    //  Encontra no BD todos as monitorias e as lista
-    .get(metodosMon.listarMonitorias)
-    //  Cria e insere no BD uma nova monitoria
-    .post(metodosMon.criarMonitoria);
-
-  //  Edita aluno e salva no BD
-  app.route('/monitorias/editar/:monitoriaId')
-    //  Coloca monitoria em edição
-    .get(metodosMon.mostrarMonitoriaEdicao)
-    //  Altera info da monitoria e atualiza no BD
-    .post(metodosMon.editarMonitoria);
+  //  LOGIN
 
   //  Realiza e autentica Login
-  app.route('/login')
-    //  Renderiza a página
-    .get(function(req, res) {res.render('login');})
-    //  Autentica o login e define tipo de usuário
+  app
+    .route("/login")
+    .get(function(req, res) {
+      res.render("login");
+    })
     .post(metodosLog.autenticarLogin);
 
-  //  Index do usuário tipo Aluno
-  app.route('/indexAlunos/:alunoId')
+  //  INDEX
+  
+  app.route("/adm").get(function(req, res) {
+    res.render("index/indexAdm");
+  });
+
+  app
+    .route("/adm/alunos")
+    .get(metodosAlun.listarAlunos)
+    .post(metodosAlun.criarAluno);
+
+  app
+    .route("/adm/professores")
+    .get(metodosProf.listarProfessores)
+    .post(metodosProf.criarProfessor);
+
+  app
+    .route("/adm/monitores")
+    .get(metodosMoni.listarMonitores)
+    .post(metodosMoni.criarMonitor);
+
+  app
+    .route("/adm/monitorias")
+    .get(metodosMon.listarMonitorias)
+    .post(metodosMon.criarMonitoria);
+
+  // ALUNO
+
+  app
+    .route("/indexAlunos/:alunoId")
     .get(metodosAlun.mostrarAlunoIndex);
 
-  //  Index do usuário tipo Professor
-  app.route('/indexProfessores/:professorId')
+  app
+    .route("/alunos/editar/:alunoId")
+    .get(metodosAlun.mostrarAlunoEdicao)
+    .post(metodosAlun.editarAluno);
+
+  app
+    .route("/alunos/deletar/:alunoId")
+    .get(metodosAlun.deletarAluno);
+
+  app
+    .route("/cadastrarMonitoria/:alunoId/:monitoriaId")
+    .get(metodosAlun.cadastrarMonitoria);
+
+  //  PROFESSOR
+
+  app
+    .route("/indexProfessores/:professorId")
     .get(metodosProf.mostrarProfIndex);
 
-  //  Pesquisa as monitorias existentes
-  app.route('/monitorias/pesquisar/:alunoId')
+  app
+    .route("/professores/editar/:professorId")
+    .get(metodosProf.mostrarProfessorEdicao)
+    .post(metodosProf.editarProfessor);
+
+  app
+    .route("/professores/deletar/:professorId")
+    .get(metodosProf.deletarProfessor);
+
+  // MONITOR
+
+  app
+    .route("/indexMonitores/:monitorId")
+    .get(metodosMoni.mostrarMonitorIndex);
+
+  app
+    .route("/monitores/editar/:monitorId")
+    .get(metodosMoni.mostrarMonitorEdicao)
+    .post(metodosMoni.editarMonitor);
+
+  app
+    .route("/monitores/deletar/:monitorId")
+    .get(metodosMoni.deletarMonitor);
+
+  //  MONITORIA
+
+  app
+    .route("/monitorias/editar/:monitoriaId")
+    .get(metodosMon.mostrarMonitoriaEdicao)
+    .post(metodosMon.editarMonitoria);
+
+  app
+    .route("/monitorias/pesquisar/:alunoId")
     .get(metodosMon.pesquisarMonitoria);
 
-  // Cadastra o aluno na monitoria para poder receber notificações e horários próximos
-  app.route('/cadastrarMonitoria/:alunoId/:monitoriaId')
-    .get(metodosAlun.cadastrarMonitoria);
+  app
+    .route("/monitorias/associarProfessor/:monitoriaId")
+    .get(metodosMon.mostrarMonitoriaEdicao)
+    .post(metodosMon.editarMonitoria);
+
+  app
+    .route("/monitorias/deletar/:monitoriaId")
+    .get(metodosMon.deletarMonitoria);
+
+  //  ATIVIDADES DAS MONITORIAS
+
+  app
+    .route("/atividades/index/:professorId/:monitoriaId")
+    .get(metodosAtiv.listarTarefas);   
+
+  app
+    .route("/atividades/cadastrar/:professorId/:monitoriaId")
+    .get(metodosAtiv.verPCadastro)
+    .post(metodosAtiv.cadastrarAtividade);
 
   /*
     ██████   ██████  ████████  █████  ███████     ██████  ███████ ███████  █████  ██    ██ ██   ████████

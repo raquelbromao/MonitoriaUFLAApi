@@ -39,21 +39,23 @@
          <tr>
            <th>Nome</th>
            <th>Código</th>
-           <th>Local</th>
-           <th>Oferta</th>
            <th>ID</th>
+           <th>Oferta</th>
+           <th>Professor</th>
+           <th>Monitor</th>
            <th>Editar</th>
            <th>Deletar</th>
          </tr>
          <% monitorias.forEach(function (monitoria) { %>
          <tr>
-           <th><%= monitoria.nome %></th>
-           <th><%= monitoria.codigo %></th>
-           <th><%= monitoria.local %></th>
-           <th><%= monitoria.oferta %></th>
-           <th><%= monitoria._id %></th>
+           <th><%= monitoria.nomeDisciplina   %></th>
+           <th><%= monitoria.codigoDisciplina %></th>
+           <th><%= monitoria._id              %></th>
+           <th><%= monitoria.oferta           %></th>
+           <th><%= monitoria.professor        %></th>
+           <th><%= monitoria.monitor          %></th>
            <th><a class="btn btn-warning" href="/monitorias/editar/<%= monitoria._id %>">Editar</a></th>
-           <th><a class="btn btn-raised btn-danger" onclick="return confirm('Tem certeza que deseja excluir o aluno? Esta ação não poderá ser desfeita!');" href="/monitorias/deletar/<%= monitoria._id %>">Deletar</a></th>
+           <th><a class="btn btn-raised btn-danger" onclick="return confirm('Tem certeza que deseja excluir a monitoria? Esta ação não poderá ser desfeita!');" href="/monitorias/deletar/<%= monitoria._id %>">Deletar</a></th>
          </tr>
          <% }); %>
        </thead>
@@ -66,17 +68,11 @@
         <p>Cadastro de Monitorias</p>
         <form action="/adm/monitorias" method="post" class="form-horizontal">
           <div class="form-group">
-            <label>Nome:</label><input type="text" class="form-control form-control-sm" name="nome">
+            <label>Nome:</label><input type="text" class="form-control form-control-sm" name="nomeDisciplina">
           </div>
           <div class="form-group">
-            <label>Código:</label><input type="text" class="form-control" name="codigo">
+            <label>Código:</label><input type="text" class="form-control" name="codigoDisciplina">
           </div>
-          <!--<div class="form-group">
-            <label>Alunos:</label><input type="text" class="form-control" name="alunos">
-          </div>
-          <div class="form-group">
-            <label>Monitores:</label><input type="text" class="form-control" name="monitores">
-          </div>-->
           <div class="form-group">
             <label>Oferta:</label><input type="text" class="form-control" name="oferta">
           </div>
@@ -84,10 +80,13 @@
             <label>Local:</label><input type="text" class="form-control" name="local">
           </div>
           <div class="form-group">
-            <label>Horários:</label><input type="text" class="form-control" name="horarios">
+            <label>Google Maps:</label><input type="text" class="form-control" name="googlemaps">
           </div>
           <div class="form-group">
-            <label>GoogleMaps:</label><input type="text" class="form-control" name="googlemaps">
+            <label>Matrícula Monitor:</label><input type="text" class="form-control" name="monitor">
+          </div>
+          <div class="form-group">
+            <label>Código Professor:</label><input type="text" class="form-control" name="professor">
           </div>
           <button type="submit" class="btn btn-default">Cadastrar</button>
         </form>

@@ -1,0 +1,64 @@
+<!-- views/pages/about.ejs -->
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <title>UFLA Monitoria API</title>
+  <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+  <style>
+    table {
+        font-family: arial, sans-serif;
+        border-collapse: collapse;
+        width: 100%;
+        text-align: center;
+    }
+
+    td, th {
+        border: 1px solid #dddddd;
+        text-align: left;
+        padding: 8px;
+    }
+
+    tr:nth-child(even) {
+        background-color: #dddddd;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <% include partials/navebar %>
+  </header>
+
+   <main>
+     <div class="container listagem">
+
+      <div class="jumbotron pesquisaMonitores">
+       <p>Monitores:</p>
+       <table>
+         <thead>
+           <tr>
+             <th>Nome</th>
+             <th>Matrícula</th>
+             <th>Associar</th>
+           </tr>
+           <% monitores.forEach(function (monitor) { %>
+           <tr>
+             <th><%= monitor.nome %></th>
+             <th><%= monitor.matricula %></th>
+             <th><a href="/cadastrarMonitor/<%= monitoria %>/<%= monitor._id %>" class="btn btn-success" role="button"> Associar </a></th>
+           </tr>
+           <tr>
+           <% }); %>
+         </thead>
+         <tbody>
+         </tbody>
+       </table>
+     </div>
+
+     </div>
+   </main>
+
+  <footer>
+  </footer>
+</body>
+</html>
