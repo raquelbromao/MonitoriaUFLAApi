@@ -71,14 +71,12 @@
             <tr>
               <th>Disciplina</th>
               <th>Código</th>
-              <th>Monitor</th>
               <th>Atividades</th>
             </tr>
             <% monitorias.forEach(function(monitoria) { %>
               <tr>
                 <th><%= monitoria.nomeDisciplina %></th>
                 <th><%= monitoria.codigoDisciplina %></th>
-                <th><%= monitoria.monitor %></th>
                 <th><a class="btn btn-warning" href="/atividades/index/<%= professor._id %>/<%= monitoria._id %>">Ver</a></th>
               </tr>
             <% }) %>       
