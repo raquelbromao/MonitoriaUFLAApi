@@ -43,6 +43,7 @@
               <th>DESCRIÇÃO</th>
               <th>PRAZO</th>
               <th>STATUS</th>
+              <th>EDITAR</th>
               <th>EXCLUIR</th>
             </tr>
             <% atividades.forEach(function(atividade) { %>
@@ -50,7 +51,12 @@
               <th><%= atividade.tipoDeAtividade %></th>
               <th><%= atividade.descricao       %></th>
               <th><%= atividade.prazo           %></th>
-              <th><%= atividade.foiTerminada    %></th>
+              <% if (atividade.foiTerminada == false) { %>
+                <th><button type="button" class="btn btn-warning btn-block">Finalizada</button></th>
+              <% } else { %>
+                <th><button type="button" class="btn btn-success btn-block">Ativa</button></th>
+              <% } %>   
+              <th><a class="btn btn-raised btn-info btn-block" href="/atividades/editar/<%= professor %>/<%= monitoria._id %>/<%= atividade._id %>">Editar</a></th>
               <th><a class="btn btn-raised btn-danger btn-block" href="/atividades/excluir/<%= atividade._id %>/<%= monitoria._id %>">Excluir</a></th>
             </tr>
             <% }) %>

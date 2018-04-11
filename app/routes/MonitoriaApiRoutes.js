@@ -4,9 +4,9 @@
 var mongoose = require("mongoose");
 
 //  EXPORTA TODAS AS COLEÇÕES DO BD
-var Aluno = mongoose.model("Alunos");
+var Aluno     = mongoose.model("Alunos");
 var Professor = mongoose.model("Professores");
-var Monitor = mongoose.model("Monitores");
+var Monitor   = mongoose.model("Monitores");
 var Monitoria = mongoose.model("Monitorias");
 
 //  EXPORTA TODAS AS FUNÇÕES DE CADA CONTROLLER
@@ -15,8 +15,8 @@ module.exports = function(app) {
   var metodosProf = require("../controllers/ProfessorController");
   var metodosMoni = require("../controllers/MonitorController");
   var metodosAtiv = require("../controllers/AtividadeController");
-  var metodosMon = require("../controllers/MonitoriaController");
-  var metodosLog = require("../controllers/LoginController");
+  var metodosMon  = require("../controllers/MonitoriaController");
+  var metodosLog  = require("../controllers/LoginController");
 
   //  LOGIN
 
@@ -103,6 +103,10 @@ module.exports = function(app) {
     .route("/monitores/deletar/:monitorId")
     .get(metodosMoni.deletarMonitor);
 
+  app
+    .route("/monitores/finalizarAtividade/:monitorId/:atividadeId")  
+    .get(metodosAtiv.finalizarAtividade);
+
   //  MONITORIA
 
   app
@@ -133,6 +137,16 @@ module.exports = function(app) {
     .route("/atividades/cadastrar/:professorId/:monitoriaId")
     .get(metodosAtiv.verPCadastro)
     .post(metodosAtiv.cadastrarAtividade);
+
+  app
+    .route("/atividades/excluir/:professorId/:monitoriaId/:atividadeId")  
+    .get(metodosAtiv.excluirAtividade);
+  
+  app
+    .route("/atividades/editar/:professorId/:monitoriaId/:atividadeId")  
+    .get(metodosAtiv.mostrarAtivEdicao)
+    .post(metodosAtiv.editarAtividade);
+
 
   /*
     ██████   ██████  ████████  █████  ███████     ██████  ███████ ███████  █████  ██    ██ ██   ████████

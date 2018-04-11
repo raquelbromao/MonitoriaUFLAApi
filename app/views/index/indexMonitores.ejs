@@ -71,7 +71,11 @@
              <th><%= atividade.tipoDeAtividade %></th>
              <th><%= atividade.descricao       %></th>
              <th><%= atividade.prazo           %></th>
-             <th><a class="btn btn-warning btn-block" href="/atividades/finalizar/<%= atividade._id %>">Finalizar Atividade</a></th>
+             <% if (atividade.foiTerminada == false) { %>
+             <th><a class="btn btn-success btn-block" href="/monitores/finalizarAtividade/<%= monitor._id %>/<%= atividade._id %>">Finalizar Atividade</a></th>
+             <% } else { %>
+              <th><a class="btn btn-warning btn-block" href="/monitores/finalizarAtividade/<%= monitor._id %>/<%= atividade._id %>">Refazer Atividade</a></th>
+             <% } %> 
            </tr>
            <% }) %>
          </tbody>
