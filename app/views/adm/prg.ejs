@@ -1,0 +1,92 @@
+<!-- views/pages/about.ejs -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>UFLA Monitoria API</title>
+  <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+  <style>
+    table {
+        font-family: arial, sans-serif;
+        border-collapse: collapse;
+        width: 100%;
+        text-align: center;
+    }
+
+    td, th {
+        border: 1px solid #dddddd;
+        text-align: left;
+        padding: 8px;
+    }
+
+    tr:nth-child(even) {
+        background-color: #dddddd;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <% include ../partials/navebar %>
+  </header>
+
+   <main>
+     <div class="container">
+
+       <div class="jumbotron listaAlunos">
+        <p>Lista de Membros da PRG</p>
+        <table>
+          <thead>
+            <tr>
+              <th>Nome</th>
+              <th>Código</th>
+              <th>E-mail</th>
+              <th>ID</th>
+              <th>Senha</th>
+              <th>Editar</th>
+              <th>Deletar</th>
+            </tr>
+            <% membrosPRG.forEach(function (prg) { %>
+            <tr>
+              <th><%= prg.nome %></th>
+              <th><%= prg.codigo %></th>
+              <th><%= prg.login %></th>
+              <th><%= prg._id %></th>
+              <th><%= prg.senha %></th>
+              <th><a class="btn btn-warning btn-block" href="/prg/editar/<%= prg._id %>">Editar</a></th>
+              <th><a class="btn btn-raised btn-danger btn-block" onclick="return confirm('Tem certeza que deseja excluir o usuário? Esta ação não poderá ser desfeita!');" href="/prg/deletar/<%= prg._id %>">Deletar</a></th>
+            </tr>
+            <% }); %>
+          </thead>
+          <tbody>
+          </tbody>
+        </table>
+      </div>
+
+     <div class="jumbotron cadastroprofessors">
+        <p>Cadastro de Membros da PRG</p>
+        <form action="/adm/prg" method="post" class="form-horizontal">
+          <div class="form-group">
+            <label>Nome:</label><input type="text" class="form-control form-control-sm" name="nome">
+          </div>
+          <div class="form-group">
+            <label>Codigo:</label><input type="text" class="form-control" name="codigo">
+          </div>
+          <div class="form-group">
+            <label>Telefone:</label><input type="text" class="form-control" name="telefone">
+          </div>
+          <div class="form-group">
+            <label>Login (e-mail):</label><input type="email" class="form-control" name="login">
+          </div>
+          <div class="form-group">
+            <label>Senha:</label><input type="password" class="form-control" name="senha">
+          </div>
+          <button type="submit" class="btn btn-default btn-block">Cadastrar</button>
+        </form>
+    </div>
+
+    </main>
+
+  <footer>
+  </footer>
+</body>
+</html>

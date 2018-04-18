@@ -3,6 +3,7 @@
 var mongoose = require("mongoose");
 var Monitor = mongoose.model("Monitores");
 var Atividade = mongoose.model("Atividades");
+var AtividadeRegistrada = mongoose.model("AtividadesRegistradas");
 var Monitoria = mongoose.model("Monitorias");
 
 
@@ -23,9 +24,10 @@ exports.listarMonitores = function(req, res) {
   Cadastra monitores no BD
 */
 exports.criarMonitor = function(req, res) {
-  //  Cria novo objeto Aluno
+  //  Cria novo objeto Monitor
   var monitor_cadastro = new Monitor();
-  //  Salva todos as info da requisição em cada componente de Aluno
+
+  //  Salva todos as info da requisição em cada componente de Monitor
   monitor_cadastro.nome = req.body.nome;
   monitor_cadastro.matricula = req.body.matricula;
   monitor_cadastro.login = req.body.login;
@@ -77,11 +79,10 @@ exports.editarMonitor = function(req, res) {
   var matricula = req.body.matricula;
   var login = req.body.login;
   var senha = req.body.senha;
-  var materiaMonitorada = req.body.materiaMonitorada;
 
   Monitor.findOneAndUpdate(
     { _id: req.params.monitorId },
-    { nome, matricula, login, senha, materiaMonitorada },
+    { nome, matricula, login, senha },
     function(err, monitor) {
       if (err) {
         return console.log(err);
@@ -96,43 +97,38 @@ exports.editarMonitor = function(req, res) {
 */
 exports.mostrarMonitorIndex = function(req, res) {
   //  Array criado para adicionar as Ids das monitorias no qual o aluno se cadastrou
-  var atividadesIds = [];
+  var atividadesRegistradasIds = [];
 
   //  Encontra monitor que requisitou o login
   Monitor.findById({ _id: req.params.monitorId }, function(err, monitor) {
     if (err) {
       res.json(err);
     } else {
-      //console.log(monitor);
-      //console.log(monitor.materiaMonitorada);
       //  Encontra monitoria relacionada
       Monitoria.findById(monitor.materiaMonitorada, function(err, monitoria) {
         if (err) {
           res.json(err);
         } else {
-          //console.log(monitoria);
+
           //  Verifica se a monitoria já possui atividades ou não
-          if (monitoria.atividades != null) {
-            //console.log(monitoria.atividades);
-            for (var i = 0; i < monitoria.atividades.length; i++) {
-                atividadesIds.push(monitoria.atividades[i]);
+          if (monitoria.atividadesRegistradas.length > 0) {
+
+            for (var i = 0; i < monitoria.atividadesRegistradas.length; i++) {
+                atividadesRegistradasIds.push(monitoria.atividadesRegistradas[i]);
             }
 
-            //console.log(atividadesIds);
-
             //  Encontra cada atividade que se encontra no array atividadesIds
-            Atividade.find({_id:{ $in: atividadesIds }}, function(err, atividades) {
+            AtividadeRegistrada.find({_id:{ $in: atividadesRegistradasIds }}, function(err, atividadesR) {
                 if (err) {
                     res.json(err);
                 } else {
-                    //console.log(atividades);
-                    res.render('index/indexMonitores', {"atividades": atividades, "monitor": monitor, "monitoria": monitoria });
+
+                  res.render('index/indexMonitores', {"flag": true, "atividadesR": atividadesR, "monitor": monitor, "monitoria": monitoria });
                 }
             });
 
           } else {
-            console.log('Monitor sem atividades! Outra tela!')
-            res.render('login');
+            res.render('index/indexMonitores', {"flag": false, "monitor": monitor, "monitoria": monitoria });
           }
         }
 

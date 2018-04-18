@@ -1,0 +1,61 @@
+<!-- views/pages/about.ejs -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>UFLA Monitoria API</title>
+  <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+  <style>
+  </style>
+</head>
+<body>
+  <header>
+    <% include partials/navebar %>
+  </header>
+
+   <main>
+    <div class="container cadastroAtividade">
+
+     <div class="jumbotron">
+       <p>Cadastrar Atividade</p><br>
+       <% if (flag == false) { %>
+        <br>Não há Plano de Trabalho cadastrado ainda!
+        <br>Não é possível registrar atividades!
+       <% } else { %> 
+       <form action="/planoMonitoria/registrarAtividade/<%= monitor %>/<%= monitoria._id %>" method="post" class="form-horizontal">
+        <div class="form-group">
+          <label>Tipo de Atividade:</label>
+            <select multiple class="form-control custom-select" name="atividadeEscolhida" required>
+                <% atividades.forEach(function(atividade) { %>
+                <option value="<%= atividade._id %>"> <%= atividade.titulo %> </option>
+                <% }) %>    
+            </select>
+        </div>
+        <div class="form-group">
+          <label>Alunos atendidos:</label>
+          <input type="number"  class="form-control" name="contagemAtendimento">
+        </div>
+        <div class="form-group">
+          <label>Observações:</label>
+          <textarea class="form-control" name="observacoes" rows="3"></textarea>
+        </div>
+        <div class="form-group">
+          <label>Hora de Início:</label>
+          <input type="time"  class="form-control" name="horaInicio" required>
+        </div>
+        <div class="form-group">
+          <label>Hora do Término:</label>
+          <input type="time"  class="form-control" name="horaTermino" required>
+        </div>
+        <button type="submit" class="btn btn-primary btn-block">Cadastrar Atividade</button>
+      </form>
+      <% } %>    
+     </div>
+
+    </div>
+   </main>
+
+  <footer>
+  </footer>
+</body>
+</html>

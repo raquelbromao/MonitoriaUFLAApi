@@ -13,8 +13,9 @@ var Monitoria = mongoose.model("Monitorias");
 module.exports = function(app) {
   var metodosAlun = require("../controllers/AlunoController");
   var metodosProf = require("../controllers/ProfessorController");
+  var metodosPRG = require("../controllers/PrgController");
   var metodosMoni = require("../controllers/MonitorController");
-  var metodosAtiv = require("../controllers/AtividadeController");
+  var metodosPlano = require("../controllers/PlanoMonitoriaController");
   var metodosMon  = require("../controllers/MonitoriaController");
   var metodosLog  = require("../controllers/LoginController");
 
@@ -43,6 +44,11 @@ module.exports = function(app) {
     .route("/adm/professores")
     .get(metodosProf.listarProfessores)
     .post(metodosProf.criarProfessor);
+
+    app
+    .route("/adm/prg")
+    .get(metodosPRG.listarPRG)
+    .post(metodosPRG.criarPRG);  
 
   app
     .route("/adm/monitores")
@@ -88,6 +94,11 @@ module.exports = function(app) {
     .route("/professores/deletar/:professorId")
     .get(metodosProf.deletarProfessor);
 
+
+  // PRG
+   
+  // A SER FEITO
+   
   // MONITOR
 
   app
@@ -102,10 +113,6 @@ module.exports = function(app) {
   app
     .route("/monitores/deletar/:monitorId")
     .get(metodosMoni.deletarMonitor);
-
-  app
-    .route("/monitores/finalizarAtividade/:monitorId/:atividadeId")  
-    .get(metodosAtiv.finalizarAtividade);
 
   //  MONITORIA
 
@@ -127,59 +134,38 @@ module.exports = function(app) {
     .route("/monitorias/deletar/:monitoriaId")
     .get(metodosMon.deletarMonitoria);
 
-  //  ATIVIDADES DAS MONITORIAS
+  //  PLANO DE TRABALHO DAS MONITORIAS E ATIVIDADES
 
   app
-    .route("/atividades/index/:professorId/:monitoriaId")
-    .get(metodosAtiv.listarTarefas);   
+    .route("/planoMonitoria/index/:professorId/:monitoriaId")
+    .get(metodosPlano.listarAtividades);   
 
   app
-    .route("/atividades/cadastrar/:professorId/:monitoriaId")
-    .get(metodosAtiv.verPCadastro)
-    .post(metodosAtiv.cadastrarAtividade);
+    .route("/planoMonitoria/cadastrarAtividade/:professorId/:monitoriaId")
+    .get(metodosPlano.verPCadastro)
+    .post(metodosPlano.cadastrarAtividade);
 
   app
-    .route("/atividades/excluir/:professorId/:monitoriaId/:atividadeId")  
-    .get(metodosAtiv.excluirAtividade);
+    .route("/planoMonitoria/excluirAtividade/:professorId/:monitoriaId/:atividadeId")  
+    .get(metodosPlano.excluirAtividade);
   
   app
-    .route("/atividades/editar/:professorId/:monitoriaId/:atividadeId")  
-    .get(metodosAtiv.mostrarAtivEdicao)
-    .post(metodosAtiv.editarAtividade);
+    .route("/planoMonitoria/editarAtividade/:professorId/:monitoriaId/:atividadeId")  
+    .get(metodosPlano.mostrarAtivEdicao)
+    .post(metodosPlano.editarAtividade);
 
+  app
+    .route("/planoMonitoria/registrarAtividade/:monitorId/:monitoriaId")
+    .get(metodosPlano.mostrarPaginaAtivRegistro)
+    .post(metodosPlano.registrarAtividade);
 
-  /*
-    ██████   ██████  ████████  █████  ███████     ██████  ███████ ███████  █████  ██    ██ ██   ████████
-    ██   ██ ██    ██    ██    ██   ██ ██          ██   ██ ██      ██      ██   ██ ██    ██ ██      ██
-    ██████  ██    ██    ██    ███████ ███████     ██   ██ █████   █████   ███████ ██    ██ ██      ██
-    ██   ██ ██    ██    ██    ██   ██      ██     ██   ██ ██      ██      ██   ██ ██    ██ ██      ██
-    ██   ██  ██████     ██    ██   ██ ███████     ██████  ███████ ██      ██   ██  ██████  ███████ ██
-  */
-
-  /*app.route('/alunos')
-    .get(metodosAlun.listar_todos_objetos)
-    .post(metodosAlun.criar_objeto);
-
-  app.route('/alunos/:alunoId')
-    .get(metodosAlun.ler_objeto)
-    .put(metodosAlun.atualizar_objeto)
-    .delete(metodosAlun.deletar_objeto);
-
-  app.route('/professores')
-    .get(metodosProf.listar_todos_objetos)
-    .post(metodosProf.criar_objeto);
-
-  app.route('/professores/:professorId')
-    .get(metodosProf.ler_objeto)
-    .put(metodosProf.atualizar_objeto)
-    .delete(metodosProf.deletar_objeto);
-
-  app.route('/monitorias')
-    .get(metodosMon.listar_todos_objetos)
-    .post(metodosMon.criar_objeto);
-
-  app.route('/monitorias/:monitoriaId')
-    .get(metodosMon.ler_objeto)
-    .put(metodosMon.atualizar_objeto)
-    .delete(metodosMon.deletar_objeto);*/
+  app
+    .route("/planoMonitoria/excluirAtividadeRegistrada/:monitorId/:monitoriaId/:atividadeRegistradaId")
+    .get(metodosPlano.excluirAtivReg);
+ 
+  //  ERROS
+  
+  /*app
+    .route("/err/:erroId")
+    .get();*/
 };

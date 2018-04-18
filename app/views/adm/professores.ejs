@@ -54,8 +54,8 @@
               <th><%= professor._id %></th>
               <th><%= professor.senha %></th>
               <th><%= professor.monitorias %></th>
-              <th><a class="btn btn-warning" href="/professores/editar/<%= professor._id %>">Editar</a></th>
-              <th><a class="btn btn-raised btn-danger" onclick="return confirm('Tem certeza que deseja excluir o professor? Esta ação não poderá ser desfeita!');" href="/professores/deletar/<%= professor._id %>">Deletar</a></th>
+              <th><a class="btn btn-warning btn-block" href="/professores/editar/<%= professor._id %>">Editar</a></th>
+              <th><a class="btn btn-raised btn-danger btn-block" onclick="return confirm('Tem certeza que deseja excluir o professor? Esta ação não poderá ser desfeita!');" href="/professores/deletar/<%= professor._id %>">Deletar</a></th>
             </tr>
             <% }); %>
           </thead>
@@ -82,7 +82,7 @@
           <div class="form-group">
             <label>Senha:</label><input type="password" class="form-control" name="senha">
           </div>
-          <button type="submit" class="btn btn-default">Cadastrar</button>
+          <button type="submit" class="btn btn-primary btn-block">Cadastrar</button>
         </form>
     </div>
 

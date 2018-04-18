@@ -32,7 +32,7 @@
    <main>
      <div class="container listagem">
 
-       <div class="jumbotron">
+      <div class="jumbotron">
         <p>Bem-vinda(o), <%= professor.nome %></p>
         <table>
           <thead>
@@ -40,19 +40,48 @@
               <th>Nome</th>
               <th>Código</th>
               <th>E-mail</th>
-              <!-- <th>Editar Dados</th> -->
+              <th>Editar Dados</th>
             </tr>
             <tr>
               <th><%= professor.nome %></th>
               <th><%= professor.codigo %></th>
               <th><%= professor.login %></th>
-              <!-- <th><a class="btn btn-warning" href="#">Editar</a></th> -->
+              <th><a class="btn btn-warning btn-block" href="#">Editar <span class="glyphicon glyphicon-pencil"></span></a></th>
             </tr>
           </thead>
           <tbody>
           </tbody>
         </table>
-        <br><p>Links</p>
+      </div>
+
+      <div class="jumbotron Monitorias">
+        <p>Monitorias</p>
+        <table>
+          <thead>
+            <tr>
+              <th>DISCIPLINA</th>
+              <th>CÓDIGO</th>
+              <th>MONITOR</th>
+              <th>SEMESTRE</th>
+              <th>DETALHES</th>
+            </tr>
+            <% monitorias.forEach(function(monitoria) { %>
+              <tr>
+                <th><%= monitoria.nomeDisciplina %></th>
+                <th><%= monitoria.codigoDisciplina %></th>
+                <th><%= monitoria.monitorNome %></th>
+                <th><%= monitoria.oferta %></th>
+                <th><a class="btn btn-info btn-block" href="/planoMonitoria/index/<%= professor._id %>/<%= monitoria._id %>"><span class="glyphicon glyphicon-plus"></span></a></th>
+              </tr>
+            <% }) %>       
+            </thead>
+          <tbody>
+          </tbody>
+        </table>
+      </div>
+
+      <!--<div class="jumbotron Links">
+        <p>Links</p>
         <div class="list-group">
           <div class="list-group">
             <a href="#" class="list-group-item list-group-item-action active">Index</a>
@@ -62,38 +91,16 @@
             <a href="/login" class="list-group-item list-group-item-action">Sair</a>
           </div>
         </div>
-      </div>
+      </div>-->
 
-      <div class="jumbotron Monitorias">
-        <p>Monitorias</p>
-        <table>
-          <thead>
-            <tr>
-              <th>Disciplina</th>
-              <th>Código</th>
-              <th>Atividades</th>
-            </tr>
-            <% monitorias.forEach(function(monitoria) { %>
-              <tr>
-                <th><%= monitoria.nomeDisciplina %></th>
-                <th><%= monitoria.codigoDisciplina %></th>
-                <th><a class="btn btn-warning" href="/atividades/index/<%= professor._id %>/<%= monitoria._id %>">Ver</a></th>
-              </tr>
-            <% }) %>       
-            </thead>
-          <tbody>
-          </tbody>
-        </table>
-      </div>
-
-      <div class="jumbotron pesquisaMonitorias">
+      <!--<div class="jumbotron pesquisaMonitorias">
        <p>Procurar Monitoria</p>
        <form action="#" method="get" class="form-inline">
          <label class="sr-only" for="nomeMonitoria">Nome da Monitoria</label>
          <input type="text" class="form-control" id="nomeMonitoria" name="nomeMonitoria" placeholder="Cálculo I...">
-         <button type="submit" class="btn btn-primary">Pesquisar</button>
+         <button type="submit" class="btn btn-primary btn-block">Pesquisar</button>
        </form>
-     </div>
+     </div>-->
 
      <div class="jumbotron">
        <p>Notificações</p>

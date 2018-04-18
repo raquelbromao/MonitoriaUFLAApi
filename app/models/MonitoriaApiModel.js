@@ -53,42 +53,27 @@ var ProfessorSchema = new Schema({
   }]
 });
 
-var MonitoriaSchema = new Schema({
-  nomeDisciplina: {
+var prgSchema = new Schema ({
+  nome: {
     type: String,
     required: true
   },
-  codigoDisciplina: {
+  codigo: {
     type: String,
     required: true
   },
-  professor: {
-    type: Schema.Types.ObjectId,
-    ref: 'Professor'
-  },
-  monitor: {
-    type: Schema.Types.ObjectId,
-    ref: 'Monitor'
-  },
-  oferta: {
+  telefone: {
     type: String,
-    default: "2018-01"
+    default: null
   },
-  local: {
+  login: {
     type: String,
     required: true
   },
-  googlemaps: {
-    type: String
-  },
-  alunosInscritos: [{
-    type: Schema.Types.ObjectId,
-    ref: 'Aluno'
-  }],
-  atividades: [{
-    type: Schema.Types.ObjectId,
-    ref: 'Atividade'
-  }]
+  senha: {
+    type: String,
+    required: true
+  }
 });
 
 var MonitorSchema = new Schema ({
@@ -114,32 +99,123 @@ var MonitorSchema = new Schema ({
   }
 });
 
-var AtividadeSchema = new Schema ({
-  //  Necessário arrumar esse campo, precisa ser uma lista pré-definida
-  tipoDeAtividade: {
+var MonitoriaSchema = new Schema({
+  nomeDisciplina: {
     type: String,
     required: true
   },
-  descricao: {
+  codigoDisciplina: {
     type: String,
+    required: true
   },
-  prazo: {
+  professor: {
+    type: Schema.Types.ObjectId,
+    ref: 'Professor'
+  },
+  monitorID: {
+    type: Schema.Types.ObjectId,
+    ref: 'Monitor'
+  },
+  monitorNome: {
+    type: String
+  },
+  oferta: {
     type: String,
+    default: "2018-01"
   },
-  foiTerminada: {
-    type: Boolean,
-    default: false  
+  local: {
+    type: String,
+    required: true
+  },
+  googlemaps: {
+    type: String
+  },
+  tiposAtividades: [{
+    type: String
+  }],
+  alunosInscritos: [{
+    type: Schema.Types.ObjectId,
+    ref: 'Aluno'
+  }],
+  planoDeTrabalho: [{
+    type: Schema.Types.ObjectId,
+    ref: 'Atividade'
+  }],
+  atividadesRegistradas: [{
+    type: Schema.Types.ObjectId,
+    ref: 'AtividadeRegistrada'
+  }]
+});
+
+var AtividadeSchema = new Schema ({
+  tipo: {
+    type: String,
+    required: true
+  },
+  titulo: {
+    type: String
+  },
+  observacoes: {
+    type: String
+  },
+  horasTotais: {
+    type: Number,
+    required: true
+  },
+  horasContabilizadas: {
+    type: Number
+  },
+  atividadesRegistradas: [{
+    type: Schema.Types.ObjectId,
+    ref: 'AtividadeRegistrada'
+  }]
+});
+
+var AtividadeRegistradaSchema = new Schema ({
+  tipo: {
+    type: String,
+    required: true
+  },
+  titulo: {
+    type: String
+  },
+  observacoes: {
+    type: String
+  },
+  contagemAtendimento: {
+    type: Number
+  },
+  data: {
+    type: Date,
+    required: true
+  },
+  horaInicio: {
+    type: String,
+    required: true
+  },
+  horaTermino: {
+    type: String,
+    required: true
+  },
+  horasRegistradas: {
+    type: Number
   }
 });
 
+//  CRIA VARIÁVEIS PARA SEREM REFERENCIADAS EM OUTROS MODELOS
 var Aluno = mongoose.model('Alunos', AlunoSchema);
 var Professor = mongoose.model('Professores', ProfessorSchema);
+var PRG = mongoose.model('PRG', prgSchema);
 var Monitor = mongoose.model('Monitores', MonitorSchema);
 var Monitoria = mongoose.model('Monitorias', MonitoriaSchema);
 var Atividade = mongoose.model('Atividades', AtividadeSchema);
+var AtividadeRegistrada = mongoose.model('AtividadesRegistradas', AtividadeRegistradaSchema);
 
+//  EXPORTA OS MODELOS PARA SEREM USADOS EM OUTROS ARQUIVOS
 module.exports = mongoose.model('Alunos', AlunoSchema);
 module.exports = mongoose.model('Professores', ProfessorSchema);
+module.exports = mongoose.model('PRG', prgSchema);
 module.exports = mongoose.model('Monitores', MonitorSchema);
 module.exports = mongoose.model('Monitorias', MonitoriaSchema);
 module.exports = mongoose.model('Atividades', AtividadeSchema);
+module.exports = mongoose.model('AtividadesRegistradas', AtividadeRegistradaSchema);

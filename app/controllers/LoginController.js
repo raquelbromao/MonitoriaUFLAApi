@@ -4,6 +4,8 @@ var mongoose = require("mongoose");
 var Aluno = mongoose.model("Alunos");
 var Professor = mongoose.model("Professores");
 var Monitor = mongoose.model("Monitores");
+var PRG = mongoose.model("PRG");
+
 
 /*
   Autentica login e verifica tipo de usuário
@@ -50,8 +52,21 @@ exports.autenticarLogin = function(req, res) {
     //   NECESSÁRIO AINDA CRIAR USUÁRIO TIPO PRG NO BANCO DE DADOS
   } else if (tipo_usuario === "prg") {
     console.log("[Usuário] PRG identificado. Analisando Permissão...");
-    res.redirect("/login");
-
+    PRG.findOne({ login: login_acesso }, function(err, membroPRG) {
+      if (err) {
+        res.redirect("/login");
+      } else if (membroPRG === null) {
+        res.redirect("/login");
+      } else {
+        if (membroPRG.senha === senha_acesso) {
+          //res.redirect("/indexPRG/" + membroPRG._id);
+          console.log('ACESSO TIPO PRG LIBERADO');
+          res.redirect("/login");
+        } else {
+          res.redirect("/login");
+        }
+      }
+    });
   } else if (tipo_usuario === "monitor") {
     console.log("[Usuário] Monitor identificado. Analisando Permissão...");
     Monitor.findOne({ login: login_acesso }, function(err, monitor) {

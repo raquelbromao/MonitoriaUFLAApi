@@ -1,39 +1,44 @@
 <!-- views/pages/about.ejs -->
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <title>UFLA Monitoria API</title>
   <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
   <style>
     table {
-        font-family: arial, sans-serif;
-        border-collapse: collapse;
-        width: 100%;
-        text-align: center;
+      font-family: arial, sans-serif;
+      border-collapse: collapse;
+      width: 100%;
+      text-align: center;
     }
 
-    td, th {
-        border: 1px solid #dddddd;
-        text-align: left;
-        padding: 8px;
+    td,
+    th {
+      border: 1px solid #dddddd;
+      text-align: left;
+      padding: 8px;
     }
 
     tr:nth-child(even) {
-        background-color: #dddddd;
+      background-color: #dddddd;
     }
   </style>
 </head>
+
 <body>
   <header>
     <% include partials/navebar %>
   </header>
 
-   <main>
-     <div class="container listagem">
+  <main>
+    <div class="container listagem">
 
-       <div class="jumbotron dadosPrincipais">
-        <p>Bem-vinda(o), <%= monitor.nome %></p>
+      <div class="jumbotron dadosPrincipais">
+        <p>Bem-vinda(o),
+          <%= monitor.nome %>
+        </p>
         <table>
           <thead>
             <tr>
@@ -43,10 +48,18 @@
               <th>Editar Dados</th>
             </tr>
             <tr>
-              <th><%= monitor.nome %></th>
-              <th><%= monitor.matricula %></th>
-              <th><%= monitor.login %></th>
-              <th><a class="btn btn-warning" href="/monitores/editar/<%= monitor._id %>">Editar</a></th>
+              <th>
+                <%= monitor.nome %>
+              </th>
+              <th>
+                <%= monitor.matricula %>
+              </th>
+              <th>
+                <%= monitor.login %>
+              </th>
+              <th>
+                <a class="btn btn-warning btn-block" href="/monitores/editar/<%= monitor._id %>">Editar</a>
+              </th>
             </tr>
           </thead>
           <tbody>
@@ -54,51 +67,60 @@
         </table>
       </div>
 
-     <div class="jumbotron listaAtividades">
-       <p>Atividades</p>
-       <table>
-         <thead>
-            <tr>
-              <th>TIPO</th>
-              <th>DESCRIÇÃO</th>
-              <th>PRAZO</th>
-              <th>FINALIZAR</th>
-            </tr>
-         </thead>
-         <tbody>
-           <% atividades.forEach(function(atividade) { %>
-           <tr>
-             <th><%= atividade.tipoDeAtividade %></th>
-             <th><%= atividade.descricao       %></th>
-             <th><%= atividade.prazo           %></th>
-             <% if (atividade.foiTerminada == false) { %>
-             <th><a class="btn btn-success btn-block" href="/monitores/finalizarAtividade/<%= monitor._id %>/<%= atividade._id %>">Finalizar Atividade</a></th>
-             <% } else { %>
-              <th><a class="btn btn-warning btn-block" href="/monitores/finalizarAtividade/<%= monitor._id %>/<%= atividade._id %>">Refazer Atividade</a></th>
-             <% } %> 
-           </tr>
-           <% }) %>
-         </tbody>
-       </table>
-     </div>
+      <div class="jumbotron planoDeTrabalho">
+        <p>Plano de Trabalho</p>
+      </div>
 
-     <div class="jumbotron pesquisaMonitorias">
+      <div class="jumbotron listaAtividades">
+        <p>Registro de Atividades</p>
+        <% if (flag == false) { %>
+          <a class="btn btn-primary btn-block" href="/planoMonitoria/registrarAtividade/<%= monitor._id %>/<%= monitor.materiaMonitorada %>">Iniciar Atividades</a>
+          <% } else {%>
+            <table>
+              <thead>
+                <tr>
+                  <th>TÍTULO</th>
+                  <th>DATA</th>
+                  <th>HORA DE INÍCIO</th>
+                  <th>HORA DE TÉRMINO</th>
+                  <th>DELETAR</th>
+                </tr>
+              </thead>
+              <tbody>
+                <% atividadesR.forEach(function(atividadeR) { %>
+                  <tr>
+                    <th><%= atividadeR.titulo %></th>
+                    <th><%= atividadeR.data %></th>
+                    <th><%= atividadeR.horaInicio %></th>
+                    <th><%= atividadeR.horaTermino %></th>
+                    <th><a class="btn btn-raised btn-danger btn-block" onclick="return confirm('Tem certeza que deseja excluir a monitoria? Esta ação não poderá ser desfeita!');" href="/planoMonitoria/excluirAtividadeRegistrada/<%= monitor._id %>/<%= monitor.materiaMonitorada %>/<%= atividadeR._id %>">Deletar</a></th>
+                  </tr>
+                  <% }) %>
+              </tbody>
+            </table>
+            <br>
+            <a class="btn btn-primary btn-block" href="/planoMonitoria/registrarAtividade/<%= monitor._id %>/<%= monitor.materiaMonitorada %>">Registrar Atividade</a>
+            <% } %>
+      </div>
+
+      <!--<div class="jumbotron pesquisaMonitorias">
       <p>Procurar Monitoria</p>
       <form action="/monitorias/pesquisar/<%= monitor._id %>" method="get" class="form-inline">
         <label class="sr-only" for="nomeMonitoria">Nome da Monitoria</label>
         <input type="text" class="form-control" id="nomeMonitoria" name="nomeMonitoria" placeholder="Cálculo I...">
         <button type="submit" class="btn btn-primary">Pesquisar</button>
       </form>
+    </div>-->
+
+      <div class="jumbotron listaNotificacoes">
+        <p>Notificações</p>
+      </div>
+
     </div>
-
-     <div class="jumbotron listaNotificacoes">
-       <p>Notificações</p>
-     </div>
-
-     </div>
-   </main>
+  </main>
 
   <footer>
   </footer>
 </body>
+
 </html>

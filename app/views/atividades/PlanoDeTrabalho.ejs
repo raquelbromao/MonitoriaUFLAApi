@@ -1,0 +1,83 @@
+<!-- views/pages/about.ejs -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>UFLA Monitoria API</title>
+  <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+  <style>
+    table {
+        font-family: arial, sans-serif;
+        border-collapse: collapse;
+        width: 100%;
+        text-align: center;
+    }
+
+    td, th {
+        border: 1px solid #dddddd;
+        text-align: left;
+        padding: 8px;
+    }
+
+    tr:nth-child(even) {
+        background-color: #dddddd;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <% include partials/navebar %>
+  </header>
+
+   <main>
+     <div class="container listagem">
+
+       <div class="jumbotron">
+        <p>PLANO DE TRABALHO: <%= monitoria.nomeDisciplina %></p>
+        <br>
+        <% if (flag == false) { %>
+          <a class="btn btn-primary btn-block" href="/planoMonitoria/cadastrarAtividade/<%= professor %>/<%= monitoria._id %>">Iniciar Plano de Trabalho</a>
+        <% } else {%>  
+        <table>
+          <thead>
+            <tr>
+              <th>TITULO</th>
+              <th>DESCRIÇÃO</th>
+              <th>HORAS PLANEJADAS</th>
+              <th>HORAS CUMPRIDAS</th>
+              <th>PORCENTAGEM</th>
+              <th>EDITAR</th>
+              <th>EXCLUIR</th>
+            </tr>
+           <% atividades.forEach(function(atividade) { %> 
+            <tr>
+              <th><%= atividade.titulo %></th>
+              <th><%= atividade.observacoes %></th>  
+              <th><%= atividade.horasTotais %></th>  
+              <th></th>  
+              <th></th>  
+              <th><a class="btn btn-raised btn-warning btn-block" href="/planoMonitoria/editarAtividade/<%= professor %>/<%= monitoria._id %>/<%= atividade._id %>">Editar</a></th>
+              <th><a class="btn btn-raised btn-danger btn-block" href="/planoMonitoria/excluirAtividade/<%= professor %>/<%= monitoria._id %>/<%= atividade._id %>">Excluir</a></th>
+            </tr>
+            <% }) %>
+          </thead>
+          <tbody>
+          </tbody>
+        </table>
+        <% } %>  
+        <% if (flag == true) { %>
+        <br>
+        <p>
+            <a class="btn btn-primary btn-block" href="/planoMonitoria/cadastrarAtividade/<%= professor %>/<%= monitoria._id %>">Cadastrar nova atividade</a>
+        </p>  
+        <% } %>
+      </div>
+
+     </div>
+   </main>
+
+  <footer>
+  </footer>
+</body>
+</html>

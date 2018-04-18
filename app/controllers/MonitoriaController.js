@@ -25,12 +25,10 @@ exports.listarMonitorias = function(req, res) {
 */
 exports.criarMonitoria = function(req, res) {
   var novaMonitoria = new Monitoria();
-
   novaMonitoria.nomeDisciplina = req.body.nomeDisciplina;
   novaMonitoria.codigoDisciplina = req.body.codigoDisciplina;
   novaMonitoria.oferta = req.body.oferta;
   novaMonitoria.local = req.body.local;
-  novaMonitoria.horarios = req.body.horarios;
   novaMonitoria.googlemaps = req.body.googlemaps;
 
   Monitor.findOne({matricula: req.body.monitor}, function (err, monitor) {
@@ -44,7 +42,8 @@ exports.criarMonitoria = function(req, res) {
         } else {
 
           novaMonitoria.professor = professor._id;
-          novaMonitoria.monitor = monitor._id;
+          novaMonitoria.monitorID = monitor._id;
+          novaMonitoria.monitorNome = monitor.nome;
 
           //  Salva Monitoria no BD
           novaMonitoria.save(function(err, monitoria) {
@@ -53,10 +52,8 @@ exports.criarMonitoria = function(req, res) {
             } else {
 
               console.log("Monitoria cadastrada com sucesso\n");
-              professor.monitorias.push(monitoria._id);
-              //console.log(professor);
-              monitor.materiaMonitorada = monitoria._id;
-              //console.log(monitoria);
+              //professor.monitorias.push(monitoria._id);
+              //monitor.materiaMonitorada = monitoria._id;
 
               Monitoria.findById(monitoria._id, function(err, monitoria2) {
                 if(err) {
@@ -73,16 +70,14 @@ exports.criarMonitoria = function(req, res) {
                     }
                   });
 
-                  //  Cadastra monitoria no aluno
-                  Monitor.findByIdAndUpdate(monitoria2.monitor, {materiaMonitorada: monitoria2._id}, function(err, monitor2) {
+                  //  Cadastra monitoria no monitor
+                  Monitor.findByIdAndUpdate(monitoria2.monitorID, {materiaMonitorada: monitoria2._id}, function(err, monitor2) {
                     if (err) {
                       res.json(err);
                     } else {
                       console.log(monitor2);
                     }
                   });
-
-                  
 
                   res.redirect("/adm/monitorias");
                 }
@@ -91,54 +86,10 @@ exports.criarMonitoria = function(req, res) {
             }
           });
 
-          /*novaMonitoria.find({})
-                .populate("professor").populate("monitor").exec(function (err, resultados) {
-                  console.log(resultados);
-                  
-          });*/
         }
       });
     }
   }); 
-
- /* Monitoria.findOne({professor: req.body.professor, monitor: req.body.monitor}, function(err, monitoria) {
-    if (err) {
-      message4 = 'erro4';
-      res.json(err,message4);
-    } else {
-      //console.log(monitoria);
-
-      Monitor.findOneAndUpdate({matricula: req.body.monitor}, {materiaMonitorada: monitoria._id}, function (err, monitor) {
-        if (err) {
-          message5 = 'erro5';
-          res.json(err,message5);
-        } else {
-          //materiaMonitorada = monitoria._id;
-          console.log(monitor);
-        }
-      });      
-
-      //console.log(monitoria);
-
-      Professor.findOneAndUpdate(
-        {codigo: req.body.professor}, 
-        {$push: {monitorias: monitoria._id}},
-        {safe: true, upsert: true},
-        function(err, professor) {
-          if (err) {
-            message6 = 'erro6';
-            res.json(err,message6);
-          } else {
-            //professor.monitorias.push(monitoria._id);
-            console.log(professor);
-            //res.redirect("/adm/monitorias");
-        }
-      });
-
-      console.log(monitoria);
-      res.redirect("/adm/monitorias");
-    }
-  });*/
 };
 
 /*
@@ -149,6 +100,10 @@ exports.deletarMonitoria = function(req, res) {
     if (err) {
       res.json(err);
     } else {
+
+      //  DELETAR MONITORIA DE PROFESSOR E MONITOR
+
+      
       console.log("Monitoria deletado com sucesso");
       res.redirect("/adm/monitorias");
     }
@@ -173,7 +128,7 @@ exports.mostrarMonitoriaEdicao = function(req, res) {
   Edita monitoria e salva mudanças no BD
 */
 exports.editarMonitoria = function(req, res) {
-  //  Salva todos as info da requisição em cada componente de Aluno
+  //  Salva todos as info da requisição em cada componente da Monitoria
   var nomeDisciplina = req.body.nomeDisciplina;
   var codigoDisciplina = req.body.codigoDisciplina;
   var local = req.body.local;
@@ -287,47 +242,5 @@ exports.pesquisarMonitoria = function(req, res) {
     } else {
       res.render("resultado", { monitorias: monitorias, aluno: aluno });
     }
-  });
-};
-
-exports.listar_todos_objetos = function(req, res) {
-  Monitoria.find({}, function(err, monitoria) {
-    if (err) res.send(err);
-    res.json(monitoria);
-  });
-};
-
-exports.criar_objeto = function(req, res) {
-  var nova_mon = new Monitoria(req.body);
-  nova_mon.save(function(err, monitoria) {
-    if (err) res.send(err);
-    res.json(monitoria);
-  });
-};
-
-exports.ler_objeto = function(req, res) {
-  var aluno = req.params.alunoId;
-  Monitoria.findById(req.params.monitoriaId, function(err, monitoria) {
-    if (err) res.send(err);
-    res.json(monitoria);
-  });
-};
-
-exports.atualizar_objeto = function(req, res) {
-  Monitoria.findOneAndUpdate(
-    { _id: req.params.monitoriaId },
-    req.body,
-    { new: true },
-    function(err, monitoria) {
-      if (err) res.send(err);
-      res.json(monitoria);
-    }
-  );
-};
-
-exports.deletar_objeto = function(req, res) {
-  Monitoria.remove({ _id: req.params.monitoriaId }, function(err, monitoria) {
-    if (err) res.send(err);
-    res.json({ message: "Monitoria foi deleteado com sucesso" });
   });
 };
