@@ -10,6 +10,7 @@ var Monitor = mongoose.model("Monitores");
 exports.listarAtividades = function(req,res) {
     //  Array criado para adicionar as Ids das atividades vinculadas a monitoria
     var atividadesIds = [];
+    var atividadesRegIds = [];
 
     Monitoria.findById(req.params.monitoriaId, function(err, monitoria) {
         if (err) {
@@ -22,14 +23,31 @@ exports.listarAtividades = function(req,res) {
                     atividadesIds.push(monitoria.planoDeTrabalho[i]);
                 }
 
-                //  Encontra cada tarefa registrada no Plano de Trabalho
-                Atividade.find({_id:{ $in: atividadesIds }}, function(err, atividades) {
-                    if (err) {
-                        res.json(err);
+                //  Verifica se a monitoria já possui atividades registradas pelo monitor ou não
+                if (monitoria.atividadesRegistradas.length > 0) {
+
+                    //  Encontra cada tarefa registrada no Plano de Trabalho
+                    Atividade.find({_id:{ $in: atividadesIds }}, function(err, atividades) {
+                        if (err) {
+                            res.json(err);
+                        } else {
+
+                            res.render('atividades/PlanoDeTrabalho', {"flag": true, "possuiAtReg": true, "atividades": atividades, "monitoria": monitoria, "professor": req.params.professorId });
+                        }
+                    });
+
                     } else {
-                        res.render('atividades/PlanoDeTrabalho', {"flag": true, "atividades": atividades, "monitoria": monitoria, "professor": req.params.professorId });
-                    }
-                });
+
+                    //  Encontra cada tarefa registrada no Plano de Trabalho
+                    Atividade.find({_id:{ $in: atividadesIds }}, function(err, atividades) {
+                        if (err) {
+                            res.json(err);
+                        } else {
+                            res.render('atividades/PlanoDeTrabalho', {"flag": true, "possuiAtReg": false, "atividades": atividades, "monitoria": monitoria, "professor": req.params.professorId });
+                        }
+                    });
+
+                }
 
             } else {
                 res.render('atividades/PlanoDeTrabalho', {"flag": false, "monitoria": monitoria, "professor": req.params.professorId });
@@ -77,8 +95,8 @@ exports.cadastrarAtividade = function(req,res) {
         if (err) {
         res.json(err);
         } else {
-        console.log('Atividade cadastrado com sucesso');
-        console.log('Nova atividade ID: ' + atividade._id);
+        // console.log('Atividade cadastrado com sucesso');
+        // console.log('Nova atividade ID: ' + atividade._id);
 
         Monitoria.findByIdAndUpdate(req.params.monitoriaId, {$push: {planoDeTrabalho: atividade._id, tiposAtividades: atividade.tipo} }, function(err, monitoria) {
             if (err) {
@@ -135,39 +153,6 @@ exports.editarAtividade = function(req,res) {
 
 };
 
-/*var verificaExistenciaDoPlanoDeCurso = function(monitoriaId, res) {
-    var flag;
-    Monitoria.findById(monitoriaId, function(err, monitoria) {
-        if (err) {
-            res.json(err);
-        } else {
-            //  Verifica se o plano de trabalho foi registrado
-            if (monitoria.planoDeTrabalho.length > 0) {
-                flag = true;
-                return flag;
-            } else {
-                flag = false;
-                return flag;
-            } 
-        }
-    });
-}*/
-
-/*var buscaTiposDeAtividadeDoPlano = function(monitoriaId) {
-    Monitoria.findById(req.params.monitoriaId, function(err, monitoria) {
-        for (var i = 0; i < monitoria.planoDeTrabalho.length; i++) {
-            atividadesIds.push(monitoria.planoDeTrabalho[i]);
-        }
-
-        //  Busca cada atividade registrada no plano de trabalho e adiciona o seu tipo a tiposAtividade[]
-        for (var j = 0; j <= atividadesIds.length; j++) {
-            Atividade.findById(atividadeIds[i], function(err, atividade) {
-                tiposAtividade.push(atividade.tipo);
-            });
-        }
-    });
-};*/
-
 exports.mostrarPaginaAtivRegistro = function(req, res) {
     var atividadesIds = [];
 
@@ -203,6 +188,16 @@ exports.mostrarPaginaAtivRegistro = function(req, res) {
 exports.registrarAtividade = function(req,res) {
     var novaAtivRegistrada = new AtividadeRegistrada();
 
+    var teste = new Date();
+    var aux_data = teste.toLocaleDateString().split("-");
+    var aux_tempo = teste.toLocaleTimeString().split(":");
+
+    var aux = "";
+    var data = aux.concat(aux_data[2],"/",aux_data[1],"/",aux_data[0]);
+
+    var aux1 = "";
+    var tempo = aux1.concat(aux_tempo[0],":",aux_tempo[1]);
+
     Atividade.findById(req.body.atividadeEscolhida, function(err, atividade) {
         if (err) {
             res.json(err);
@@ -213,13 +208,24 @@ exports.registrarAtividade = function(req,res) {
             novaAtivRegistrada.contagemAtendimento = req.body.contagemAtendimento;
             novaAtivRegistrada.horaInicio = req.body.horaInicio;
             novaAtivRegistrada.horaTermino = req.body.horaTermino;
-            novaAtivRegistrada.data = new Date();
+            novaAtivRegistrada.data.hora = tempo;
+            novaAtivRegistrada.data.dia = data;
+
+            //  Tratamento de horas
+            let aux_tempo1 = req.body.horaInicio.split(":");
+            let aux_tempo2 = req.body.horaTermino.split(":");
+
+            var horaInicial = new Date(0,0,0,aux_tempo1[0],aux_tempo1[1]).getTime();
+            var horaFinal = new Date(0,0,0,aux_tempo2[0],aux_tempo2[1]).getTime();
+
+            novaAtivRegistrada.horasRegistradas = (horaFinal - horaInicial) / 3600000;
 
             novaAtivRegistrada.save(function(err, atividadeR) {
                 if (err) {
                     res.json(err);
                 } else {
-       
+                    console.log(atividadeR);
+
                     Monitoria.findByIdAndUpdate(req.params.monitoriaId, {$push: {atividadesRegistradas: atividadeR._id} } ,function(err, monitoria) {
                         if (err) {
                             res.json(err);
@@ -253,6 +259,49 @@ exports.excluirAtivReg = function(req,res) {
     }
     });
 
+};
+
+exports.testarString = function(req,res) {
+    /*var teste = new Date();
+    var aux_data = teste.toLocaleDateString().split("-");
+    var aux_tempo = teste.toLocaleTimeString().split(":");
+
+    var aux = "";
+    var data = aux.concat(aux_data[2],"/",aux_data[1],"/",aux_data[0]);
+
+    var aux1 = "";
+    var tempo = aux1.concat(aux_tempo[0],":",aux_tempo[1]);
+
+    var novaAtivRegistrada = new AtividadeRegistrada();
+
+    novaAtivRegistrada.tipo = "ATV01";
+    novaAtivRegistrada.titulo = "TESTE";
+    novaAtivRegistrada.observacoes = "";
+    novaAtivRegistrada.contagemAtendimento = 5;
+    novaAtivRegistrada.horaInicio = "16:00";
+    novaAtivRegistrada.horaTermino = "17:00";
+    novaAtivRegistrada.data.hora = tempo;
+    novaAtivRegistrada.data.dia = data;
+
+    console.log(novaAtivRegistrada.data);*/
+
+    //var teste = new Date();
+    //var aux_tempo = teste.toLocaleTimeString();
+
+    let tempo1 = "00:00";
+    let tempo2 = "2:00";
+
+    let aux_tempo1 = tempo1.split(":");
+    let aux_tempo2 = tempo2.split(":");
+
+    var data1 = new Date(null,null,null,aux_tempo1[0],aux_tempo1[1]);
+    var data2 = new Date(0,0,0,aux_tempo2[0],aux_tempo2[1]);
+
+    //var teste1 = new Date(0,0,0,aux_tempo1[0],aux_tempo1[1]).getTime();
+    //var teste2 = new Date(0,0,0,aux_tempo2[0],aux_tempo2[1]).getTime();
+
+    var totalHoras = (data2.getTime() - data1.getTime()) / 3600000;
+    console.log(data1+"\n"+data2+"\n"+totalHoras);
 };
 
 

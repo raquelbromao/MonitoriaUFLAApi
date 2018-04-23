@@ -68,7 +68,28 @@
       </div>
 
       <div class="jumbotron planoDeTrabalho">
-        <p>Plano de Trabalho</p>
+        <p>Monitoria</p>
+        <table>
+          <thead>
+            <tr>
+              <th>DISCIPLINA</th>
+              <th>CÓDIGO</th>
+              <th>PROFESSOR</th>
+              <th>SEMESTRE</th>
+              <th>DETALHES</th>
+            </tr>
+          </thead>
+          <tbody>
+              <tr>
+                <th><%= monitoria.nomeDisciplina %></th>
+                <th><%= monitoria.codigoDisciplina %></th>
+                <th><%= monitoria.professorNome %></th>
+                <th><%= monitoria.oferta %></th>
+                <th><a class="btn btn-info btn-block" href="#"><span class="glyphicon glyphicon-plus"></span></a></th>
+              </tr>
+          </tbody>
+        </table>
+
       </div>
 
       <div class="jumbotron listaAtividades">
@@ -83,6 +104,7 @@
                   <th>DATA</th>
                   <th>HORA DE INÍCIO</th>
                   <th>HORA DE TÉRMINO</th>
+                  <th>HORA TOTAIS</th>
                   <th>DELETAR</th>
                 </tr>
               </thead>
@@ -90,9 +112,10 @@
                 <% atividadesR.forEach(function(atividadeR) { %>
                   <tr>
                     <th><%= atividadeR.titulo %></th>
-                    <th><%= atividadeR.data %></th>
+                    <th><%= atividadeR.data.dia %></th>
                     <th><%= atividadeR.horaInicio %></th>
                     <th><%= atividadeR.horaTermino %></th>
+                    <th><%= atividadeR.horasRegistradas %></th>
                     <th><a class="btn btn-raised btn-danger btn-block" onclick="return confirm('Tem certeza que deseja excluir a monitoria? Esta ação não poderá ser desfeita!');" href="/planoMonitoria/excluirAtividadeRegistrada/<%= monitor._id %>/<%= monitor.materiaMonitorada %>/<%= atividadeR._id %>">Deletar</a></th>
                   </tr>
                   <% }) %>

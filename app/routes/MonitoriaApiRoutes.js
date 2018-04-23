@@ -20,6 +20,11 @@ module.exports = function(app) {
   var metodosLog  = require("../controllers/LoginController");
 
   //  LOGIN
+  app
+    .route("/")
+    .get(function(req, res) {
+      res.json("OI");
+    })
 
   //  Realiza e autentica Login
   app
@@ -162,6 +167,10 @@ module.exports = function(app) {
   app
     .route("/planoMonitoria/excluirAtividadeRegistrada/:monitorId/:monitoriaId/:atividadeRegistradaId")
     .get(metodosPlano.excluirAtivReg);
+
+  app
+    .route("/testes")
+    .get(metodosPlano.testarString);  
  
   //  ERROS
   

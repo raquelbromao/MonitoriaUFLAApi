@@ -33,8 +33,8 @@
    <main>
      <div class="container listagem">
 
-       <div class="jumbotron">
-        <p>PLANO DE TRABALHO: <%= monitoria.nomeDisciplina %></p>
+      <div class="jumbotron planoDeTrabalho">
+        <p>Plano de Trabalho</p>
         <br>
         <% if (flag == false) { %>
           <a class="btn btn-primary btn-block" href="/planoMonitoria/cadastrarAtividade/<%= professor %>/<%= monitoria._id %>">Iniciar Plano de Trabalho</a>
@@ -44,7 +44,7 @@
             <tr>
               <th>TITULO</th>
               <th>DESCRIÇÃO</th>
-              <th>HORAS PLANEJADAS</th>
+              <th>HORAS TOTAIS</th>
               <th>HORAS CUMPRIDAS</th>
               <th>PORCENTAGEM</th>
               <th>EDITAR</th>
@@ -65,13 +65,47 @@
           <tbody>
           </tbody>
         </table>
-        <% } %>  
-        <% if (flag == true) { %>
         <br>
         <p>
             <a class="btn btn-primary btn-block" href="/planoMonitoria/cadastrarAtividade/<%= professor %>/<%= monitoria._id %>">Cadastrar nova atividade</a>
         </p>  
-        <% } %>
+        <% } %>  
+      </div>
+
+
+      <div class="jumbotron atividadesRegistradas">
+        <p>Atividades Registradas</p>
+        <br>
+        <% if (possuiAtReg == false) { %>
+          Nenhuma atividade registrada ainda!
+        <% } else {%>  
+        <table>
+          <thead>
+            <tr>
+              <th>TITULO</th>
+              <th>DESCRIÇÃO</th>
+              <th>OBSERVAÇÕES</th>
+              <th>DATA</th>
+              <th>HORA INICIAL</th>
+              <th>HORA TÉRMINO</th>
+              <th>EXCLUIR</th>
+            </tr>
+           <!-- < atividadesR.forEach(function(atividadeR) { > 
+            <tr>
+              <th> atividadeR.titulo </th>
+              <th> atividadeR.descricao </th>  
+              <th> atividadeR.observacoes </th>  
+              <th></th>  
+              <th></th>  
+              <th></th>
+              <th><a class="btn btn-raised btn-danger btn-block" href="#">Excluir</a></th>
+            </tr> 
+            < }) > -->
+          </thead>
+          <tbody>
+          </tbody>
+        </table>
+        <% } %>  
       </div>
 
      </div>

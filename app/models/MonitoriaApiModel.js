@@ -119,6 +119,9 @@ var MonitoriaSchema = new Schema({
   monitorNome: {
     type: String
   },
+  professorNome: { 
+    type: String 
+  },
   oferta: {
     type: String,
     default: "2018-01"
@@ -186,8 +189,8 @@ var AtividadeRegistradaSchema = new Schema ({
     type: Number
   },
   data: {
-    type: Date,
-    required: true
+    dia: String,
+    hora: String
   },
   horaInicio: {
     type: String,
