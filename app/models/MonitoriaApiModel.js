@@ -170,7 +170,8 @@ var AtividadeSchema = new Schema ({
     required: true
   },
   horasContabilizadas: {
-    type: Number
+    type: Number,
+    default: 0
   },
   porcentagem: {
     type: Number,

@@ -23,7 +23,7 @@ module.exports = function(app) {
   app
     .route("/")
     .get(function(req, res) {
-      res.json("OI");
+      res.render("index/index");
     })
 
   //  Realiza e autentica Login
