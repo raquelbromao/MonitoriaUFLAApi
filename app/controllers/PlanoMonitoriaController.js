@@ -26,13 +26,26 @@ exports.listarAtividades = function(req,res) {
                 //  Verifica se a monitoria já possui atividades registradas pelo monitor ou não
                 if (monitoria.atividadesRegistradas.length > 0) {
 
+                    for (var i = 0; i < monitoria.atividadesRegistradas.length; i++) {
+                        atividadesRegIds.push(monitoria.atividadesRegistradas[i]);
+                    }
+
+                    //console.log(atividadesRegIds);
+
                     //  Encontra cada tarefa registrada no Plano de Trabalho
                     Atividade.find({_id:{ $in: atividadesIds }}, function(err, atividades) {
                         if (err) {
                             res.json(err);
                         } else {
+                            // Encontra cada tarefa registrada pelo monitor
+                            AtividadeRegistrada.find({_id:{ $in: atividadesRegIds }},function(err,atividadesR) {
+                                if(err) {
+                                    res.json(err);
+                                } else {
+                                    res.render('atividades/PlanoDeTrabalho', {"flag": true, "possuiAtReg": true, "atividades": atividades, "atividadesR": atividadesR ,"monitoria": monitoria, "professor": req.params.professorId });
+                                }
+                            });
 
-                            res.render('atividades/PlanoDeTrabalho', {"flag": true, "possuiAtReg": true, "atividades": atividades, "monitoria": monitoria, "professor": req.params.professorId });
                         }
                     });
 
@@ -220,17 +233,27 @@ exports.registrarAtividade = function(req,res) {
 
             novaAtivRegistrada.horasRegistradas = (horaFinal - horaInicial) / 3600000;
 
+            //  Cálculo de porcentagem
+            var porc = (novaAtivRegistrada.horasRegistradas * 100) / atividade.horasTotais;
+
             novaAtivRegistrada.save(function(err, atividadeR) {
                 if (err) {
                     res.json(err);
                 } else {
-                    console.log(atividadeR);
+                    //console.log(atividadeR);
 
                     Monitoria.findByIdAndUpdate(req.params.monitoriaId, {$push: {atividadesRegistradas: atividadeR._id} } ,function(err, monitoria) {
                         if (err) {
                             res.json(err);
                         } else {
-                            res.redirect('/indexMonitores/'+req.params.monitorId);
+                            Atividade.findByIdAndUpdate(req.body.atividadeEscolhida, {$push: {atividadesRegistradas: atividadeR._id}, $inc: {horasContabilizadas: atividadeR.horasRegistradas}, $inc: {porcentagem: porc} }, function(err, atividade) {
+                                if (err) {
+                                    res.json(err);
+                                } else {
+                                    res.redirect('/indexMonitores/'+req.params.monitorId);
+                                }
+                            });    
+                            
                         }
                     });
 
@@ -241,22 +264,63 @@ exports.registrarAtividade = function(req,res) {
     });
 };
 
-exports.excluirAtivReg = function(req,res) {
+exports.excluirAtivRegM = function(req,res) {
     //  Remove atividade  de Atividades Registradas da monitoria
    Monitoria.findByIdAndUpdate(req.params.monitoriaId, { $pull: {atividadesRegistradas: req.params.atividadeRegistradaId} }, function(err,monitoria) {
     if (err) {
         res.json(err);
-    } else {
+    } else {        
         //  Remove a atividade registrada da sua coleção (documento)
         AtividadeRegistrada.findByIdAndRemove(req.params.atividadeRegistradaId, function(err, atividadeR) {
             if (err) {
                 res.json(err);
             } else {
-                console.log('Atividade excluída com sucesso!');
-                res.redirect('/indexMonitores/'+req.params.monitorId);
+
+                //  Cálculo de porcentagem
+                var porc = (atividadeR.horasRegistradas * 100) / atividade.horasTotais;
+
+                //  Remove a atividade registrada da sua atividade do plano de trabalho ao qual pertence
+                Atividade.findOneAndUpdate({atividadesRegistradas: req.params.atividadeRegistradaId},{ $pull: {atividadesRegistradas: req.params.atividadeRegistradaId}, $inc: {horasContabilizadas: -(atividadeR.horasRegistradas) }, $inc: {porcentagem: -((atividadeR.horasRegistradas * 100) / atividade.horasTotais)} },function(err,atividade){
+                    if (err) {
+                        res.json(err);
+                    } else {
+                        res.redirect('/indexMonitores/'+req.params.monitorId);
+                    }
+                });
             }
         });
     }
+    });
+
+};
+
+exports.excluirAtivRegP = function(req,res) {
+    //  Remove atividade  de Atividades Registradas da monitoria
+    Monitoria.findById(req.params.monitoriaId, function(err,monitoria) {
+        if (err) {
+            res.json(err);
+        } else {        
+            //  Remove a atividade registrada da sua coleção (documento)
+            AtividadeRegistrada.findById(req.params.atividadeRegistradaId, function(err, atividadeR) {
+                if (err) {
+                    res.json(err);
+                } else {
+                    //  Remove a atividade registrada da sua atividade do plano de trabalho ao qual pertence
+                    Atividade.findOne({atividadesRegistradas: req.params.atividadeRegistradaId}, function(err,atividade){
+                        if (err) {
+                            res.json(err);
+                        } else {
+                            console.log(monitoria);
+                            console.log(atividadeR);
+                            console.log(atividade);
+                            res.redirect('/planoMonitoria/index/'+req.params.professorId+'/'+req.params.monitoriaId);
+                        }
+                    });
+
+                }
+            });
+            
+        }
     });
 
 };

@@ -147,7 +147,11 @@ var MonitoriaSchema = new Schema({
   atividadesRegistradas: [{
     type: Schema.Types.ObjectId,
     ref: 'AtividadeRegistrada'
-  }]
+  }],
+  horarioAtendimento: {
+    type: Schema.Types.ObjectId,
+    ref: 'HorarioMonitoria'
+  }
 });
 
 var AtividadeSchema = new Schema ({
@@ -167,6 +171,10 @@ var AtividadeSchema = new Schema ({
   },
   horasContabilizadas: {
     type: Number
+  },
+  porcentagem: {
+    type: Number,
+    default: 0
   },
   atividadesRegistradas: [{
     type: Schema.Types.ObjectId,
@@ -205,6 +213,32 @@ var AtividadeRegistradaSchema = new Schema ({
   }
 });
 
+var HorarioMonitoriaSchema = new Schema ({
+  monitoria: {
+    type: Schema.Types.ObjectId,
+    ref: 'Monitor'
+  },
+  monitor: {
+    type: Schema.Types.ObjectId,
+    ref: 'Monitor'
+  },
+  segunda: [{
+    type: String
+  }],
+  terca: [{
+    type: String
+  }],
+  quarta: [{
+    type: String
+  }],
+  quinta: [{
+    type: String
+  }],
+  sexta: [{
+    type: String
+  }]
+});
+
 //  CRIA VARIÁVEIS PARA SEREM REFERENCIADAS EM OUTROS MODELOS
 var Aluno = mongoose.model('Alunos', AlunoSchema);
 var Professor = mongoose.model('Professores', ProfessorSchema);
@@ -213,6 +247,7 @@ var Monitor = mongoose.model('Monitores', MonitorSchema);
 var Monitoria = mongoose.model('Monitorias', MonitoriaSchema);
 var Atividade = mongoose.model('Atividades', AtividadeSchema);
 var AtividadeRegistrada = mongoose.model('AtividadesRegistradas', AtividadeRegistradaSchema);
+var HorarioMonitoria = mongoose.model('HorariosMonitorias', HorarioMonitoriaSchema);
 
 //  EXPORTA OS MODELOS PARA SEREM USADOS EM OUTROS ARQUIVOS
 module.exports = mongoose.model('Alunos', AlunoSchema);
@@ -222,3 +257,4 @@ module.exports = mongoose.model('Monitores', MonitorSchema);
 module.exports = mongoose.model('Monitorias', MonitoriaSchema);
 module.exports = mongoose.model('Atividades', AtividadeSchema);
 module.exports = mongoose.model('AtividadesRegistradas', AtividadeRegistradaSchema);
+module.exports = mongoose.model('HorariosMonitorias', HorarioMonitoriaSchema);

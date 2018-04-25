@@ -138,6 +138,10 @@ module.exports = function(app) {
   app
     .route("/monitorias/deletar/:monitoriaId")
     .get(metodosMon.deletarMonitoria);
+  
+  app
+    .route("/monitorias/criarHorarioDeAtendimento/:professorId/:monitoriaId")
+    .get(metodosMon.deletarMonitoria);
 
   //  PLANO DE TRABALHO DAS MONITORIAS E ATIVIDADES
 
@@ -166,7 +170,11 @@ module.exports = function(app) {
 
   app
     .route("/planoMonitoria/excluirAtividadeRegistrada/:monitorId/:monitoriaId/:atividadeRegistradaId")
-    .get(metodosPlano.excluirAtivReg);
+    .get(metodosPlano.excluirAtivRegM);
+
+    app
+    .route("/planoMonitoria/excluirAtividadeRegistradaP/:professorId/:monitoriaId/:atividadeRegistradaId")
+    .get(metodosPlano.excluirAtivRegP);  
 
   app
     .route("/testes")

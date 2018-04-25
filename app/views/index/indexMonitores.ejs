@@ -116,7 +116,7 @@
                     <th><%= atividadeR.horaInicio %></th>
                     <th><%= atividadeR.horaTermino %></th>
                     <th><%= atividadeR.horasRegistradas %></th>
-                    <th><a class="btn btn-raised btn-danger btn-block" onclick="return confirm('Tem certeza que deseja excluir a monitoria? Esta ação não poderá ser desfeita!');" href="/planoMonitoria/excluirAtividadeRegistrada/<%= monitor._id %>/<%= monitor.materiaMonitorada %>/<%= atividadeR._id %>">Deletar</a></th>
+                    <th><a class="btn btn-raised btn-danger btn-block" onclick="return confirm('Tem certeza que deseja excluir a atividade? Esta ação não poderá ser desfeita!');" href="/planoMonitoria/excluirAtividadeRegistrada/<%= monitor._id %>/<%= monitor.materiaMonitorada %>/<%= atividadeR._id %>">Deletar</a></th>
                   </tr>
                   <% }) %>
               </tbody>
