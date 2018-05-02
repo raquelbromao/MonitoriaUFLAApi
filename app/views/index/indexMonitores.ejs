@@ -58,7 +58,7 @@
                 <%= monitor.login %>
               </th>
               <th>
-                <a class="btn btn-warning btn-block" href="/monitores/editar/<%= monitor._id %>">Editar</a>
+                <a class="btn btn-warning btn-block" href="/monitores/editar/<%= monitor._id %>"><span class="glyphicon glyphicon-pencil"></span> Editar</a>
               </th>
             </tr>
           </thead>
@@ -85,7 +85,7 @@
                 <th><%= monitoria.codigoDisciplina %></th>
                 <th><%= monitoria.professorNome %></th>
                 <th><%= monitoria.oferta %></th>
-                <th><a class="btn btn-info btn-block" href="#"><span class="glyphicon glyphicon-plus"></span></a></th>
+                <th><a class="btn btn-info btn-block" href="/monitores/infoMonitoria/<%= monitor._id %>/<%= monitoria._id %>"><span class="glyphicon glyphicon-plus"></span></a></th>
               </tr>
           </tbody>
         </table>
@@ -116,7 +116,7 @@
                     <th><%= atividadeR.horaInicio %></th>
                     <th><%= atividadeR.horaTermino %></th>
                     <th><%= atividadeR.horasRegistradas %></th>
-                    <th><a class="btn btn-raised btn-danger btn-block" onclick="return confirm('Tem certeza que deseja excluir a atividade? Esta ação não poderá ser desfeita!');" href="/planoMonitoria/excluirAtividadeRegistrada/<%= monitor._id %>/<%= monitor.materiaMonitorada %>/<%= atividadeR._id %>">Deletar</a></th>
+                    <th><a class="btn btn-raised btn-danger btn-block" onclick="return confirm('Tem certeza que deseja excluir a atividade? Esta ação não poderá ser desfeita!');" href="/planoMonitoria/excluirAtividadeRegistrada/<%= monitor._id %>/<%= monitor.materiaMonitorada %>/<%= atividadeR._id %>"><span class="glyphicon glyphicon-remove"></span> Deletar</a></th>
                   </tr>
                   <% }) %>
               </tbody>

@@ -18,15 +18,16 @@ module.exports = function(app) {
   var metodosPlano = require("../controllers/PlanoMonitoriaController");
   var metodosMon  = require("../controllers/MonitoriaController");
   var metodosLog  = require("../controllers/LoginController");
+  var metodosErr = require ("../controllers/ErroController");
 
-  //  LOGIN
+  //  INDEX DO SISTEMA
   app
     .route("/")
     .get(function(req, res) {
       res.render("index/index");
     })
 
-  //  Realiza e autentica Login
+  //  LOGIN
   app
     .route("/login")
     .get(function(req, res) {
@@ -34,7 +35,7 @@ module.exports = function(app) {
     })
     .post(metodosLog.autenticarLogin);
 
-  //  INDEX
+  //  ADMINISTRADOR
   
   app.route("/adm").get(function(req, res) {
     res.render("index/indexAdm");
@@ -118,6 +119,10 @@ module.exports = function(app) {
   app
     .route("/monitores/deletar/:monitorId")
     .get(metodosMoni.deletarMonitor);
+  
+  app
+    .route("/monitores/infoMonitoria/:monitorId/:monitoriaId")
+    .get(metodosMoni.mostrarDetalhesMonitoria);  
 
   //  MONITORIA
 
@@ -141,9 +146,14 @@ module.exports = function(app) {
   
   app
     .route("/monitorias/criarHorarioDeAtendimento/:professorId/:monitoriaId")
-    .get(metodosMon.deletarMonitoria);
+    .get(metodosMon.mostrarCadastroHorario)
+    .post(metodosMon.cadastrarHorarioMonitor);
 
-  //  PLANO DE TRABALHO DAS MONITORIAS E ATIVIDADES
+    app
+    .route("/monitorias/HorarioDeAtendimento/:professorId/:monitoriaId/:horarioId")
+    .get(metodosMon.mostrarHorarioDeAtendimento);
+
+  //  PLANO DE TRABALHO DAS MONITORIAS E ATIVIDADES REGISTRADAS PELOS MONITORES
 
   app
     .route("/planoMonitoria/index/:professorId/:monitoriaId")
@@ -182,7 +192,7 @@ module.exports = function(app) {
  
   //  ERROS
   
-  /*app
+  app
     .route("/err/:erroId")
-    .get();*/
+    .get(metodosErr.reportarErro);
 };

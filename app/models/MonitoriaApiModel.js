@@ -217,7 +217,7 @@ var AtividadeRegistradaSchema = new Schema ({
 var HorarioMonitoriaSchema = new Schema ({
   monitoria: {
     type: Schema.Types.ObjectId,
-    ref: 'Monitor'
+    ref: 'Monitoria'
   },
   monitor: {
     type: Schema.Types.ObjectId,

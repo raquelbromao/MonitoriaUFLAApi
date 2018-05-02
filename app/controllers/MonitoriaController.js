@@ -4,6 +4,7 @@ var mongoose = require("mongoose");
 var Monitoria = mongoose.model("Monitorias");
 var Professor = mongoose.model("Professores");
 var Monitor = mongoose.model("Monitores");
+var horarioMonitor = mongoose.model("HorariosMonitorias");
 
 var url = require("url");
 
@@ -203,38 +204,136 @@ exports.editarMonitoria = function(req, res) {
   res.redirect("/adm/monitorias");
 };
 
-/*
-  Pesquisa monitoria pelo nome
-*/
+/**
+ * Pesquisa a monitoria desejada e retorna uma página com suas informações e opção de cadastro
+ * @param {*} req 
+ * @param {*} res 
+ */
 exports.pesquisarMonitoria = function(req, res) {
   //  Recebe a query dada e armazena numa variável
   var monitoria = req.query.nomeMonitoria;
-  //  Pega a url dada e separa o pathname que é a url - query
-  //  Imprime a url
-  //console.log(req.url);
-  //  Analisa a url e separa cada coisa pelo seu campo
-  var aux_url = url.parse(req.url, true);
-  //  Separa o pathname da url que é a { url - query }
-  //console.log(aux_url.pathname);
-  //  Esse pathname é passado para uma string para sofrer split em '/' e
-  //  retirar a id do aluno
-  var endereco = aux_url.pathname;
-  var aux = endereco.split("/");
-  //console.log(aux);
-
-  //  Separa a id do aluno e armazena numa variável
-  var aluno;
-  aux.forEach(function(entrada) {
-    if ((entrada === "monitorias") === false && (entrada === "pesquisar") === false) {
-      aluno = entrada.trim();
-    }
-  });
+  console.log("MONITORIA: "+monitoria);
+  console.log("ALUNO: "+req.params.alunoId);
 
   Monitoria.find({ nome: req.query.nomeMonitoria }, function(err, monitorias) {
     if (err) {
       res.json(err);
     } else {
-      res.render("resultado", { monitorias: monitorias, aluno: aluno });
+      console.log(monitorias);
+      res.render("resultado", { "monitorias": monitorias, "aluno": req.params.alunoId });
     }
   });
 };
+
+/**
+ * Mostra a página de cadastro de horário de atendimento do monitor
+ * @param {*} req 
+ * @param {*} res 
+ */
+exports.mostrarCadastroHorario = function(req,res) {
+  res.render("cadastroHorarioMonitor",  { monitoria: req.params.monitoriaId, professor: req.params.professorId } )
+};
+
+/**
+ * Cadastrar horário de atendimento do monitor 
+ * Feito pelo professor
+ * @param {*} req 
+ * @param {*} res 
+ */
+exports.cadastrarHorarioMonitor = function (req,res) {
+  var horarioM = new horarioMonitor();
+  horarioM.monitoria = req.params.monitoriaId;
+
+  if (req.body.horaInicio1Seg != ''  && req.body.horaTermino1Seg != '') {
+    console.log(req.body.horaInicio1Seg);
+    console.log(req.body.horaTermino1Seg);
+    var segunda1 = req.body.horaInicio1Seg+"-"+req.body.horaTermino1Seg;
+    horarioM.segunda.push(segunda1);
+  }
+
+  if (req.body.horaInicio2Seg != ''  && req.body.horaTermino2Seg != '') {
+    console.log(req.body.horaInicio2Seg);
+    console.log(req.body.horaTermino2Seg);
+    var segunda2 = req.body.horaInicio2Seg+"-"+req.body.horaTermino2Seg;
+    horarioM.segunda.push(segunda2);
+  }
+
+  if (req.body.horaInicio1Ter != ''  && req.body.horaTermino1Ter != '') {
+    console.log(req.body.horaInicio1Ter);
+    console.log(req.body.horaTermino1Ter);
+    var terca1 = req.body.horaInicio1Ter+"-"+req.body.horaTermino1Ter;
+    horarioM.terca.push(terca1);
+  }
+
+  if (req.body.horaInicio2Ter != ''  && req.body.horaTermino2Ter != '') {
+    console.log(req.body.horaInicio2Ter);
+    console.log(req.body.horaTermino2Ter);
+    var terca2 = req.body.horaInicio2Ter+"-"+req.body.horaTermino2Ter;
+    horarioM.terca.push(terca2);
+  }
+
+  if (req.body.horaInicio1Qua != ''  && req.body.horaTermino1Qua != '') {
+    console.log(req.body.horaInicio1Qua);
+    console.log(req.body.horaTermino1Qua);
+    var quarta1 = req.body.horaInicio1Qua+"-"+req.body.horaTermino1Qua;
+    horarioM.quarta.push(quarta1);
+  }
+
+  if (req.body.horaInicio2Qua != ''  && req.body.horaTermino2Qua != '') {
+    console.log(req.body.horaInicio2Qua);
+    console.log(req.body.horaTermino2Qua);
+    var quarta2 = req.body.horaInicio2Qua+"-"+req.body.horaTermino2Qua;
+    horarioM.quarta.push(quarta2);
+  }
+
+  if (req.body.horaInicio1Qui != ''  && req.body.horaTermino1Qui != '') {
+    console.log(req.body.horaInicio1Qui);
+    console.log(req.body.horaTermino1Qui);
+    var quinta1 = req.body.horaInicio1Qui+"-"+req.body.horaTermino1Qui;
+    horarioM.quinta.push(quinta1);
+  }
+
+  if (req.body.horaInicio2Qui != ''  && req.body.horaTermino2Qui != '') {
+    console.log(req.body.horaInicio2Qui);
+    console.log(req.body.horaTermino2Qui);
+    var quinta2 = req.body.horaInicio2Qui+"-"+req.body.horaTermino2Qui;
+    horarioM.quinta.push(quinta2);
+  }
+
+  if (req.body.horaInicio1Sex != ''  && req.body.horaTermino1Sex != '') {
+    console.log(req.body.horaInicio1Sex);
+    console.log(req.body.horaTermino1Sex);
+    var sexta1 = req.body.horaInicio1Sex+"-"+req.body.horaTermino1Sex;
+    horarioM.sexta.push(sexta1);
+  }
+
+  if (req.body.horaInicio2Sex != ''  && req.body.horaTermino2Sex != '') {
+    console.log(req.body.horaInicio2Sex);
+    console.log(req.body.horaTermino2Sex);
+    var sexta2 = req.body.horaInicio2Sex+"-"+req.body.horaTermino2Sex;
+    horarioM.sexta.push(sexta2);
+  }
+
+  horarioM.save(function(err, horario) {
+    if (err) {
+      res.json(err);
+    } else {
+
+      Monitoria.findByIdAndUpdate(req.params.monitoriaId, {horarioAtendimento: horario._id}, function(err,monitoria) {
+        if (err) {
+          res.json(err);
+        } 
+
+        res.redirect('/planoMonitoria/index/'+req.params.professorId+'/'+req.params.monitoriaId);
+      });
+
+    }
+  });
+}
+
+exports.mostrarHorarioDeAtendimento = function (req,res) {
+  console.log(req.params);
+  horarioMonitor.findById(req.params.horarioId, function(err, horario) {
+    res.render("horarioMonitor", {"horarioMonitor": horario, "voltarTipo": req.params.tipoVoltar, "professor": req.params.professorId, "monitoria": req.params.monitoriaId});
+  });
+}

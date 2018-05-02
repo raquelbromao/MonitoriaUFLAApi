@@ -112,11 +112,11 @@ exports.mostrarProfIndex = function(req, res) {
           res.json(err);
         } else {
 
-          if(monitorias == null) {
+          if (monitorias == null) {
             res.render('index/indexProfessores', {"professor": professor, "monitorias": null});
           }
 
-          console.log(monitorias);
+          //console.log(monitorias);
           res.render('index/indexProfessores', {"professor": professor, "monitorias": monitorias});
         }
       });

@@ -11,11 +11,20 @@ exports.listarAtividades = function(req,res) {
     //  Array criado para adicionar as Ids das atividades vinculadas a monitoria
     var atividadesIds = [];
     var atividadesRegIds = [];
+    //  Flags criadas para identificar quais informações terão ou não na página
+    var flagHorarioM = false;
+    var flagPlanoT = false;
+    var flagAtivReg = false;
 
     Monitoria.findById(req.params.monitoriaId, function(err, monitoria) {
         if (err) {
             res.json(err);
         } else {
+            //  Verifica se a monitoria já possui horario de atendimento do monitor
+            if (monitoria.horarioAtendimento != []) {
+                flagHorarioM = true;
+            }
+
             //  Verifica se a monitoria já possui plano de trabalho cadastrado ou não
             if (monitoria.planoDeTrabalho.length > 0) {
 
@@ -30,8 +39,6 @@ exports.listarAtividades = function(req,res) {
                         atividadesRegIds.push(monitoria.atividadesRegistradas[i]);
                     }
 
-                    //console.log(atividadesRegIds);
-
                     //  Encontra cada tarefa registrada no Plano de Trabalho
                     Atividade.find({_id:{ $in: atividadesIds }}, function(err, atividades) {
                         if (err) {
@@ -42,7 +49,7 @@ exports.listarAtividades = function(req,res) {
                                 if(err) {
                                     res.json(err);
                                 } else {
-                                    res.render('atividades/PlanoDeTrabalho', {"flag": true, "possuiAtReg": true, "atividades": atividades, "atividadesR": atividadesR ,"monitoria": monitoria, "professor": req.params.professorId });
+                                    res.render('atividades/PlanoDeTrabalho', {"flag": true, "possuiHorarioM": flagHorarioM, "possuiAtReg": true, "atividades": atividades, "atividadesR": atividadesR ,"monitoria": monitoria, "professor": req.params.professorId });
                                 }
                             });
 
@@ -56,14 +63,14 @@ exports.listarAtividades = function(req,res) {
                         if (err) {
                             res.json(err);
                         } else {
-                            res.render('atividades/PlanoDeTrabalho', {"flag": true, "possuiAtReg": false, "atividades": atividades, "monitoria": monitoria, "professor": req.params.professorId });
+                            res.render('atividades/PlanoDeTrabalho', {"flag": true, "possuiHorarioM": flagHorarioM, "possuiAtReg": false, "atividades": atividades, "monitoria": monitoria, "professor": req.params.professorId });
                         }
                     });
 
                 }
 
             } else {
-                res.render('atividades/PlanoDeTrabalho', {"flag": false, "monitoria": monitoria, "professor": req.params.professorId });
+                res.render('atividades/PlanoDeTrabalho', {"possuiHorarioM": flagHorarioM,"flag": false, "monitoria": monitoria, "professor": req.params.professorId });
             }
         }
     });
