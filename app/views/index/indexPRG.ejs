@@ -1,0 +1,63 @@
+<!-- views/pages/about.ejs -->
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <% include partials/head %>
+</head>
+<body>
+  <header>
+    <% include partials/navebar %>
+  </header>
+
+   <main>
+     <div class="container listagem">
+
+       <div class="jumbotron jumbPrincipal">
+        <p>Bem-vinda(o), <%= prg.nome %></p>
+        <table>
+          <thead>
+            <tr>
+              <th>Nome</th>
+              <th>Código</th>
+              <th>E-mail</th>
+            </tr>
+            <tr>
+              <th><%= prg.nome %></th>
+              <th><%= prg.codigo %></th>
+              <th><%= prg.login %></th>
+            </tr>
+          </thead>
+          <tbody>
+          </tbody>
+        </table>
+        <br>
+        <p>Links</p>
+        <div class="list-group">
+          <div class="list-group">
+            <a href="#" class="list-group-item list-group-item-action active">Index</a>
+            <a href="/prg/editar/<%= prg._id %>" class="list-group-item list-group-item-action">Editar Dados</a>
+            <a href="/prg/editar/<%= prg._id %>" class="list-group-item list-group-item-action">Editar Dados</a>
+            <a href="/login" class="list-group-item list-group-item-action">Sair</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="jumbotron jumbRelatorios">
+        <p>Relatórios</p>
+        <div class="list-group">
+          <div class="list-group">
+            <a href="/prg/relatorios/<%= prg._id %>/op1" class="list-group-item list-group-item-action">OP1</a>
+            <a href="/prg/relatorios/<%= prg._id %>/op2" class="list-group-item list-group-item-action">OP2</a>
+            <a href="/prg/relatorios/<%= prg._id %>/op3" class="list-group-item list-group-item-action">OP3</a>
+            <a href="/prg/relatorios/<%= prg._id %>/op4" class="list-group-item list-group-item-action">OP4</a>
+          </div>
+        </div>
+      </div>
+
+     </div>
+   </main>
+
+  <footer>
+  </footer>
+</body>
+</html>

@@ -31,9 +31,7 @@ exports.criarAluno = function(req, res) {
   aluno_cadastro.senha = req.body.senha;
   aluno_cadastro.nota = req.body.nota;
 
-/**
- * Salva aluno no BD
- */
+  // Salva aluno no BD
   aluno_cadastro.save(function(err, aluno) {
     if (err) {
       res.json(err);
@@ -146,24 +144,23 @@ exports.cadastrarMonitoria = function(req, res) {
           if (err) {
             console.log(err);
           } else {
+
+            Monitoria.findByIdAndUpdate(
+              {_id: req.params.monitoriaId},
+              {$push: {alunosInscritos: aluno._id}},
+              {safe: true, upsert: true},
+              function(err, monitoria) {
+                if (err) {
+                  console.log(err);
+                } else {
+                  console.log(monitoria.alunosInscritos);
+                }
+            });
             console.log(aluno.monitorias);
           }
       });
     }
   });
 
-  //  Insere o aluno na lista de alunosInscritos da Monitoria
-  /*Monitoria.findByIdAndUpdate(
-    {_id: req.params.monitoriaId},
-    {$push: {alunosInscritos: req.params.alunoId}},
-    {safe: true, upsert: true},
-    function(err, monitoria) {
-      if (err) {
-        console.log(err);
-      } else {
-        console.log(monitoria.alunosInscritos);
-      }
-  });*/
-
-    res.redirect('/indexAlunos/' + req.params.alunoId);
+  res.redirect('/indexAlunos/' + req.params.alunoId);
 };

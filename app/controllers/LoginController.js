@@ -56,14 +56,14 @@ exports.autenticarLogin = function(req, res) {
       if (err) {
         res.redirect("/login");
       } else if (membroPRG === null) {
-        res.redirect("/login");
+        res.status(404).redirect("/login");
       } else {
         if (membroPRG.senha === senha_acesso) {
-          //res.redirect("/indexPRG/" + membroPRG._id);
-          console.log('ACESSO TIPO PRG LIBERADO');
-          res.redirect("/login");
+          res.status(200).redirect("/indexPRG/" + membroPRG._id);
+          //console.log(membroPRG);
+          //res.redirect("/login");
         } else {
-          res.redirect("/login");
+          res.status(401).redirect("/login");
         }
       }
     });

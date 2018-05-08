@@ -102,6 +102,19 @@ module.exports = function(app) {
 
 
   // PRG
+
+  app 
+    .route("/IndexPrg/:prgId")
+    .get(metodosPRG.mostrarPRGIndex);
+
+  app
+    .route("/prg/editar/:prgId")
+    .get()
+    .post();
+    
+  app
+    .route("/prg/relatorios/:prgId/:opcaoId")
+    .get(metodosPRG.gerarRelatorio);  
    
   // A SER FEITO
    

@@ -215,7 +215,7 @@ exports.pesquisarMonitoria = function(req, res) {
   console.log("MONITORIA: "+monitoria);
   console.log("ALUNO: "+req.params.alunoId);
 
-  Monitoria.find({ nome: req.query.nomeMonitoria }, function(err, monitorias) {
+  Monitoria.find({ nomeDisciplina: req.query.nomeMonitoria }, function(err, monitorias) {
     if (err) {
       res.json(err);
     } else {

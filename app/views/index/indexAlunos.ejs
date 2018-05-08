@@ -40,39 +40,42 @@
               <th>Nome</th>
               <th>Matrícula</th>
               <th>E-mail</th>
-              <!-- <th>Editar Dados</th> -->
             </tr>
             <tr>
               <th><%= aluno.nome %></th>
               <th><%= aluno.matricula %></th>
               <th><%= aluno.login %></th>
-              <!-- <th><a class="btn btn-warning" href="#">Editar</a></th> -->
             </tr>
           </thead>
           <tbody>
           </tbody>
         </table>
+        <br>
         <p>Links</p>
         <div class="list-group">
           <div class="list-group">
             <a href="#" class="list-group-item list-group-item-action active">Index</a>
             <a href="/alunos/editar/<%= aluno._id %>" class="list-group-item list-group-item-action">Editar Dados</a>
-            <a href="/monitorias/lista" class="list-group-item list-group-item-action disabled">Lista de Monitorias</a>
-            <a href="#" class="list-group-item list-group-item-action disabled">Pesquisar Monitorias</a>
-            <a href="#" class="list-group-item list-group-item-action disabled">Monitorias Cadastradas</a>
             <a href="/login" class="list-group-item list-group-item-action">Sair</a>
           </div>
         </div>
+        <br>
+        <p>Procurar Monitoria</p>
+          <form action="/monitorias/pesquisar/<%= aluno._id %>" method="get" class="form-inline">
+            <label class="sr-only" for="nomeMonitoria">Nome da Monitoria</label>
+            <input type="text" class="form-control" id="nomeMonitoria" name="nomeMonitoria" placeholder="Cálculo I...">
+            <button type="submit" class="btn btn-primary"><span class="glyphicon glyphicon-zoom-in"></span></button>
+          </form>
       </div>
 
-      <div class="jumbotron pesquisaMonitorias">
+      <!--<div class="jumbotron pesquisaMonitorias">
        <p>Procurar Monitoria</p>
        <form action="/monitorias/pesquisar/<%= aluno._id %>" method="get" class="form-inline">
          <label class="sr-only" for="nomeMonitoria">Nome da Monitoria</label>
          <input type="text" class="form-control" id="nomeMonitoria" name="nomeMonitoria" placeholder="Cálculo I...">
          <button type="submit" class="btn btn-primary">Pesquisar</button>
        </form>
-     </div>
+     </div>-->
 
      <div class="jumbotron">
        <p>Monitorias Cadastradas</p>
@@ -96,10 +99,6 @@
            <% }) %>
          </tbody>
        </table>
-     </div>
-
-     <div class="jumbotron">
-       <p>Notificações</p>
      </div>
 
      </div>

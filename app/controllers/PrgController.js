@@ -3,9 +3,11 @@
 var mongoose = require('mongoose');
 var PRG = mongoose.model('PRG');
 
-/*
-  Lista todos os membros da PRG presentes no BD
-*/
+/**
+ * 
+ * @param {*} req 
+ * @param {*} res 
+ */
 exports.listarPRG = function(req, res) {
   PRG.find({}, function(err, membrosPRG) {
     if (err) {
@@ -16,9 +18,11 @@ exports.listarPRG = function(req, res) {
   });
 };
 
-/*
-  Cadastra membros da PRG no BD
-*/
+/**
+ * 
+ * @param {*} req 
+ * @param {*} res 
+ */
 exports.criarPRG = function(req, res) {
   //    Cria novo objeto PRG
   var prg_cadastro = new PRG();
@@ -41,9 +45,11 @@ exports.criarPRG = function(req, res) {
   });
 };
 
-/*
-  Deleta membro da PRG do BD
-*/
+/**
+ * 
+ * @param {*} req 
+ * @param {*} res 
+ */
 exports.deletarPRG = function(req, res) {
   PRG.remove({_id: req.params.prgId}, function(err, membroPRG) {
     if (err) {
@@ -55,9 +61,25 @@ exports.deletarPRG = function(req, res) {
   });
 };
 
-/*
-  Mostrar membro da PRG para edição
-*/
+/**
+ * 
+ * @param {*} req 
+ * @param {*} res 
+ */
+exports.mostrarPRGIndex = function(req, res) {
+  PRG.findById({_id: req.params.prgId}, function(err, prg) {
+    if (err) {
+      res.json(err);
+    }
+    res.render('index/indexPRG', {"prg": prg});
+  });
+};
+
+/**
+ * 
+ * @param {*} req 
+ * @param {*} res 
+ */
 exports.mostrarPRGEdicao = function(req, res) {
   PRG.find({_id: req.params.prgId}, function(err, membroPRG) {
     if (err) {
@@ -68,9 +90,11 @@ exports.mostrarPRGEdicao = function(req, res) {
   });
 };
 
-/*
-  Edita membro da PRG e salva mudanças no BD
-*/
+/**
+ * 
+ * @param {*} req 
+ * @param {*} res 
+ */
 exports.editarPRG = function(req, res) {
   Aluno.findOneAndUpdate({_id: req.params.alunoId}, 
     {nome: req.body.nome, codigo: req.body.codigo , telefone: req.body.codigo, login: req.body.login, senha: req.body.senha}, function(err, membroPRG)  {
@@ -80,3 +104,28 @@ exports.editarPRG = function(req, res) {
       res.redirect('/adm/prg');
   });
 };
+
+/**
+ * 
+ * @param {*} req 
+ * @param {*} res 
+ */
+exports.gerarRelatorio = function(req, res) {
+  if (req.params.opcaoId == 'op1') {
+    console.log('OPÇÃO 1 DE RELATÓRIO SELECIONADA');
+    listarTodasMonitorias(req.params.prgId);
+  } else if (req.params.opcaoId == 'op2') {
+    console.log('OPÇÃO 2 DE RELATÓRIO SELECIONADA');
+  } else if (req.params.opcaoId == 'op3') {
+    console.log('OPÇÃO 3 DE RELATÓRIO SELECIONADA');
+  } else {
+    console.log('OPÇÃO DE RELATÓRIO NÃO EXISTENTE');
+    res.status(404).redirect('/IndexPrg/'+req.params.prgId);
+  }
+};
+
+function listarTodasMonitorias (prgId) {
+  console.log(prgId);
+  return 0;
+};
+

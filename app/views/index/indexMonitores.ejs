@@ -74,7 +74,7 @@
             <tr>
               <th>DISCIPLINA</th>
               <th>CÓDIGO</th>
-              <th>PROFESSOR</th>
+              <th>ORIENTADOR</th>
               <th>SEMESTRE</th>
               <th>DETALHES</th>
             </tr>
@@ -92,7 +92,7 @@
 
       </div>
 
-      <div class="jumbotron listaAtividades">
+     <!-- <div class="jumbotron listaAtividades">
         <p>Registro de Atividades</p>
         <% if (flag == false) { %>
           <a class="btn btn-primary btn-block" href="/planoMonitoria/registrarAtividade/<%= monitor._id %>/<%= monitor.materiaMonitorada %>">Iniciar Atividades</a>
@@ -124,20 +124,16 @@
             <br>
             <a class="btn btn-primary btn-block" href="/planoMonitoria/registrarAtividade/<%= monitor._id %>/<%= monitor.materiaMonitorada %>">Registrar Atividade</a>
             <% } %>
-      </div>
+      </div> -->
 
-      <!--<div class="jumbotron pesquisaMonitorias">
+    <div class="jumbotron pesquisaMonitorias">
       <p>Procurar Monitoria</p>
       <form action="/monitorias/pesquisar/<%= monitor._id %>" method="get" class="form-inline">
         <label class="sr-only" for="nomeMonitoria">Nome da Monitoria</label>
         <input type="text" class="form-control" id="nomeMonitoria" name="nomeMonitoria" placeholder="Cálculo I...">
         <button type="submit" class="btn btn-primary">Pesquisar</button>
       </form>
-    </div>-->
-
-      <div class="jumbotron listaNotificacoes">
-        <p>Notificações</p>
-      </div>
+    </div>
 
     </div>
   </main>
