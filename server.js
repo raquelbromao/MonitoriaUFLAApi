@@ -47,7 +47,8 @@ app.set('views', [__dirname + '/app/views',
                   __dirname + '/app/views/index', 
                   __dirname + '/app/views/adm',
                   __dirname + '/app/views/edicao',
-                  __dirname + '/app/views/atividades']);
+                  __dirname + '/app/views/atividades',
+                  __dirname + '/app/views/relatorios']);
 //app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');    // Setamos que nossa engine será o ejs
 

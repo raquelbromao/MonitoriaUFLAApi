@@ -2,9 +2,12 @@
 
 var mongoose = require('mongoose');
 var PRG = mongoose.model('PRG');
+var Professor = mongoose.model('Professores');
+var Monitor = mongoose.model('Monitores');
+var Monitoria = mongoose.model('Monitorias');
 
 /**
- * 
+ * Lista os usuários do tipo PRG
  * @param {*} req 
  * @param {*} res 
  */
@@ -19,7 +22,7 @@ exports.listarPRG = function(req, res) {
 };
 
 /**
- * 
+ * Cria e insere o usuário do tipo PRG no BD
  * @param {*} req 
  * @param {*} res 
  */
@@ -46,7 +49,7 @@ exports.criarPRG = function(req, res) {
 };
 
 /**
- * 
+ * Deleta o usuário do tipo PRG do BD
  * @param {*} req 
  * @param {*} res 
  */
@@ -62,7 +65,7 @@ exports.deletarPRG = function(req, res) {
 };
 
 /**
- * 
+ * Exibe a página index do usuário tipo PRG
  * @param {*} req 
  * @param {*} res 
  */
@@ -76,7 +79,7 @@ exports.mostrarPRGIndex = function(req, res) {
 };
 
 /**
- * 
+ * Mostra página de edição de info do usuário tipo PRG
  * @param {*} req 
  * @param {*} res 
  */
@@ -91,12 +94,12 @@ exports.mostrarPRGEdicao = function(req, res) {
 };
 
 /**
- * 
+ * Edita informações do usuário tipo PRG
  * @param {*} req 
  * @param {*} res 
  */
 exports.editarPRG = function(req, res) {
-  Aluno.findOneAndUpdate({_id: req.params.alunoId}, 
+  PRG.findOneAndUpdate({_id: req.params.alunoId}, 
     {nome: req.body.nome, codigo: req.body.codigo , telefone: req.body.codigo, login: req.body.login, senha: req.body.senha}, function(err, membroPRG)  {
       if (err) {
         return console.log(err);
@@ -106,26 +109,50 @@ exports.editarPRG = function(req, res) {
 };
 
 /**
- * 
+ * Gera os relatórios para a PRG
  * @param {*} req 
  * @param {*} res 
  */
 exports.gerarRelatorio = function(req, res) {
+  //  OPÇÃO 1 DE RELATÓRIO: Listar Todas as Monitorias Vigentes
   if (req.params.opcaoId == 'op1') {
-    console.log('OPÇÃO 1 DE RELATÓRIO SELECIONADA');
-    listarTodasMonitorias(req.params.prgId);
+    Monitoria.find({}, function(err, monitorias) {
+      if (err) {
+        res.json(err);
+      } 
+      res.render('relatorios/listagemDeMonitorias', {"monitorias": monitorias})
+    });
+  
+  //  OPÇÃO 2 DE RELATÓRIO: Listar Todas as Monitorias de Mesmas Disciplinas 
+  //  -> TERMINAR TERMINAR TERMINAR TERMINAR TERMINAR TERMINAR TERMINAR TERMINAR 
   } else if (req.params.opcaoId == 'op2') {
-    console.log('OPÇÃO 2 DE RELATÓRIO SELECIONADA');
+    Monitoria.find({nomeDisciplina: req.body.nomeDisciplina}, function(err, monitorias) {
+      if (err) {
+        res.json(err);
+      } 
+      //res.render('relatorios/listagemDeMonitorias', {"monitorias": monitorias})
+    });
+
+  //  OPÇÃO 3 DE RELATÓRIO: Listar Todos os Orientadores  
   } else if (req.params.opcaoId == 'op3') {
-    console.log('OPÇÃO 3 DE RELATÓRIO SELECIONADA');
+    Professor.find({}, function(err, professores) {
+      if (err) {
+        res.json(err);
+      } 
+      res.render('relatorios/listagemDeOrientadores', {"professores": professores})
+    });
+
+  //  OPÇÃO 4 DE RELATÓRIO: Listar Todos os Monitores  
+  } else if (req.params.opcaoId == 'op4') {
+    Monitor.find({}, function(err, monitores) {
+      if (err) {
+        res.json(err);
+      } 
+      res.render('relatorios/listagemdeMonitores', {"monitores": monitores})
+    });
+
   } else {
     console.log('OPÇÃO DE RELATÓRIO NÃO EXISTENTE');
     res.status(404).redirect('/IndexPrg/'+req.params.prgId);
   }
 };
-
-function listarTodasMonitorias (prgId) {
-  console.log(prgId);
-  return 0;
-};
-

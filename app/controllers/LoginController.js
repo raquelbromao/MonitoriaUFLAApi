@@ -6,10 +6,11 @@ var Professor = mongoose.model("Professores");
 var Monitor = mongoose.model("Monitores");
 var PRG = mongoose.model("PRG");
 
-
-/*
-  Autentica login e verifica tipo de usuário
-*/
+/**
+ * Autentica o login
+ * @param {*} req 
+ * @param {*} res 
+ */
 exports.autenticarLogin = function(req, res) {
   var tipo_usuario = req.body.tipo;
   var login_acesso = req.body.login;
@@ -18,7 +19,7 @@ exports.autenticarLogin = function(req, res) {
 
   //  Analisa tipo de usuário que requeriu entrada no sistema
   if (tipo_usuario === "aluno") {
-    console.log("[Usuário] Aluno identificado. Analisando Permissão...");
+    //console.log("[Usuário] Aluno identificado. Analisando Permissão...");
     Aluno.findOne({ login: login_acesso }, function(err, aluno) {
       if (err) {
         res.redirect("/login");
@@ -34,7 +35,7 @@ exports.autenticarLogin = function(req, res) {
     });
 
   } else if (tipo_usuario === "professor") {
-    console.log("[Usuário] Professor identificado. Analisando Permissão...");
+    //console.log("[Usuário] Professor identificado. Analisando Permissão...");
     Professor.findOne({ login: login_acesso }, function(err, professor) {
       if (err) {
         res.redirect("/login");
@@ -49,9 +50,8 @@ exports.autenticarLogin = function(req, res) {
       }
     });
 
-    //   NECESSÁRIO AINDA CRIAR USUÁRIO TIPO PRG NO BANCO DE DADOS
   } else if (tipo_usuario === "prg") {
-    console.log("[Usuário] PRG identificado. Analisando Permissão...");
+    //console.log("[Usuário] PRG identificado. Analisando Permissão...");
     PRG.findOne({ login: login_acesso }, function(err, membroPRG) {
       if (err) {
         res.redirect("/login");
@@ -60,15 +60,14 @@ exports.autenticarLogin = function(req, res) {
       } else {
         if (membroPRG.senha === senha_acesso) {
           res.status(200).redirect("/indexPRG/" + membroPRG._id);
-          //console.log(membroPRG);
-          //res.redirect("/login");
         } else {
           res.status(401).redirect("/login");
         }
       }
     });
+
   } else if (tipo_usuario === "monitor") {
-    console.log("[Usuário] Monitor identificado. Analisando Permissão...");
+    //console.log("[Usuário] Monitor identificado. Analisando Permissão...");
     Monitor.findOne({ login: login_acesso }, function(err, monitor) {
       if (err) {
         res.redirect("/login");
