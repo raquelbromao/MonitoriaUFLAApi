@@ -47,6 +47,10 @@ var ProfessorSchema = new Schema({
     type: String,
     required: true
   },
+  eOrientador: {
+    type: Boolean,
+    default: false
+  },
   monitorias: [{
     type: Schema.Types.ObjectId,
     ref: 'Monitorias'

@@ -4,10 +4,13 @@ var app = express();
 var port = process.env.PORT || 3000;
 var mongoose = require('mongoose');
 var BD = require('./app/models/MonitoriaApiModel'); //created model loading here
+const mongoURI = require('./app/config/config').uriMongo;
+const mongoURILocal = require('./app/config/config').uriMongoLocal;
+
 
 //  mongoose instance connection url connection
-mongoose.connect('mongodb://pipoca:123456@ds141464.mlab.com:41464/api_monitoria', function(err) {
-//mongoose.connect('mongodb://localhost/MonitoriaUflaDB', function(err) {
+mongoose.connect(mongoURI, function(err) {
+//mongoose.connect(mongoURILocal, function(err) {
   if (err) {
     console.log('connection error', err);
   }

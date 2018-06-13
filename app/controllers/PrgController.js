@@ -135,7 +135,7 @@ exports.gerarRelatorio = function(req, res) {
 
   //  OPÇÃO 3 DE RELATÓRIO: Listar Todos os Orientadores  
   } else if (req.params.opcaoId == 'op3') {
-    Professor.find({}, function(err, professores) {
+    Professor.find({eOrientador: true}, function(err, professores) {
       if (err) {
         res.json(err);
       } 
@@ -151,6 +151,7 @@ exports.gerarRelatorio = function(req, res) {
       res.render('relatorios/listagemdeMonitores', {"monitores": monitores})
     });
 
+  // OPÇÃO NÃO EXISTENTE 
   } else {
     console.log('OPÇÃO DE RELATÓRIO NÃO EXISTENTE');
     res.status(404).redirect('/IndexPrg/'+req.params.prgId);

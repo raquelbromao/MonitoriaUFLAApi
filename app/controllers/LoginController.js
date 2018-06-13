@@ -1,10 +1,12 @@
 "use strict";
 
 var mongoose = require("mongoose");
-var Aluno = mongoose.model("Alunos");
+var bcrypt   = require("bcrypt");
+
+var Aluno     = mongoose.model("Alunos");
 var Professor = mongoose.model("Professores");
-var Monitor = mongoose.model("Monitores");
-var PRG = mongoose.model("PRG");
+var Monitor   = mongoose.model("Monitores");
+var PRG       = mongoose.model("PRG");
 
 /**
  * Autentica o login
@@ -12,53 +14,52 @@ var PRG = mongoose.model("PRG");
  * @param {*} res 
  */
 exports.autenticarLogin = function(req, res) {
-  var tipo_usuario = req.body.tipo;
-  var login_acesso = req.body.login;
-  var senha_acesso = req.body.senha;
-  var erro;
-
   //  Analisa tipo de usuário que requeriu entrada no sistema
-  if (tipo_usuario === "aluno") {
+  if (req.body.tipo === "aluno") {
     //console.log("[Usuário] Aluno identificado. Analisando Permissão...");
-    Aluno.findOne({ login: login_acesso }, function(err, aluno) {
+    Aluno.findOne({ login: req.body.login }, function(err, aluno) {
       if (err) {
         res.redirect("/login");
       } else if (aluno === null) {
+        console.log('null');
         res.redirect("/login");
       } else {
-        if (aluno.senha === senha_acesso) {
+        if (bcrypt.compareSync(req.body.senha, aluno.senha)) {
           res.redirect("/indexAlunos/" + aluno._id);
         } else {
+          console.log('falso');
           res.redirect("/login");
         }
       }
     });
 
-  } else if (tipo_usuario === "professor") {
+  } else if (req.body.tipo === "professor") {
     //console.log("[Usuário] Professor identificado. Analisando Permissão...");
-    Professor.findOne({ login: login_acesso }, function(err, professor) {
+    Professor.findOne({ login: req.body.login }, function(err, professor) {
       if (err) {
         res.redirect("/login");
       } else if (professor === null) {
+        console.log('null');
         res.redirect("/login");
       } else {
-        if (professor.senha === senha_acesso) {
+        if (bcrypt.compareSync(req.body.senha, professor.senha)) {  
           res.redirect("/indexProfessores/" + professor._id);
         } else {
+          console.log('falso');
           res.redirect("/login");
         }
       }
     });
 
-  } else if (tipo_usuario === "prg") {
+  } else if (req.body.tipo === "prg") {
     //console.log("[Usuário] PRG identificado. Analisando Permissão...");
-    PRG.findOne({ login: login_acesso }, function(err, membroPRG) {
+    PRG.findOne({ login: req.body.login }, function(err, membroPRG) {
       if (err) {
         res.redirect("/login");
       } else if (membroPRG === null) {
         res.status(404).redirect("/login");
       } else {
-        if (membroPRG.senha === senha_acesso) {
+        if (membroPRG.senha === req.body.senha) {
           res.status(200).redirect("/indexPRG/" + membroPRG._id);
         } else {
           res.status(401).redirect("/login");
@@ -66,17 +67,19 @@ exports.autenticarLogin = function(req, res) {
       }
     });
 
-  } else if (tipo_usuario === "monitor") {
+  } else if (req.body.tipo === "monitor") {
     //console.log("[Usuário] Monitor identificado. Analisando Permissão...");
-    Monitor.findOne({ login: login_acesso }, function(err, monitor) {
+    Monitor.findOne({ login: req.body.login }, function(err, monitor) {
       if (err) {
         res.redirect("/login");
       } else if (monitor === null) {
+        console.log('null');
         res.redirect("/login");
       } else {
-        if (monitor.senha === senha_acesso) {
+        if (bcrypt.compareSync(req.body.senha, monitor.senha)) {  
           res.redirect("/indexMonitores/" + monitor._id);
         } else {
+          console.log('falso');
           res.redirect("/login");
         }
       }

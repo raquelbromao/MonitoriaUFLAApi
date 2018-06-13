@@ -46,6 +46,7 @@ exports.criarMonitoria = function(req, res) {
           novaMonitoria.monitorID = monitor._id;
           novaMonitoria.monitorNome = monitor.nome;
           novaMonitoria.professorNome = professor.nome;
+          //var eOrientador = true;
 
           //  Salva Monitoria no BD
           novaMonitoria.save(function(err, monitoria) {
@@ -59,7 +60,7 @@ exports.criarMonitoria = function(req, res) {
                 } else {
                   
                   //  Cadastra monitoria no professor
-                  Professor.findByIdAndUpdate(monitoria2.professor, {$push: {monitorias: monitoria2._id}}, function(err, professor2) {
+                  Professor.findByIdAndUpdate(monitoria2.professor, {eOrientador: true, $push: {monitorias: monitoria2._id}}, function(err, professor2) {
                     if (err) {
                       res.json(err);
                     }

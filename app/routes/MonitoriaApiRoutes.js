@@ -11,14 +11,15 @@ var Monitoria = mongoose.model("Monitorias");
 
 //  EXPORTA TODAS AS FUNÇÕES DE CADA CONTROLLER
 module.exports = function(app) {
-  var metodosAlun = require("../controllers/AlunoController");
-  var metodosProf = require("../controllers/ProfessorController");
-  var metodosPRG = require("../controllers/PrgController");
-  var metodosMoni = require("../controllers/MonitorController");
+  var metodosAlun  = require("../controllers/AlunoController");
+  var metodosProf  = require("../controllers/ProfessorController");
+  var metodosPRG   = require("../controllers/PrgController");
+  var metodosMoni  = require("../controllers/MonitorController");
   var metodosPlano = require("../controllers/PlanoMonitoriaController");
-  var metodosMon  = require("../controllers/MonitoriaController");
-  var metodosLog  = require("../controllers/LoginController");
-  var metodosErr = require ("../controllers/ErroController");
+  var metodosMon   = require("../controllers/MonitoriaController");
+  var metodosLog   = require("../controllers/LoginController");
+  var metodosErr   = require ("../controllers/ErroController");
+  var metodosADM   = require ("../controllers/admController");
 
   //  INDEX DO SISTEMA
   app
@@ -46,10 +47,22 @@ module.exports = function(app) {
     .get(metodosAlun.listarAlunos)
     .post(metodosAlun.criarAluno);
 
+  app 
+    .route("/adm/discentes/cadastrarLote")
+    .post(metodosADM.cadastrarDiscentesEmLote);  
+
+  app 
+    .route("/adm/discentes/criptografarSenha/:discenteID")
+    .post(metodosADM.criptogafarSenha);    
+
   app
     .route("/adm/professores")
     .get(metodosProf.listarProfessores)
     .post(metodosProf.criarProfessor);
+
+  app 
+    .route("/adm/docentes/cadastrarLote/:Departamento")
+    .post(metodosADM.cadastrarDocentesEmLote.bind(metodosADM));
 
     app
     .route("/adm/prg")
@@ -61,10 +74,26 @@ module.exports = function(app) {
     .get(metodosMoni.listarMonitores)
     .post(metodosMoni.criarMonitor);
 
+  app 
+    .route("/adm/monitores/cadastrarLote")
+    .post(metodosADM.cadastrarMonitoresEmLote);    
+
   app
     .route("/adm/monitorias")
     .get(metodosMon.listarMonitorias)
     .post(metodosMon.criarMonitoria);
+
+  app 
+    .route("/adm/monitorias/cadastrarLote/:Departamento")
+    .post(metodosADM.cadastrarMonitoriasEmLote.bind(metodosADM));      
+
+  app 
+    .route("/adm/monitorias/cadastrarLote")
+    .post(metodosADM.cadastrarMonitoriasEmLote); 
+    
+  app 
+    .route("/adm/relatorios/teste")
+    .post(metodosADM.testarGerarRelatorio.bind(metodosADM));  
 
   // ALUNO
 
@@ -207,5 +236,5 @@ module.exports = function(app) {
   
   app
     .route("/err/:erroId")
-    .get(metodosErr.reportarErro);
+    .post(metodosErr.reportarErro);
 };

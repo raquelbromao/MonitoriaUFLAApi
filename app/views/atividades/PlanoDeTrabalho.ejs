@@ -36,7 +36,7 @@
       <div class="jumbotron planoDeTrabalho">
         <p>Plano de Trabalho</p>
         <br>
-        <% if (flag == false) { %>
+        <% if (flagPlanoT == false) { %>
           <a class="btn btn-primary btn-block" href="/planoMonitoria/cadastrarAtividade/<%= professor %>/<%= monitoria._id %>">Iniciar Plano de Trabalho</a>
         <% } else {%>  
         <table>
@@ -77,11 +77,12 @@
       </div>
 
 
+      <% if (flagPlanoT == true) { %>
       <div class="jumbotron atividadesRegistradas">
         <p>Atividades Registradas</p>
         <br>
-        <% if (possuiAtReg == false) { %>
-          Nenhuma atividade registrada ainda!
+        <% if (flagAtivReg == false) { %>
+          <p>Nenhuma atividade registrada ainda!</p>
         <% } else {%>  
         <table>
           <thead>
@@ -111,11 +112,12 @@
         </table>
         <% } %>  
       </div>
+      <% } %>
 
       <div class="jumbotron horarioMonitoria">
           <p>Horário de Atendimento</p>
           <br>
-          <% if (possuiHorarioM == false) { %>
+          <% if (flagHorarioM == false) { %>
             <a class="btn btn-primary btn-block" href="/monitorias/criarHorarioDeAtendimento/<%= professor %>/<%= monitoria._id %>">Registrar Horário de Atendimento</a>
           <% } else { %>
             <a class="btn btn-primary btn-block" href="/monitorias/HorarioDeAtendimento/<%= professor %>/<%= monitoria._id %>/<%= monitoria.horarioAtendimento %>">Ver Horário de Atendimento</a>

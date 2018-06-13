@@ -1,9 +1,10 @@
 "use strict";
 
+var bcrypt = require("bcrypt");
+
 var mongoose = require("mongoose");
 var Professor = mongoose.model("Professores");
-var Monitoria = mongoose.model('Monitorias');
-
+var Monitoria = mongoose.model("Monitorias");
 
 /*
   Lista todos os professores presentes no BD
