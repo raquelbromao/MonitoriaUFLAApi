@@ -119,8 +119,9 @@ exports.gerarRelatorio = function(req, res) {
     Monitoria.find({}, function(err, monitorias) {
       if (err) {
         res.json(err);
-      } 
-      res.render('relatorios/listagemDeMonitorias', {"monitorias": monitorias})
+      } else {
+        res.render('relatorios/listagemDeMonitorias', {"monitorias": monitorias});
+      }
     });
   
   //  OPÇÃO 2 DE RELATÓRIO: Listar Todas as Monitorias de Mesmas Disciplinas 
@@ -129,8 +130,9 @@ exports.gerarRelatorio = function(req, res) {
     Monitoria.find({nomeDisciplina: req.body.nomeDisciplina}, function(err, monitorias) {
       if (err) {
         res.json(err);
-      } 
-      //res.render('relatorios/listagemDeMonitorias', {"monitorias": monitorias})
+      } else {
+        res.render('relatorios/listagemDeMonitorias', {"monitorias": monitorias});
+      }
     });
 
   //  OPÇÃO 3 DE RELATÓRIO: Listar Todos os Orientadores  
@@ -138,8 +140,9 @@ exports.gerarRelatorio = function(req, res) {
     Professor.find({eOrientador: true}, function(err, professores) {
       if (err) {
         res.json(err);
-      } 
-      res.render('relatorios/listagemDeOrientadores', {"professores": professores})
+      }  else {
+        res.render('relatorios/listagemdeMonitores', {"professores": professores});
+      }
     });
 
   //  OPÇÃO 4 DE RELATÓRIO: Listar Todos os Monitores  
@@ -147,8 +150,9 @@ exports.gerarRelatorio = function(req, res) {
     Monitor.find({}, function(err, monitores) {
       if (err) {
         res.json(err);
-      } 
-      res.render('relatorios/listagemdeMonitores', {"monitores": monitores})
+      } else {
+        res.render('relatorios/listagemdeMonitores', {"monitores": monitores});
+      }
     });
 
   // OPÇÃO NÃO EXISTENTE 

@@ -1,12 +1,15 @@
 'use strict';
 
 //  BANCO DE DADOS
-exports.uriMongo = "mongodb://pipoca:123456@ds141464.mlab.com:41464/api_monitoria";
+exports.uriMongo      = "mongodb://pipoca:123456@ds141464.mlab.com:41464/api_monitoria";
 exports.uriMongoLocal = "mongodb://localhost/MonitoriaUflaDB";
 
-//  SENHAS
+//  Bcrypt
 exports.saltosCriptografia = 10;
 exports.senhaPadrao = "123456";
+
+//  JWT-Token
+exports.segredo = "D34gjsk6cw75hgu";
 
 //  CÓDIGOS
 exports.ultimosCodigosProf = {

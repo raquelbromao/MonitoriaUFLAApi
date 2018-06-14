@@ -18,8 +18,17 @@ module.exports = function(app) {
   var metodosPlano = require("../controllers/PlanoMonitoriaController");
   var metodosMon   = require("../controllers/MonitoriaController");
   var metodosLog   = require("../controllers/LoginController");
-  var metodosErr   = require ("../controllers/ErroController");
-  var metodosADM   = require ("../controllers/admController");
+  var metodosErr   = require("../controllers/ErroController");
+  var metodosADM   = require("../controllers/admController");
+
+  //  TESTES DOS TOKENS
+  app
+    .route("/tokenLogin")
+    .post(metodosADM.realizarLogin);
+
+  app
+    .route("/rotaProtegida")
+    .post(metodosADM.verficarToken, metodosADM.enviarDados);  
 
   //  INDEX DO SISTEMA
   app
@@ -42,6 +51,10 @@ module.exports = function(app) {
     res.render("index/indexAdm");
   });
 
+  app 
+    .route("/adm/criptografarSenha/:tipoUsuario/:ID")
+    .post(metodosADM.criptografarSenha.bind(metodosADM));
+
   app
     .route("/adm/alunos")
     .get(metodosAlun.listarAlunos)
@@ -49,11 +62,7 @@ module.exports = function(app) {
 
   app 
     .route("/adm/discentes/cadastrarLote")
-    .post(metodosADM.cadastrarDiscentesEmLote);  
-
-  app 
-    .route("/adm/discentes/criptografarSenha/:discenteID")
-    .post(metodosADM.criptogafarSenha);    
+    .post(metodosADM.cadastrarDiscentesEmLote);      
 
   app
     .route("/adm/professores")
@@ -93,7 +102,7 @@ module.exports = function(app) {
     
   app 
     .route("/adm/relatorios/teste")
-    .post(metodosADM.testarGerarRelatorio.bind(metodosADM));  
+    .post(metodosADM.testarGerarRelatorio.bind(metodosADM));      
 
   // ALUNO
 

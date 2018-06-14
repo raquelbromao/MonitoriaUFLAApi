@@ -1,50 +1,54 @@
-const express = require('express');
+const express    = require('express');
 const bodyParser = require('body-parser');
-var app = express();
-var port = process.env.PORT || 3000;
-var mongoose = require('mongoose');
-var BD = require('./app/models/MonitoriaApiModel'); //created model loading here
-const mongoURI = require('./app/config/config').uriMongo;
-const mongoURILocal = require('./app/config/config').uriMongoLocal;
+const passport   = require('passport');
+const jwt        = require('jwt-simple');
 
+const app  = express();
+const port = process.env.PORT || 3000;
+
+const mongoose      = require('mongoose');
+const BD            = require('./app/models/MonitoriaApiModel'); //created model loading here
+const mongoURI      = require('./app/config/config').uriMongo;
+//const mongoURILocal = require('./app/config/config').uriMongoLocal;
 
 //  mongoose instance connection url connection
 mongoose.connect(mongoURI, function(err) {
 //mongoose.connect(mongoURILocal, function(err) {
   if (err) {
-    console.log('connection error', err);
+    console.log('Erro de conexão: ', err);
   }
   else {
-    console.log('connection with database successful');
+    console.log('Conexão com Mongo estabelecidade com sucesso!');
   }
 });
 
 // CONNECTION EVENTS
 // When successfully connected
-mongoose.connection.on('connected', function () {  
-  console.log('Mongoose default connection open');
-}); 
+/*mongoose.connection.on('connected', function () {  
+  console.log('Conexão via mongoose aberta');
+}); */
 
 // If the connection throws an error
 mongoose.connection.on('error',function (err) {  
-  console.log('Mongoose default connection error: ' + err);
+  console.log('Conexão via mongoose com erro: ' + err);
 }); 
 
 // When the connection is disconnected
 mongoose.connection.on('disconnected', function () {  
-  console.log('Mongoose default connection disconnected'); 
+  console.log('Conexão via mongoose encerrada'); 
 });
 
 // If the Node process ends, close the Mongoose connection 
 process.on('SIGINT', function() {  
   mongoose.connection.close(function () { 
-    console.log('Mongoose default connection disconnected through app termination'); 
+    console.log('Mongoose desconectado por encerramento do servidor'); 
     process.exit(0); 
   }); 
 }); 
 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
+app.use(passport.initialize());
 
 app.set('views', [__dirname + '/app/views',
                   __dirname + '/app/views/index', 
@@ -56,8 +60,8 @@ app.set('views', [__dirname + '/app/views',
 app.set('view engine', 'ejs');    // Setamos que nossa engine será o ejs
 
 var routes = require('./app/routes/MonitoriaApiRoutes'); //importing route
-routes(app); //register the route
+routes(app); //register the route 
 
 app.listen(port);
 
-console.log('Monitoria Ufla RESTful API server started on: ' + port);
+console.log('Monitoria Ufla RESTful API servindo na porta: ' + port);

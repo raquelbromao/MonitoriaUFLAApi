@@ -41,12 +41,10 @@ exports.criarMonitoria = function(req, res) {
         if (err) {
           res.json(err);
         } else {
-
           novaMonitoria.professor = professor._id;
           novaMonitoria.monitorID = monitor._id;
           novaMonitoria.monitorNome = monitor.nome;
           novaMonitoria.professorNome = professor.nome;
-          //var eOrientador = true;
 
           //  Salva Monitoria no BD
           novaMonitoria.save(function(err, monitoria) {
