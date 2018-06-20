@@ -1,147 +1,458 @@
 "use strict";
 
 var mongoose = require("mongoose");
-var Monitor = mongoose.model("Monitores");
-var Atividade = mongoose.model("Atividades");
+
+var Atividade           = mongoose.model("Atividades");
 var AtividadeRegistrada = mongoose.model("AtividadesRegistradas");
-var Monitoria = mongoose.model("Monitorias");
+var Monitoria           = mongoose.model("Monitorias");
+var Professor           = mongoose.model("Professores");
+var horarioMonitor      = mongoose.model("HorariosMonitorias");
 
-/*
-  Lista todos os alunos presentes no BD
-*/
-exports.listarMonitores = function(req, res) {
-  Monitor.find({}, function(err, monitores) {
-    if (err) {
-      res.json(err);
-    } else {
-      res.render("adm/monitores", { monitores: monitores });
-    }
-  });
-};
-
-/*
-  Cadastra monitores no BD
-*/
-exports.criarMonitor = function(req, res) {
-  //  Cria novo objeto Monitor
-  var monitor_cadastro = new Monitor();
-
-  //  Salva todos as info da requisição em cada componente de Monitor
-  monitor_cadastro.nome = req.body.nome;
-  monitor_cadastro.matricula = req.body.matricula;
-  monitor_cadastro.login = req.body.login;
-  monitor_cadastro.senha = req.body.senha;
-
-  monitor_cadastro.save(function(err, monitor) {
-    if (err) {
-      res.json(err);
-    } else {
-      console.log("Monitor cadastrado com sucesso");
-      res.redirect("/adm/monitores");
-    }
-  });
-};
-
-/*
-  Deleta aluno do BD
-*/
-exports.deletarMonitor = function(req, res) {
-  Monitor.remove({ _id: req.params.monitorId }, function(err, monitor) {
-    if (err) {
-      res.json(err);
-    } else {
-      console.log("Monitor deletado com sucesso");
-      res.redirect("/adm/monitores");
-    }
-  });
-};
-
-/*
-  Mostra Monitor da edição
-*/
-exports.mostrarMonitorEdicao = function(req, res) {
-  Monitor.find({ _id: req.params.monitorId }, function(err, monitor) {
-    if (err) {
-      res.json(err);
-    } else {
-      //  parametro monitor é um array de monitores, então para pegar um único se acessa a posição 0
-      res.render("edicao/edicaoMonitor", { monitor: monitor[0] });
-    }
-  });
-};
-
-/*
-  Edita monitor e salva mudanças no BD
-*/
-exports.editarMonitor = function(req, res) {
-  var nome = req.body.nome;
-  var matricula = req.body.matricula;
-  var login = req.body.login;
-  var senha = req.body.senha;
-
-  Monitor.findOneAndUpdate(
-    { _id: req.params.monitorId },
-    { nome, matricula, login, senha },
-    function(err, monitor) {
+exports.exibirMonitoriaVigente = function(req, res) {
+  if (req.session.user) {
+    // Busca o ID da monitoria vinculada e suas informações correspondentes
+    Monitoria.findById(req.session.user.usuario.materiaMonitorada, function(err, monitoria) {
       if (err) {
-        return console.log(err);
+        res.json(err);
+      } else {
+        Professor.findById(monitoria.professor, function(err, professor) {
+          res.render('monitores/indexMonitoriaVigente', {"monitoria": monitoria, "professor": professor, "perfil": req.session.user.perfilUsuario})
+        });
       }
-      res.redirect("/adm/monitores");
-    }
-  );
+    });
+  } else {
+    res.redirect('/login');
+  }  
 };
 
-/*
-  Mostra Monitor do index
-*/
-exports.mostrarMonitorIndex = function(req, res) {
-  //  Array criado para adicionar as Ids das monitorias no qual o aluno se cadastrou
-  var atividadesRegistradasIds = [];
+exports.exibirPlanoDeTrabalho = function(req, res) {
+  if (req.session.user) {
+    //  Array criado para adicionar as Ids das atividades vinculadas a monitoria
+    var atividadesIds = [];
+    // Flag para identificar se existe plano de trabalho
+    var flagPlano = false;
 
-  //  Encontra monitor que requisitou o login
-  Monitor.findById({ _id: req.params.monitorId }, function(err, monitor) {
-    if (err) {
-      res.json(err);
-    } else {
-      //  Encontra monitoria relacionada
-      Monitoria.findById(monitor.materiaMonitorada, function(err, monitoria) {
+    Monitoria.findById(req.session.user.usuario.materiaMonitorada, function(err, monitoria) {
+      if (err) {
+        res.json(err);
+      } else {
+        //  Verifica se a monitoria já possui plano de trabalho cadastrado ou não
+        if (monitoria.planoDeTrabalho.length > 0) {
+          flagPlano = true;
+          for (var i = 0; i < monitoria.planoDeTrabalho.length; i++) {
+              atividadesIds.push(monitoria.planoDeTrabalho[i]);
+          }
+
+          //  Encontra cada tarefa registrada no Plano de Trabalho
+          Atividade.find({_id:{ $in: atividadesIds }}, function(err, atividades) {
+            if (err) {
+                res.json(err);
+            } else {
+              res.render('monitores/planoDeTrabalho', {"perfil": req.session.user.perfilUsuario, "possuiPlano": flagPlano, "atividades": atividades});
+            }
+          });
+
+        } else {
+          res.render('monitores/planoDeTrabalho', {"perfil": req.session.user.perfilUsuario, "possuiPlano": flagPlano});
+        }  
+      }
+    });
+  } else {
+    res.redirect('/login');
+  } 
+};
+
+exports.exibirAtividades = function(req, res) {
+  if (req.session.user) {
+    //  Flags para identificar se exitem atividades registradas pelo monitor e plano de trabalho
+    var flagAtividadesRegistradas = false;
+    var flagPlano = false;
+
+    Monitoria.findById(req.session.user.usuario.materiaMonitorada, function(err, monitoria) {
+      if (err) {
+        res.json(err);
+      } else {
+
+        if (monitoria.planoDeTrabalho.length > 0) {
+          flagPlano = true;
+
+          //  Verifica se a monitoria já possui atividades registradas pelo monitor ou não
+          if (monitoria.atividadesRegistradas.length > 0) {
+            flagAtividadesRegistradas = true;
+
+            res.render("monitores/atividades", {"perfil": req.session.user.perfilUsuario, "possuiPlano": flagPlano, "possuiAtividades": flagAtividadesRegistradas});
+          } else {
+            res.render("monitores/atividades", {"perfil": req.session.user.perfilUsuario, "possuiPlano": flagPlano, "possuiAtividades": flagAtividadesRegistradas});
+          }
+        } else {
+          res.render("monitores/atividades", {"perfil": req.session.user.perfilUsuario, "possuiPlano": flagPlano});
+        }
+      }
+    });  
+  } else {
+    res.redirect('/login');
+  }  
+};
+
+exports.pesquisarAtividades = function(req, res) {
+  if (req.session.user && req.session.user.perfilUsuario == 'Monitor') {
+    console.log(req.body.ano);
+    console.log(req.body.mes);
+    console.log(req.body.tipo);
+    //  Array para adicionar as Ids das atividades registradas vinculadas a monitoria
+    var atividadesRegIds = [];
+
+    // QUALQUE COISA
+    if ((req.body.ano == "null") && (req.body.mes == "null") && (req.body.tipo == "null")) {
+      Monitoria.findById(req.session.user.usuario.materiaMonitorada, function(err, monitoria) {
         if (err) {
           res.json(err);
         } else {
 
-          //  Verifica se a monitoria já possui atividades ou não
-          if (monitoria.atividadesRegistradas.length > 0) {
+          for (var i = 0; i < monitoria.atividadesRegistradas.length; i++) {
+            atividadesRegIds.push(monitoria.atividadesRegistradas[i]);
+          }
+          
+            // Encontra cada tarefa registrada pelo monitor
+            AtividadeRegistrada.find({_id:{ $in: atividadesRegIds }},function(err, atividadesR) {
+              if(err) {
+                res.json(err);
+              } else {
+                res.render('monitores/resultadosPesquisaAtividades', {"perfil": req.session.user.perfilUsuario, "atividadesR": atividadesR});
+              }
+            });
+        }
+      });
+    
+    // COM MEX X E ANO Y
+    } else if ((req.body.ano != "null") && (req.body.mes != "null") && (req.body.tipo == "null")) {
+      Monitoria.findById(req.session.user.usuario.materiaMonitorada, function(err, monitoria) {
+        if (err) {
+          res.json(err);
+        } else {
 
-            for (var i = 0; i < monitoria.atividadesRegistradas.length; i++) {
-                atividadesRegistradasIds.push(monitoria.atividadesRegistradas[i]);
-            }
+          for (var i = 0; i < monitoria.atividadesRegistradas.length; i++) {
+            atividadesRegIds.push(monitoria.atividadesRegistradas[i]);
+          }
+          
+            // Encontra cada tarefa registrada pelo monitor
+            AtividadeRegistrada.find({_id:{ $in: atividadesRegIds}, "data.ano": req.body.ano, "data.mes": req.body.mes}, function(err, atividadesR) {
+              if(err) {
+                res.json(err);
+              } else {
+                res.render('monitores/resultadosPesquisaAtividades', {"perfil": req.session.user.perfilUsuario, "atividadesR": atividadesR});
+              }
+            });
+        }
+      });
 
-            //  Encontra cada atividade que se encontra no array atividadesIds
-            AtividadeRegistrada.find({_id:{ $in: atividadesRegistradasIds }}, function(err, atividadesR) {
+    // COM TIPO N
+    } else if ((req.body.ano == "null") && (req.body.mes == "null") && (req.body.tipo != "null")) {
+      Monitoria.findById(req.session.user.usuario.materiaMonitorada, function(err, monitoria) {
+        if (err) {
+          res.json(err);
+        } else {
+
+          for (var i = 0; i < monitoria.atividadesRegistradas.length; i++) {
+            atividadesRegIds.push(monitoria.atividadesRegistradas[i]);
+          }
+          
+            // Encontra cada tarefa registrada pelo monitor
+            AtividadeRegistrada.find({_id:{ $in: atividadesRegIds}, "tipo": req.body.tipo}, function(err, atividadesR) {
+              if(err) {
+                res.json(err);
+              } else {
+                res.render('monitores/resultadosPesquisaAtividades', {"perfil": req.session.user.perfilUsuario, "atividadesR": atividadesR});
+              }
+            });
+        }
+      });
+    
+     // COM MES X E TIPO N 
+    } else if ((req.body.ano == "null") && (req.body.mes != "null") && (req.body.tipo != "null")) {
+      Monitoria.findById(req.session.user.usuario.materiaMonitorada, function(err, monitoria) {
+        if (err) {
+          res.json(err);
+        } else {
+
+          for (var i = 0; i < monitoria.atividadesRegistradas.length; i++) {
+            atividadesRegIds.push(monitoria.atividadesRegistradas[i]);
+          }
+          
+            // Encontra cada tarefa registrada pelo monitor
+            AtividadeRegistrada.find({_id:{ $in: atividadesRegIds}, "tipo": req.body.tipo, "data.mes": req.body.mes}, function(err, atividadesR) {
+              if(err) {
+                res.json(err);
+              } else {
+                res.render('monitores/resultadosPesquisaAtividades', {"perfil": req.session.user.perfilUsuario, "atividadesR": atividadesR});
+              }
+            });
+        }
+      });  
+    // COM ANO X E TIPO N  
+    } else if ((req.body.ano != "null") && (req.body.mes == "null") && (req.body.tipo != "null")) {
+      Monitoria.findById(req.session.user.usuario.materiaMonitorada, function(err, monitoria) {
+        if (err) {
+          res.json(err);
+        } else {
+
+          for (var i = 0; i < monitoria.atividadesRegistradas.length; i++) {
+            atividadesRegIds.push(monitoria.atividadesRegistradas[i]);
+          }
+          
+            // Encontra cada tarefa registrada pelo monitor
+            AtividadeRegistrada.find({_id:{ $in: atividadesRegIds}, "tipo": req.body.tipo, "data.ano": req.body.ano}, function(err, atividadesR) {
+              if(err) {
+                res.json(err);
+              } else {
+                res.render('monitores/resultadosPesquisaAtividades', {"perfil": req.session.user.perfilUsuario, "atividadesR": atividadesR});
+              }
+            });
+        }
+      });
+    //SÓ ANO
+    } else if ((req.body.ano != "null") && (req.body.mes == "null") && (req.body.tipo == "null")) {
+      Monitoria.findById(req.session.user.usuario.materiaMonitorada, function(err, monitoria) {
+        if (err) {
+          res.json(err);
+        } else {
+
+          for (var i = 0; i < monitoria.atividadesRegistradas.length; i++) {
+            atividadesRegIds.push(monitoria.atividadesRegistradas[i]);
+          }
+          
+            // Encontra cada tarefa registrada pelo monitor
+            AtividadeRegistrada.find({_id:{ $in: atividadesRegIds}, "data.ano": req.body.ano}, function(err, atividadesR) {
+              if(err) {
+                res.json(err);
+              } else {
+                res.render('monitores/resultadosPesquisaAtividades', {"perfil": req.session.user.perfilUsuario, "atividadesR": atividadesR});
+              }
+            });
+        }
+      });
+    // SÓ MÊS  
+    } else if ((req.body.ano == "null") && (req.body.mes != "null") && (req.body.tipo == "null")) {
+      Monitoria.findById(req.session.user.usuario.materiaMonitorada, function(err, monitoria) {
+        if (err) {
+          res.json(err);
+        } else {
+
+          for (var i = 0; i < monitoria.atividadesRegistradas.length; i++) {
+            atividadesRegIds.push(monitoria.atividadesRegistradas[i]);
+          }
+          
+            // Encontra cada tarefa registrada pelo monitor
+            AtividadeRegistrada.find({_id:{ $in: atividadesRegIds}, "data.mes": req.body.mes}, function(err, atividadesR) {
+              if(err) {
+                res.json(err);
+              } else {
+                res.render('monitores/resultadosPesquisaAtividades', {"perfil": req.session.user.perfilUsuario, "atividadesR": atividadesR});
+              }
+            });
+        }
+      });
+    }
+  } else {
+    res.redirect('/login');
+  } 
+};
+
+exports.verificarCondicoesBasicas = function(req, res) {
+  //  Flags para identificar se exitem atividades registradas pelo monitor e plano de trabalho
+  var flagAtividadesRegistradas = false;
+  var flagPlano = false;
+
+  Monitoria.findById(req.session.user.usuario.materiaMonitorada, function(err, monitoria) {
+    if (err) {
+      res.json(err);
+    } else {
+
+      if (monitoria.planoDeTrabalho.length > 0) {
+        flagPlano = true;
+
+        //  Verifica se a monitoria já possui atividades registradas pelo monitor ou não
+        if (monitoria.atividadesRegistradas.length > 0) {
+          flagAtividadesRegistradas = true;
+          return true;
+        } else {
+          return false;
+        }
+
+      } else {
+        return false;
+      }
+
+    }
+  }); 
+
+};
+
+exports.exibirHorarioDeAtendimento = function(req, res) {
+  if (req.session.user) {
+    // Flag para identificar se existe horário de atendimento
+    var flagHorario = false;
+
+    Monitoria.findById(req.session.user.usuario.materiaMonitorada, function(err, monitoria) {
+      if (err) {
+        res.json(err);
+      } else {
+        
+        //  Verifica se a monitoria já possui horario de atendimento do monitor
+        if (monitoria.horarioAtendimento != []) {
+          flagHorario = true;
+          horarioMonitor.findById(monitoria.horarioAtendimento, function(err, horario) {
+            res.render('monitores/horarioDeAtendimento', {"perfil": req.session.user.perfilUsuario, "possuiHorario": flagHorario, "horario": horario});
+          });
+        } else {
+          res.render('monitores/horarioDeAtendimento', {"perfil": req.session.user.perfilUsuario, "possuiHorario": flagHorario});
+        }
+      }
+    });
+  } else {
+    res.redirect('/login');
+  }
+};
+
+exports.exibirCadastroAtividade = function(req, res) {
+  if (req.session.user) {
+    //Array criado para armazenar id dos tipos de atividades contidas no plano de curso
+    var atividadesIds = [];
+
+    Monitoria.findById(req.session.user.usuario.materiaMonitorada, function(err, monitoria) {
+        if (err) {
+            res.json(err);
+        } else {
+            //  Verifica se o plano de trabalho foi registrado
+            if (monitoria.planoDeTrabalho.length > 0) {
+
+                //  Pesquisa todas as atividades do plano de trabalho
+                for (var i = 0; i < monitoria.planoDeTrabalho.length; i++) {
+                    atividadesIds.push(monitoria.planoDeTrabalho[i]);
+                }
+
+                //  Encontra cada tarefa registrada no Plano de Trabalho
+                Atividade.find({_id:{ $in: atividadesIds }}, function(err, atividades) {
+                    if (err) {
+                        res.json(err);
+                    } else {
+                        res.render('monitores/cadastroAtividade', {"perfil": req.session.user.perfilUsuario, "flag": true, "atividades": atividades, "monitoria": monitoria, "monitor": req.session.user.usuario._id });
+                    }
+                });
+            
+            //  Caso não haja plano de trabalho cadastrado ainda
+            } else {
+                res.render('monitores/cadastroAtividade', {"perfil": req.session.user.perfilUsuario, "flag": false, "monitoria": monitoria, "monitor": req.session.user.usuario._id});
+            } 
+        }
+    });    
+  } else {
+    res.redirect('/login');
+  }
+}
+
+exports.registrarAtividade = function(req, res) {
+  if (req.session.user) {
+    var novaAtivRegistrada = new AtividadeRegistrada();
+
+    var teste     = new Date();
+    var aux_data  = teste.toLocaleDateString().split("-");
+    var aux_tempo = teste.toLocaleTimeString().split(":");
+
+    var aux  = "";
+    var data = aux.concat(aux_data[2],"/",aux_data[1],"/",aux_data[0]);
+
+    var aux1  = "";
+    var tempo = aux1.concat(aux_tempo[0],":",aux_tempo[1]);
+
+    Atividade.findById(req.body.atividadeEscolhida, function(err, atividade) {
+        if (err) {
+            res.json(err);
+        } else {
+            novaAtivRegistrada.tipo                = atividade.tipo;
+            novaAtivRegistrada.titulo              = atividade.titulo;
+            novaAtivRegistrada.observacoes         = req.body.observacoes;
+            novaAtivRegistrada.contagemAtendimento = req.body.contagemAtendimento;
+            novaAtivRegistrada.horaInicio          = req.body.horaInicio;
+            novaAtivRegistrada.horaTermino         = req.body.horaTermino;
+            novaAtivRegistrada.data.hora           = tempo;
+            novaAtivRegistrada.data.dia            = data;
+
+            //  Tratamento de horas
+            let aux_tempo1 = req.body.horaInicio.split(":");
+            let aux_tempo2 = req.body.horaTermino.split(":");
+
+            var horaInicial = new Date(0,0,0,aux_tempo1[0],aux_tempo1[1]).getTime();
+            var horaFinal   = new Date(0,0,0,aux_tempo2[0],aux_tempo2[1]).getTime();
+
+            novaAtivRegistrada.horasRegistradas = (horaFinal - horaInicial) / 3600000;
+
+            //  Cálculo de porcentagem
+            var porc = (novaAtivRegistrada.horasRegistradas * 100) / atividade.horasTotais;
+
+            novaAtivRegistrada.save(function(err, atividadeR) {
                 if (err) {
                     res.json(err);
                 } else {
 
-                  res.render('index/indexMonitores', {"flag": true, "atividadesR": atividadesR, "monitor": monitor, "monitoria": monitoria });
-                }
+                    Monitoria.findByIdAndUpdate(req.session.user.usuario.materiaMonitorada, {$push: {atividadesRegistradas: atividadeR._id} } ,function(err, monitoria) {
+                        if (err) {
+                            res.json(err);
+                        } else {
+                            Atividade.findByIdAndUpdate(req.body.atividadeEscolhida, {$push: {atividadesRegistradas: atividadeR._id}, $inc: {horasContabilizadas: atividadeR.horasRegistradas}, $inc: {porcentagem: porc} }, function(err, atividade) {
+                                if (err) {
+                                    res.json(err);
+                                } else {
+                                    res.redirect('/monitoriaVigente/atividades');
+                                }
+                            });    
+                            
+                        }
+                    });
+
+                }    
             });
-
-          } else {
-            res.render('index/indexMonitores', {"flag": false, "monitor": monitor, "monitoria": monitoria });
-          }
+        
         }
-
-      });
-    }
-  });
-
+    });
+  } else {
+    res.redirect('/login');
+  } 
 };
 
-/**
- * 
- * @param {*} req 
- * @param {*} res 
- */
+exports.excluirAtividade = function(req, res) {
+  if (req.session.user) {
+      //  Remove atividade  de Atividades Registradas da monitoria
+    Monitoria.findByIdAndUpdate(req.session.user.usuario.materiaMonitorada, { $pull: {atividadesRegistradas: req.params.atividadeRegistradaId} }, function(err,monitoria) {
+      if (err) {
+          res.json(err);
+      } else {        
+          //  Remove a atividade registrada da sua coleção (documento)
+          AtividadeRegistrada.findByIdAndRemove(req.params.atividadeRegistradaId, function(err, atividadeR) {
+              if (err) {
+                  res.json(err);
+              } else {
+
+                  //  Cálculo de porcentagem
+                  var porc = (atividadeR.horasRegistradas * 100) / atividade.horasTotais;
+
+                  //  Remove a atividade registrada da sua atividade do plano de trabalho ao qual pertence
+                  Atividade.findOneAndUpdate({atividadesRegistradas: req.params.atividadeRegistradaId},{ $pull: {atividadesRegistradas: req.params.atividadeRegistradaId}, $inc: {horasContabilizadas: -(atividadeR.horasRegistradas) }, $inc: {porcentagem: -((atividadeR.horasRegistradas * 100) / atividade.horasTotais)} },function(err,atividade){
+                      if (err) {
+                          res.json(err);
+                      } else {
+                          res.redirect('/monitoriaVigente/atividades');
+                      }
+                  });
+              }
+          });
+      }
+    });
+  } else {
+    res.redirect('/login');
+  } 
+};
+
 exports.mostrarDetalhesMonitoria = function(req,res) {
    //  Array criado para adicionar as Ids das atividades vinculadas a monitoria
    var atividadesIds = [];
@@ -209,4 +520,77 @@ exports.mostrarDetalhesMonitoria = function(req,res) {
     }    
 
   });
-}
+};
+
+/*
+
+exports.listarMonitores = function(req, res) {
+  Monitor.find({}, function(err, monitores) {
+    if (err) {
+      res.json(err);
+    } else {
+      res.render("adm/monitores", { monitores: monitores });
+    }
+  });
+};
+
+
+exports.criarMonitor = function(req, res) {
+  //  Cria novo objeto Monitor
+  var monitor_cadastro = new Monitor();
+
+  //  Salva todos as info da requisição em cada componente de Monitor
+  monitor_cadastro.nome = req.body.nome;
+  monitor_cadastro.matricula = req.body.matricula;
+  monitor_cadastro.login = req.body.login;
+  monitor_cadastro.senha = req.body.senha;
+
+  monitor_cadastro.save(function(err, monitor) {
+    if (err) {
+      res.json(err);
+    } else {
+      console.log("Monitor cadastrado com sucesso");
+      res.redirect("/adm/monitores");
+    }
+  });
+};
+
+exports.deletarMonitor = function(req, res) {
+  Monitor.remove({ _id: req.params.monitorId }, function(err, monitor) {
+    if (err) {
+      res.json(err);
+    } else {
+      console.log("Monitor deletado com sucesso");
+      res.redirect("/adm/monitores");
+    }
+  });
+};
+
+exports.mostrarMonitorEdicao = function(req, res) {
+  Monitor.find({ _id: req.params.monitorId }, function(err, monitor) {
+    if (err) {
+      res.json(err);
+    } else {
+      //  parametro monitor é um array de monitores, então para pegar um único se acessa a posição 0
+      res.render("edicao/edicaoMonitor", { monitor: monitor[0] });
+    }
+  });
+};
+
+exports.editarMonitor = function(req, res) {
+  var nome = req.body.nome;
+  var matricula = req.body.matricula;
+  var login = req.body.login;
+  var senha = req.body.senha;
+
+  Monitor.findOneAndUpdate(
+    { _id: req.params.monitorId },
+    { nome, matricula, login, senha },
+    function(err, monitor) {
+      if (err) {
+        return console.log(err);
+      }
+      res.redirect("/adm/monitores");
+    }
+  );
+};*/

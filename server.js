@@ -1,13 +1,14 @@
-const express    = require('express');
-const bodyParser = require('body-parser');
-const passport   = require('passport');
-const jwt        = require('jwt-simple');
+const express      = require('express');
+const bodyParser   = require('body-parser');
+const jwt          = require('jwt-simple');
+const cookieParser = require('cookie-parser');
+const session      = require('express-session');
 
 const app  = express();
 const port = process.env.PORT || 3000;
 
 const mongoose      = require('mongoose');
-const BD            = require('./app/models/MonitoriaApiModel'); //created model loading here
+const BD            = require('./app/models/MonitoriaApiModel');
 const mongoURI      = require('./app/config/config').uriMongo;
 //const mongoURILocal = require('./app/config/config').uriMongoLocal;
 
@@ -21,12 +22,6 @@ mongoose.connect(mongoURI, function(err) {
     console.log('Conexão com Mongo estabelecidade com sucesso!');
   }
 });
-
-// CONNECTION EVENTS
-// When successfully connected
-/*mongoose.connection.on('connected', function () {  
-  console.log('Conexão via mongoose aberta');
-}); */
 
 // If the connection throws an error
 mongoose.connection.on('error',function (err) {  
@@ -48,7 +43,8 @@ process.on('SIGINT', function() {
 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
-app.use(passport.initialize());
+app.use(cookieParser());
+app.use(session({secret: "TESTE", resave: false, saveUninitialized: true}));
 
 app.set('views', [__dirname + '/app/views',
                   __dirname + '/app/views/index', 
@@ -59,8 +55,11 @@ app.set('views', [__dirname + '/app/views',
 //app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');    // Setamos que nossa engine será o ejs
 
-var routes = require('./app/routes/MonitoriaApiRoutes'); //importing route
-routes(app); //register the route 
+var routesAPI = require('./app/routes/MonitoriaApiRoutes');
+var routesADM = require('./app/routes/admRoutes'); 
+
+routesAPI(app); //register the route 
+routesADM(app);
 
 app.listen(port);
 

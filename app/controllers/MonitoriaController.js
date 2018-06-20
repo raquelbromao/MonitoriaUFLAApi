@@ -203,26 +203,24 @@ exports.editarMonitoria = function(req, res) {
   res.redirect("/adm/monitorias");
 };
 
-/**
- * Pesquisa a monitoria desejada e retorna uma página com suas informações e opção de cadastro
- * @param {*} req 
- * @param {*} res 
- */
-exports.pesquisarMonitoria = function(req, res) {
-  //  Recebe a query dada e armazena numa variável
-  var monitoria = req.query.nomeMonitoria;
-  console.log("MONITORIA: "+monitoria);
-  console.log("ALUNO: "+req.params.alunoId);
+exports.informacoesMonitoria = function(req, res) {
+  var flagPossuiHorarioAtendimento = false;
 
-  Monitoria.find({ nomeDisciplina: req.query.nomeMonitoria }, function(err, monitorias) {
+  Monitoria.findById(req.params.monitoriaId, function(err, monitoria) {
     if (err) {
       res.json(err);
     } else {
-      console.log(monitorias);
-      res.render("resultado", { "monitorias": monitorias, "aluno": req.params.alunoId });
+      if (monitoria.horarioAtendimento == null ) {
+        res.render("informacoesMonitoria", {"perfil": req.session.user.perfilUsuario, "monitoria": monitoria, "ID": req.session.user.usuario._id, "flagPossuiHorarioAtendimento": flagPossuiHorarioAtendimento});
+      } else {
+        flagPossuiHorarioAtendimento = true;
+        horarioMonitor.findById(monitoria.horarioAtendimento, function(err, horario) {
+          res.render("informacoesMonitoria", {"perfil": req.session.user.perfilUsuario, "monitoria": monitoria, "ID": req.session.user.usuario._id, "flagPossuiHorarioAtendimento": flagPossuiHorarioAtendimento, "horario": horario}); 
+        });        
+      }
     }
   });
-};
+}
 
 /**
  * Mostra a página de cadastro de horário de atendimento do monitor

@@ -1,14 +1,134 @@
 "use strict";
 
-var bcrypt = require("bcrypt");
+const mongoose  = require("mongoose");
+const Professor = mongoose.model("Professores");
+const Monitoria = mongoose.model("Monitorias");
+const Monitor   = mongoose.model("Monitores");
 
-var mongoose = require("mongoose");
-var Professor = mongoose.model("Professores");
-var Monitoria = mongoose.model("Monitorias");
+exports.exibirMonitoriasOrientadas = function(req, res) {
+  if (req.session.user) {
+    //  Array criado para adicionar as Ids das monitorias no qual o professor é responsável
+    var arrayIds = [];
+
+    //  Percorre o array das monitorias 
+    for (var i = 0; i < req.session.user.usuario.monitorias.length; i++) {
+      arrayIds.push(req.session.user.usuario.monitorias[i]);
+    }
+
+    //  Encontra cada monitoria e adiciona num array
+    Monitoria.find({_id:{ $in: arrayIds }}, function(err, monitorias) {
+      if (err) {
+        res.json(err);
+      } else {
+
+        if (monitorias == null) {
+          res.render('professores/listaMonitorias', {"perfil": req.session.user.perfilUsuario, "monitorias": null});
+        }
+
+        res.render('professores/listaMonitorias', {"perfil": req.session.user.perfilUsuario, "monitorias": monitorias});
+      }
+    });
+  } else {
+    res.redirect('/login');
+  }
+};
+
+exports.exibirMonitoria = function(req, res) {
+  if (req.session.user) {
+     //  Encontra monitoria requisitada
+     Monitoria.findById(req.params.monitoriaId, function(err, monitoria) {
+      if (err) {
+        res.json(err);
+      } else {
+
+        // Encontra monitor responsável
+        Monitor.findById(monitoria.monitorID, function(err, monitor) {
+          if (err) {
+            res.json(err);
+          } else {
+            res.render('professores/indexMonitoriaOrientada', {"perfil": req.session.user.perfilUsuario, "monitoria": monitoria, "monitor": monitor});
+          }
+        });
+
+      }
+    });
+  } else {
+    res.redirect('/login');
+  }
+};
+
+//TODO:
+exports.exibirAtividades = function(req, res) {
+  if (req.session.user) {
+     //  Encontra monitoria requisitada
+     Monitoria.findById(req.params.monitoriaId, function(err, monitoria) {
+      if (err) {
+        res.json(err);
+      } else {
+
+      }
+    });
+  } else {
+    res.redirect('/login');
+  }
+};
+
+exports.exibirPlanoDeTrabalho = function(req, res) {
+  if (req.session.user) {
+    //  Array criado para adicionar as Ids das atividades vinculadas a monitoria
+    var atividadesIds = [];
+    //  Flag criada para identificar se já existe plano de trabalho registrado
+    var flagPlanoT = false;
+
+    //  Encontra monitoria requisitada
+    Monitoria.findById(req.params.monitoriaId, function(err, monitoria) {
+      if (err) {
+        res.json(err);
+      } else {
+
+        if (monitoria.planoDeTrabalho.length > 0) {
+          flagPlanoT = true;
+
+          res.render('professores/planoDeTrabalho', {"perfil": req.session.user.perfilUsuario, "flagPlanoT": flagPlanoT});
+        } else {
+          res.render('professores/planoDeTrabalho', {"perfil": req.session.user.perfilUsuario, "flagPlanoT": flagPlanoT});
+        } 
+
+      }
+    });
+  } else {
+    res.redirect('/login');
+  }
+};
+
+//TODO:
+exports.exibirHorarioAtendimento = function(req, res) {
+  if (req.session.user) {
+     //  Encontra monitoria requisitada
+     Monitoria.findById(req.params.monitoriaId, function(err, monitoria) {
+      if (err) {
+        res.json(err);
+      } else {
+
+      }
+    });
+  } else {
+    res.redirect('/login');
+  }
+};
+
+//TODO: Refatorar função
+exports.cadastrarAtividadePlano = function(req, res) {
+  if (req.session.user) {
+
+  } else {
+    res.redirect('/login');
+  }
+  res.render('professores/cadastroAtividade', {"perfil": req.session.user.perfilUsuario});
+};
+
 
 /*
-  Lista todos os professores presentes no BD
-*/
 exports.listarProfessores = function(req, res) {
   Professor.find({}, function(err, professores) {
     if (err) {
@@ -19,9 +139,6 @@ exports.listarProfessores = function(req, res) {
   });
 };
 
-/*
-  Cadastra professores no BD
-*/
 exports.criarProfessor = function(req, res) {
   var professor_cadastro = new Professor();
 
@@ -41,9 +158,6 @@ exports.criarProfessor = function(req, res) {
   });
 };
 
-/*
-  Deleta Professor do BD
-*/
 exports.deletarProfessor = function(req, res) {
   Professor.remove({ _id: req.params.professorId }, function(err, professor) {
     if (err) {
@@ -55,9 +169,6 @@ exports.deletarProfessor = function(req, res) {
   });
 };
 
-/*
-  Mostra Professor da edição
-*/
 exports.mostrarProfessorEdicao = function(req, res) {
   Professor.find({ _id: req.params.professorId }, function(err, professor) {
     if (err) {
@@ -69,9 +180,6 @@ exports.mostrarProfessorEdicao = function(req, res) {
   });
 };
 
-/*
-  Edita Professor e salva mudanças no BD
-*/
 exports.editarProfessor = function(req, res) {
   var nome = req.body.nome;
   var codigo = req.body.codigo;
@@ -91,9 +199,6 @@ exports.editarProfessor = function(req, res) {
   );
 };
 
-/*
-  Mostra Professor do index
-*/
 exports.mostrarProfIndex = function(req, res) {
   //  Array criado para adicionar as Ids das monitorias no qual o professor é responsável
   var arrayIds = [];
@@ -127,3 +232,4 @@ exports.mostrarProfIndex = function(req, res) {
   });
   
 };
+*/

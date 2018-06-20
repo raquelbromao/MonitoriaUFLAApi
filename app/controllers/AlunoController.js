@@ -1,12 +1,128 @@
 'use strict';
 
-var mongoose = require('mongoose');
-var Aluno = mongoose.model('Alunos');
-var Monitoria = mongoose.model('Monitorias');
+var mongoose       = require('mongoose');
+var Aluno          = mongoose.model('Alunos');
+var Monitoria      = mongoose.model('Monitorias');
+var horarioMonitor = mongoose.model("HorariosMonitorias");
+
+
+exports.cadastrarMonitoria = function(req, res) {
+  if (req.session.user.perfilUsuario == 'Aluno') {
+    //  Encontra monitoria para cadastro e atualiza com ID do aluno
+    Monitoria.findByIdAndUpdate(
+      {_id: req.params.monitoriaId},
+      {$push: {alunosInscritos: req.session.user.usuario._id}},
+      {safe: true, upsert: true}, 
+      function(err, monitoria) {
+      if (err) {
+        res.json(err);
+      } else {
+        //  Encontra aluno que quer se cadastrar na monitoria e atualiza seu campo Monitorias
+        //  com a ID da monitoria desejada
+        Aluno.findByIdAndUpdate(
+          {_id: req.session.user.usuario._id},
+          {$push: {monitorias: monitoria._id}},
+          {safe: true, upsert: true},
+          function(err) {
+            if (err) {
+              console.log(err);
+            } else {
+              res.redirect('/monitorias/informacoes/'+monitoria._id);
+            }
+        });
+      }
+    });
+  }  else {
+    res.send('Não autorizado!');
+  }
+};
+
+exports.removerCadastroMonitoria = function(req, res) {
+  if (req.session.user.perfilUsuario == 'Aluno') {
+    //  Encontra monitoria para cadastro e atualiza com ID do aluno
+    Monitoria.findByIdAndUpdate(
+      {_id: req.params.monitoriaId},
+      {$pop: {alunosInscritos: req.session.user.usuario._id}},
+      {safe: true, upsert: true}, 
+      function(err, monitoria) {
+      if (err) {
+        res.json(err);
+      } else {
+        //  Encontra aluno que quer se cadastrar na monitoria e atualiza seu campo Monitorias
+        //  com a ID da monitoria desejada
+        Aluno.findByIdAndUpdate(
+          {_id: req.session.user.usuario._id},
+          {$pop: {monitorias: monitoria._id}},
+          {safe: true, upsert: true},
+          function(err) {
+            if (err) {
+              console.log(err);
+            } else {
+              res.redirect('/monitoriasCadastradas');
+            }
+        });
+      }
+    });
+  }  else {
+    res.send('Não autorizado!');
+  }
+};
+
+exports.listarMonitoriasCadastradas = function(req, res) {
+  if (req.session.user.perfilUsuario == 'Aluno') {
+    //  Array criado para adicionar as Ids das monitorias no qual o aluno se cadastrou
+    var arrayIds = [];
+
+    Aluno.findById({_id: req.session.user.usuario._id}, function(err, aluno) {
+      if (err) {
+        res.json(err);
+      } else {
+        //  Percorre o array das monitorias cadastradas pelo aluno
+        for (var i = 0; i < aluno.monitorias.length; i++) {
+          arrayIds.push(aluno.monitorias[i])
+        }
+
+        //  Encontra cada monitoria e adiciona num array
+        Monitoria.find({_id:{ $in: arrayIds }}, function(err, monitorias) {
+          if (err) {
+            res.json(err);
+          } else {
+            res.render('alunos/monitoriasCadastradas', {"monitorias": monitorias});
+          }
+        });
+      }
+
+    });
+  } else {
+    res.send('Não autorizado!');
+  }
+};
+
+exports.informacaoMonitoriaCadastrada = function(req, res) {
+  if (req.session.user.perfilUsuario == 'Aluno') {
+    var flagPossuiHorarioAtendimento = false;
+
+    Monitoria.findById(req.params.monitoriaId, function(err, monitoria) {
+      if (err) {
+        res.json(err);
+      } else {
+        if (monitoria.horarioAtendimento == null ) {
+          res.render("alunos/informacoesMonitoriaCadastrada", {"monitoria": monitoria, "flagPossuiHorarioAtendimento": flagPossuiHorarioAtendimento});
+        } else {
+          flagPossuiHorarioAtendimento = true;
+          horarioMonitor.findById(monitoria.horarioAtendimento, function(err, horario) {
+            res.render("alunos/informacoesMonitoriaCadastrada", {"monitoria": monitoria, "flagPossuiHorarioAtendimento": flagPossuiHorarioAtendimento, "horario": horario}); 
+          });        
+        }
+      }
+    });
+  } else {
+    res.send('Não autorizado!');
+  }  
+};
+
 
 /*
-  Lista todos os alunos presentes no BD
-*/
 exports.listarAlunos = function(req, res) {
   Aluno.find({}, function(err, alunos) {
     if (err) {
@@ -17,9 +133,6 @@ exports.listarAlunos = function(req, res) {
   });
 };
 
-/*
-  Cadastra alunos no BD
-*/
 exports.criarAluno = function(req, res) {
   //  Cria novo objeto Aluno
   var aluno_cadastro = new Aluno();
@@ -42,9 +155,6 @@ exports.criarAluno = function(req, res) {
   });
 };
 
-/*
-  Deleta aluno do BD
-*/
 exports.deletarAluno = function(req, res) {
   Aluno.remove({_id: req.params.alunoId}, function(err, aluno) {
     if (err) {
@@ -56,9 +166,6 @@ exports.deletarAluno = function(req, res) {
   });
 };
 
-/*
-  Mostra Aluno da edição
-*/
 exports.mostrarAlunoEdicao = function(req, res) {
   Aluno.find({_id: req.params.alunoId}, function(err, aluno) {
     if (err) {
@@ -70,9 +177,6 @@ exports.mostrarAlunoEdicao = function(req, res) {
   });
 };
 
-/*
-  Edita aluno e salva mudanças no BD
-*/
 exports.editarAluno = function(req, res) {
   var nome = req.body.nome;
   var matricula = req.body.matricula;
@@ -89,78 +193,4 @@ exports.editarAluno = function(req, res) {
       res.redirect('/adm/alunos');
   });
 };
-
-/*
-  Mostra Aluno do index
 */
-exports.mostrarAlunoIndex = function(req, res) {
-  //  Array criado para adicionar as Ids das monitorias no qual o aluno se cadastrou
-  var arrayIds = [];
-
-  Aluno.findById({_id: req.params.alunoId}, function(err, aluno) {
-    if (err) {
-      res.json(err);
-    } else {
-      //  Percorre o array das monitorias cadastradas pelo aluno
-      for (var i = 0; i < aluno.monitorias.length; i++) {
-        arrayIds.push(aluno.monitorias[i])
-      }
-
-      //  Encontra cada monitoria e adiciona num array
-      Monitoria.find({_id:{ $in: arrayIds }}, function(err, monitorias) {
-        if (err) {
-          res.json(err);
-        } else {
-          res.render('index/indexAlunos', {"aluno": aluno, "monitorias": monitorias});
-        }
-      });
-    }
-
-  });
-
-};
-
-/*
-  Cadastra monitoria em aluno
-*/
-exports.cadastrarMonitoria = function(req, res) {
-  var aluno = req.params.alunoId;
-  var monitoria = req.params.monitoriaId;
-  console.log('Aluno ID: ' + aluno);
-  console.log('Monitoria ID: ' + monitoria);
-
-  //  Encontra monitoria para cadastro
-  Monitoria.findById({_id: req.params.monitoriaId}, function(err, monitoria) {
-    if (err) {
-      res.json(err);
-    } else {
-      //  Encontra aluno que quer se cadastrar na monitoria e atualiza seu campo Monitorias
-      //  com a ID da monitoria desejada
-      Aluno.findByIdAndUpdate(
-        {_id: req.params.alunoId},
-        {$push: {monitorias: req.params.monitoriaId}},
-        {safe: true, upsert: true},
-        function(err, aluno) {
-          if (err) {
-            console.log(err);
-          } else {
-
-            Monitoria.findByIdAndUpdate(
-              {_id: req.params.monitoriaId},
-              {$push: {alunosInscritos: aluno._id}},
-              {safe: true, upsert: true},
-              function(err, monitoria) {
-                if (err) {
-                  console.log(err);
-                } else {
-                  console.log(monitoria.alunosInscritos);
-                }
-            });
-            console.log(aluno.monitorias);
-          }
-      });
-    }
-  });
-
-  res.redirect('/indexAlunos/' + req.params.alunoId);
-};

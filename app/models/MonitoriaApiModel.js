@@ -6,14 +6,17 @@ var Schema = mongoose.Schema;
 var AlunoSchema = new Schema({
   nome: {
     type: String,
+    maxlength: 80,
     required: true
   },
   matricula: {
     type: String,
+    maxlength: 9,
     required: true
   },
   login: {
     type: String,
+    maxlength: 50,
     required: true
   },
   senha: {
@@ -29,18 +32,22 @@ var AlunoSchema = new Schema({
 var ProfessorSchema = new Schema({
   nome: {
     type: String,
+    maxlength: 80,
     required: true
   },
   codigo: {
     type: String,
+    maxlength: 6,
     required: true
   },
   telefone: {
     type: String,
+    maxlength: 12,
     default: null
   },
   login: {
     type: String,
+    maxlength: 50,
     required: true
   },
   senha: {
@@ -60,18 +67,22 @@ var ProfessorSchema = new Schema({
 var prgSchema = new Schema ({
   nome: {
     type: String,
+    maxlength: 80,
     required: true
   },
   codigo: {
     type: String,
+    maxlength: 6,
     required: true
   },
   telefone: {
     type: String,
+    maxlength: 12,
     default: null
   },
   login: {
     type: String,
+    maxlength: 50,
     required: true
   },
   senha: {
@@ -83,21 +94,25 @@ var prgSchema = new Schema ({
 var MonitorSchema = new Schema ({
   nome: {
     type: String,
+    maxlength: 80,
     required: true
   },
   matricula: {
     type: String,
+    maxlength: 9,
     required: true
   },
   login: {
     type: String,
+    maxlength: 50,
     required: true
   },
   senha: {
     type: String,
     required: true
   },
-  materiaMonitorada: {
+  //FIXME: Mudar nome
+  materiaMonitorada: { 
     type: Schema.Types.ObjectId,
     ref: 'Monitoria'
   }
@@ -106,10 +121,12 @@ var MonitorSchema = new Schema ({
 var MonitoriaSchema = new Schema({
   nomeDisciplina: {
     type: String,
+    maxlength: 80,
     required: true
   },
   codigoDisciplina: {
     type: String,
+    maxlength: 6,
     required: true
   },
   professor: {
@@ -161,13 +178,17 @@ var MonitoriaSchema = new Schema({
 var AtividadeSchema = new Schema ({
   tipo: {
     type: String,
-    required: true
+    required: true,
+    enum: ["ATV1", ]
   },
   titulo: {
-    type: String
+    type: String,
+    required: true,
+    maxlength: 100
   },
   observacoes: {
-    type: String
+    type: String,
+    maxlength: 200
   },
   horasTotais: {
     type: Number,
@@ -193,15 +214,22 @@ var AtividadeRegistradaSchema = new Schema ({
     required: true
   },
   titulo: {
-    type: String
+    type: String,
+    required: true,
+    maxlength: 100
   },
   observacoes: {
-    type: String
+    type: String,
+    maxlength: 200
   },
   contagemAtendimento: {
-    type: Number
+    type: Number,
+    default: null
   },
   data: {
+    registro: Date,
+    mes: String,
+    ano: String,
     dia: String,
     hora: String
   },
@@ -213,8 +241,10 @@ var AtividadeRegistradaSchema = new Schema ({
     type: String,
     required: true
   },
+  //FIXME: Mudar para horas totais
   horasRegistradas: {
-    type: Number
+    type: Number,
+    required: true
   }
 });
 

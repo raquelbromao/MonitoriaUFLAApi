@@ -19,7 +19,6 @@
 
      <div class="jumbotron">
        <p>Cadastrar Horário de Atendimento:</p>
-       <p>Cada campo representa um dia da semana, insira os intervalos de horários para cada dia respectivo:</p>
        <br>
        <form action="/monitorias/criarHorarioDeAtendimento/<%= professor %>/<%= monitoria %>" method="post" class="form-horizontal">
        <div class="form-group">
@@ -101,24 +100,24 @@
           </div>
           <div class="col-md-12"> 
               <H4>Sexta-feira</H4>
-              <div class="form-group horarios col-md-3">
+              <div class="form-group horarios col-md-2">
                 <label>Hora 1 de Início:</label>
                 <input type="time"  class="form-control" name="horaInicio1Sex">
               </div>
-              <div class="form-group horarios col-md-3">
+              <div class="form-group horarios col-md-2">
                 <label>Hora 1 do Término:</label>
                 <input type="time"  class="form-control" name="horaTermino1Sex">
               </div>
-              <div class="form-group horarios col-md-3">
+              <div class="form-group horarios col-md-2">
                   <label>Hora 2 de Início:</label>
                   <input type="time"  class="form-control" name="horaInicio2Sex">
                 </div>
-                <div class="form-group horarios col-md-3">
+                <div class="form-group horarios col-md-2">
                   <label>Hora 2 do Término:</label>
                   <input type="time"  class="form-control" name="horaTermino2Sex">
                 </div>  
           </div>          
-        <button type="submit" class="btn btn-primary btn-block">Cadastrar Horário</button>
+        <button type="submit" class="btn btn-primary">Cadastrar Horário</button>
        </div>
        </form>
      </div>  

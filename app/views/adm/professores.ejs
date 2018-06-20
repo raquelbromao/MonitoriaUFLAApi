@@ -41,7 +41,6 @@
               <th>Código</th>
               <th>E-mail</th>
               <th>ID</th>
-              <th>Senha</th>
               <th>Monitorias</th>
               <th>Editar</th>
               <th>Deletar</th>
@@ -52,7 +51,6 @@
               <th><%= professor.codigo %></th>
               <th><%= professor.login %></th>
               <th><%= professor._id %></th>
-              <th><%= professor.senha %></th>
               <th><%= professor.monitorias %></th>
               <th><a class="btn btn-warning btn-block" href="/professores/editar/<%= professor._id %>">Editar</a></th>
               <th><a class="btn btn-raised btn-danger btn-block" onclick="return confirm('Tem certeza que deseja excluir o professor? Esta ação não poderá ser desfeita!');" href="/professores/deletar/<%= professor._id %>">Deletar</a></th>

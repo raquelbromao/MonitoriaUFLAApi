@@ -41,7 +41,6 @@
               <th>Código</th>
               <th>E-mail</th>
               <th>ID</th>
-              <th>Senha</th>
               <th>Editar</th>
               <th>Deletar</th>
             </tr>
@@ -51,7 +50,6 @@
               <th><%= prg.codigo %></th>
               <th><%= prg.login %></th>
               <th><%= prg._id %></th>
-              <th><%= prg.senha %></th>
               <th><a class="btn btn-warning btn-block" href="/prg/editar/<%= prg._id %>">Editar</a></th>
               <th><a class="btn btn-raised btn-danger btn-block" onclick="return confirm('Tem certeza que deseja excluir o usuário? Esta ação não poderá ser desfeita!');" href="/prg/deletar/<%= prg._id %>">Deletar</a></th>
             </tr>

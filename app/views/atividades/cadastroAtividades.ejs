@@ -2,11 +2,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>UFLA Monitoria API</title>
-  <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
-  <style>
-  </style>
+  <% include partials/head %>
 </head>
 <body>
   <header>
@@ -14,11 +10,11 @@
   </header>
 
    <main>
-    <div class="container cadastroAtividade">
+    <div class="container">
 
      <div class="jumbotron">
        <p>Cadastrar Atividade</p><br>
-       <form action="/planoMonitoria/cadastrarAtividade/<%= professor %>/<%= monitoria %>" method="post" class="form-horizontal">
+       <form action="#" method="post" class="form-horizontal">
         <div class="form-group">
           <label>Tipo de Atividade:</label>
             <select multiple class="form-control custom-select" name="tipo" required>

@@ -41,14 +41,12 @@
 <body>
 
    <main>
-     <div class="container div-login">
-      <!--<a href="http://www.ufla.br/portal/"><img src="../../public/images/logo-ufla.png"></a>-->
-       <div class="jumbotron">
+     <div class="container">
+       <div class="jumbotron login">
          <form action="/login" method="post" class="form-horizontal form-login">
-           <input type="email" placeholder="E-mail acadêmico" pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$" class="form-control form-control-sm" name="login">
+           <input type="email" placeholder="E-mail institucional" pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$" class="form-control form-control-sm" name="login">
            <input type="password" placeholder="Senha" class="form-control form-control-sm" name="senha">
            <br>
-           
              <input type="radio" name="tipo" class="tipo-usuario" value="professor"> Professor
              <input type="radio" name="tipo" class="tipo-usuario" value="aluno"> Aluno
              <input type="radio" name="tipo" class="tipo-usuario" value="monitor"> Monitor
