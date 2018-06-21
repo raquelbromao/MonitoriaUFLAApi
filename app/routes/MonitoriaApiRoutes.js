@@ -113,25 +113,34 @@ module.exports = function(app) {
     .route("/monitoriaOrientada/:monitoriaId")
     .get(metodosProfessor.exibirMonitoria);
     
-  //TODO:  
   app
     .route("/monitoriaOrientada/:monitoriaId/planoDeTrabalho")
-    .get(metodosProfessor.cadastrarAtividadePlano);  
+    .get(metodosProfessor.exibirPlanoDeTrabalho);  
+
+  //TODO:  
+  app
+    .route("/monitoriaOrientada/planoDeTrabalho/editarAtividade/:atividadeId")
+    .post();  
+
+  //TODO:  
+  app
+    .route("/monitoriaOrientada/planoDeTrabalho/excluirAtividade/:atividadeId")
+    .get();  
   
   //TODO:  
   app
     .route("/monitoriaOrientada/:monitoriaId/planoDeTrabalho/cadastrarAtividade")
-    .get(metodosProfessor.cadastrarAtividadePlano);
+    .get();
 
   //TODO:  
   app
     .route("/monitoriaOrientada/:monitoriaId/atividades")
-    .get(metodosProfessor.cadastrarAtividadePlano);  
+    .get();  
   
   //TODO:  
   app
     .route("/monitoriaOrientada/:monitoriaId/atividades/pesquisar")
-    .get(metodosProfessor.cadastrarAtividadePlano);   
+    .get();   
     
     
 
@@ -244,4 +253,10 @@ module.exports = function(app) {
   app
     .route("/erro/:erroId")
     .post(metodosErro.reportarErro);
+
+  // TESTES  
+
+  app 
+    .route("/teste/dataAtividade")
+    .get();  
 };

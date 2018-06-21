@@ -1,6 +1,7 @@
 "use strict";
 
 const mongoose  = require("mongoose");
+const Atividade = mongoose.model("Atividades");
 const Professor = mongoose.model("Professores");
 const Monitoria = mongoose.model("Monitorias");
 const Monitor   = mongoose.model("Monitores");
@@ -89,9 +90,20 @@ exports.exibirPlanoDeTrabalho = function(req, res) {
         if (monitoria.planoDeTrabalho.length > 0) {
           flagPlanoT = true;
 
-          res.render('professores/planoDeTrabalho', {"perfil": req.session.user.perfilUsuario, "flagPlanoT": flagPlanoT});
+          for (var i = 0; i < monitoria.planoDeTrabalho.length; i++) {
+            atividadesIds.push(monitoria.planoDeTrabalho[i]);
+          }
+
+          //  Encontra cada tarefa registrada no Plano de Trabalho
+          Atividade.find({_id:{ $in: atividadesIds }}, function(err, atividades) {
+            if (err) {
+                res.json(err);
+            } else {
+              res.render('professores/planoDeTrabalho', {"perfil": req.session.user.perfilUsuario, "possuiPlano": flagPlanoT, "atividades": atividades, "monitoria": monitoria});
+            }
+          });
         } else {
-          res.render('professores/planoDeTrabalho', {"perfil": req.session.user.perfilUsuario, "flagPlanoT": flagPlanoT});
+          res.render('professores/planoDeTrabalho', {"perfil": req.session.user.perfilUsuario, "possuiPlano": flagPlanoT, "monitoria": monitoria});
         } 
 
       }

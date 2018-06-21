@@ -1,6 +1,5 @@
 const express      = require('express');
 const bodyParser   = require('body-parser');
-const jwt          = require('jwt-simple');
 const cookieParser = require('cookie-parser');
 const session      = require('express-session');
 
@@ -58,7 +57,7 @@ app.set('view engine', 'ejs');    // Setamos que nossa engine será o ejs
 var routesAPI = require('./app/routes/MonitoriaApiRoutes');
 var routesADM = require('./app/routes/admRoutes'); 
 
-routesAPI(app); //register the route 
+routesAPI(app);
 routesADM(app);
 
 app.listen(port);

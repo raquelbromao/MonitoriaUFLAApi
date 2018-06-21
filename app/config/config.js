@@ -8,9 +8,6 @@ exports.uriMongoLocal = "mongodb://localhost/MonitoriaUflaDB";
 exports.saltosCriptografia = 10;
 exports.senhaPadrao = "123456";
 
-//  JWT-Token
-exports.segredo = "D34gjsk6cw75hgu";
-
 //  CÓDIGOS
 exports.ultimosCodigosProf = {
     DCC: "003dcc",

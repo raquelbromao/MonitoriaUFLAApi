@@ -2,18 +2,12 @@
 
 var mongoose = require("mongoose");
 var bcrypt   = require("bcrypt");
-var cache    = require("memory-cache");
 
 var Aluno     = mongoose.model("Alunos");
 var Professor = mongoose.model("Professores");
 var Monitor   = mongoose.model("Monitores");
 var PRG       = mongoose.model("PRG");
 
-/**
- * Autentica o login
- * @param {*} req 
- * @param {*} res 
- */
 exports.autenticarLogin = function(req, res) {
   //  Analisa tipo de usuário que requeriu entrada no sistema
   if (req.body.tipo === "aluno") {
@@ -136,4 +130,4 @@ exports.sairSistema = function(req, res) {
       res.redirect('/');
     }
   });
-}
+};
