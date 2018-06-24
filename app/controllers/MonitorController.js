@@ -1,6 +1,10 @@
 "use strict";
 
-var mongoose = require("mongoose");
+const mongoose = require("mongoose");
+const fs       = require('fs');
+const path     = require('path');
+const PDF      = require('html-pdf');
+const ejs      = require('ejs');
 
 var Atividade           = mongoose.model("Atividades");
 var AtividadeRegistrada = mongoose.model("AtividadesRegistradas");
@@ -96,25 +100,21 @@ exports.exibirAtividades = function(req, res) {
 
 exports.pesquisarAtividades = function(req, res) {
   if (req.session.user && req.session.user.perfilUsuario == 'Monitor') {
-    console.log(req.body.ano);
-    console.log(req.body.mes);
-    console.log(req.body.tipo);
     //  Array para adicionar as Ids das atividades registradas vinculadas a monitoria
     var atividadesRegIds = [];
 
-    // QUALQUE COISA
-    if ((req.body.ano == "null") && (req.body.mes == "null") && (req.body.tipo == "null")) {
+    if ((req.body.ano == "0000") && (req.body.mes == "12") && (req.body.tipo == "ATV00") && (req.body.periodo == "0000-00")) {
       Monitoria.findById(req.session.user.usuario.materiaMonitorada, function(err, monitoria) {
         if (err) {
           res.json(err);
         } else {
-
+  
           for (var i = 0; i < monitoria.atividadesRegistradas.length; i++) {
             atividadesRegIds.push(monitoria.atividadesRegistradas[i]);
           }
           
             // Encontra cada tarefa registrada pelo monitor
-            AtividadeRegistrada.find({_id:{ $in: atividadesRegIds }},function(err, atividadesR) {
+            AtividadeRegistrada.find({_id:{ $in: atividadesRegIds }}, function(err, atividadesR) {
               if(err) {
                 res.json(err);
               } else {
@@ -123,127 +123,40 @@ exports.pesquisarAtividades = function(req, res) {
             });
         }
       });
-    
-    // COM MEX X E ANO Y
-    } else if ((req.body.ano != "null") && (req.body.mes != "null") && (req.body.tipo == "null")) {
+    } else {
       Monitoria.findById(req.session.user.usuario.materiaMonitorada, function(err, monitoria) {
         if (err) {
           res.json(err);
         } else {
-
+  
           for (var i = 0; i < monitoria.atividadesRegistradas.length; i++) {
             atividadesRegIds.push(monitoria.atividadesRegistradas[i]);
           }
           
-            // Encontra cada tarefa registrada pelo monitor
-            AtividadeRegistrada.find({_id:{ $in: atividadesRegIds}, "data.ano": req.body.ano, "data.mes": req.body.mes}, function(err, atividadesR) {
-              if(err) {
-                res.json(err);
-              } else {
-                res.render('monitores/resultadosPesquisaAtividades', {"perfil": req.session.user.perfilUsuario, "atividadesR": atividadesR});
-              }
-            });
-        }
-      });
+            var filtroPesquisa = [];
 
-    // COM TIPO N
-    } else if ((req.body.ano == "null") && (req.body.mes == "null") && (req.body.tipo != "null")) {
-      Monitoria.findById(req.session.user.usuario.materiaMonitorada, function(err, monitoria) {
-        if (err) {
-          res.json(err);
-        } else {
+            if (req.body.ano != '0000') {
+              filtroPesquisa.push({'data.ano': req.body.ano});
+            }
 
-          for (var i = 0; i < monitoria.atividadesRegistradas.length; i++) {
-            atividadesRegIds.push(monitoria.atividadesRegistradas[i]);
-          }
-          
-            // Encontra cada tarefa registrada pelo monitor
-            AtividadeRegistrada.find({_id:{ $in: atividadesRegIds}, "tipo": req.body.tipo}, function(err, atividadesR) {
-              if(err) {
-                res.json(err);
-              } else {
-                res.render('monitores/resultadosPesquisaAtividades', {"perfil": req.session.user.perfilUsuario, "atividadesR": atividadesR});
-              }
-            });
-        }
-      });
-    
-     // COM MES X E TIPO N 
-    } else if ((req.body.ano == "null") && (req.body.mes != "null") && (req.body.tipo != "null")) {
-      Monitoria.findById(req.session.user.usuario.materiaMonitorada, function(err, monitoria) {
-        if (err) {
-          res.json(err);
-        } else {
+            if (req.body.mes != '12') {
+              filtroPesquisa.push({'data.mes': req.body.mes});
+            }
 
-          for (var i = 0; i < monitoria.atividadesRegistradas.length; i++) {
-            atividadesRegIds.push(monitoria.atividadesRegistradas[i]);
-          }
-          
-            // Encontra cada tarefa registrada pelo monitor
-            AtividadeRegistrada.find({_id:{ $in: atividadesRegIds}, "tipo": req.body.tipo, "data.mes": req.body.mes}, function(err, atividadesR) {
-              if(err) {
-                res.json(err);
-              } else {
-                res.render('monitores/resultadosPesquisaAtividades', {"perfil": req.session.user.perfilUsuario, "atividadesR": atividadesR});
-              }
-            });
-        }
-      });  
-    // COM ANO X E TIPO N  
-    } else if ((req.body.ano != "null") && (req.body.mes == "null") && (req.body.tipo != "null")) {
-      Monitoria.findById(req.session.user.usuario.materiaMonitorada, function(err, monitoria) {
-        if (err) {
-          res.json(err);
-        } else {
+            if (req.body.periodo != '0000-00') {
+              filtroPesquisa.push({'periodo': req.body.periodo});
+            }
 
-          for (var i = 0; i < monitoria.atividadesRegistradas.length; i++) {
-            atividadesRegIds.push(monitoria.atividadesRegistradas[i]);
-          }
-          
+            if (req.body.tipo != 'ATV00') {
+              filtroPesquisa.push({'tipo': req.body.tipo});
+            }
+            
             // Encontra cada tarefa registrada pelo monitor
-            AtividadeRegistrada.find({_id:{ $in: atividadesRegIds}, "tipo": req.body.tipo, "data.ano": req.body.ano}, function(err, atividadesR) {
-              if(err) {
-                res.json(err);
-              } else {
-                res.render('monitores/resultadosPesquisaAtividades', {"perfil": req.session.user.perfilUsuario, "atividadesR": atividadesR});
-              }
-            });
-        }
-      });
-    //SÓ ANO
-    } else if ((req.body.ano != "null") && (req.body.mes == "null") && (req.body.tipo == "null")) {
-      Monitoria.findById(req.session.user.usuario.materiaMonitorada, function(err, monitoria) {
-        if (err) {
-          res.json(err);
-        } else {
-
-          for (var i = 0; i < monitoria.atividadesRegistradas.length; i++) {
-            atividadesRegIds.push(monitoria.atividadesRegistradas[i]);
-          }
-          
-            // Encontra cada tarefa registrada pelo monitor
-            AtividadeRegistrada.find({_id:{ $in: atividadesRegIds}, "data.ano": req.body.ano}, function(err, atividadesR) {
-              if(err) {
-                res.json(err);
-              } else {
-                res.render('monitores/resultadosPesquisaAtividades', {"perfil": req.session.user.perfilUsuario, "atividadesR": atividadesR});
-              }
-            });
-        }
-      });
-    // SÓ MÊS  
-    } else if ((req.body.ano == "null") && (req.body.mes != "null") && (req.body.tipo == "null")) {
-      Monitoria.findById(req.session.user.usuario.materiaMonitorada, function(err, monitoria) {
-        if (err) {
-          res.json(err);
-        } else {
-
-          for (var i = 0; i < monitoria.atividadesRegistradas.length; i++) {
-            atividadesRegIds.push(monitoria.atividadesRegistradas[i]);
-          }
-          
-            // Encontra cada tarefa registrada pelo monitor
-            AtividadeRegistrada.find({_id:{ $in: atividadesRegIds}, "data.mes": req.body.mes}, function(err, atividadesR) {
+            AtividadeRegistrada
+            .find(
+              {_id:{ $in: atividadesRegIds }, 
+              $and: filtroPesquisa },
+              function(err, atividadesR) {
               if(err) {
                 res.json(err);
               } else {
@@ -352,7 +265,7 @@ exports.exibirCadastroAtividade = function(req, res) {
 }
 
 exports.registrarAtividade = function(req, res) {
-  if (req.session.user) {
+  if (req.session.user && req.session.user.perfilUsuario == 'Monitor') {
     var novaAtivRegistrada = new AtividadeRegistrada();
 
     var teste     = new Date();
@@ -375,8 +288,11 @@ exports.registrarAtividade = function(req, res) {
             novaAtivRegistrada.contagemAtendimento = req.body.contagemAtendimento;
             novaAtivRegistrada.horaInicio          = req.body.horaInicio;
             novaAtivRegistrada.horaTermino         = req.body.horaTermino;
-            novaAtivRegistrada.data.hora           = tempo;
-            novaAtivRegistrada.data.dia            = data;
+            novaAtivRegistrada.data.dia            = new Date().getDate();
+            novaAtivRegistrada.data.mes            = new Date().getMonth();
+            novaAtivRegistrada.data.ano            = new Date().getFullYear();
+            novaAtivRegistrada.data.registroData   = data;
+            novaAtivRegistrada.data.registroHora   = tempo;
 
             //  Tratamento de horas
             let aux_tempo1 = req.body.horaInicio.split(":");
@@ -395,11 +311,12 @@ exports.registrarAtividade = function(req, res) {
                     res.json(err);
                 } else {
 
-                    Monitoria.findByIdAndUpdate(req.session.user.usuario.materiaMonitorada, {$push: {atividadesRegistradas: atividadeR._id} } ,function(err, monitoria) {
+                    Monitoria.findByIdAndUpdate(req.session.user.usuario.materiaMonitorada, {$push: {atividadesRegistradas: atividadeR._id} } ,function(err) {
                         if (err) {
                             res.json(err);
                         } else {
-                            Atividade.findByIdAndUpdate(req.body.atividadeEscolhida, {$push: {atividadesRegistradas: atividadeR._id}, $inc: {horasContabilizadas: atividadeR.horasRegistradas}, $inc: {porcentagem: porc} }, function(err, atividade) {
+
+                            Atividade.findByIdAndUpdate(req.body.atividadeEscolhida, {$push: {atividadesRegistradas: atividadeR._id}, $inc: {horasContabilizadas: atividadeR.horasRegistradas}, $inc: {porcentagem: porc} }, function(err) {
                                 if (err) {
                                     res.json(err);
                                 } else {
@@ -420,8 +337,9 @@ exports.registrarAtividade = function(req, res) {
   } 
 };
 
+//TEST:
 exports.excluirAtividade = function(req, res) {
-  if (req.session.user) {
+  if (req.session.user && req.session.user.perfilUsuario == 'Monitor') {
       //  Remove atividade  de Atividades Registradas da monitoria
     Monitoria.findByIdAndUpdate(req.session.user.usuario.materiaMonitorada, { $pull: {atividadesRegistradas: req.params.atividadeRegistradaId} }, function(err,monitoria) {
       if (err) {
@@ -451,6 +369,110 @@ exports.excluirAtividade = function(req, res) {
   } else {
     res.redirect('/login');
   } 
+};
+
+exports.exibirRelatorios = function(req, res) {
+  if (req.session.user) {
+    //  Flags criadas para identificar quais informações terão ou não na página
+    var flagPlanoT = false;
+    var flagAtivReg = false;
+
+    Monitoria.findById(req.session.user.usuario.materiaMonitorada, function(err, monitoria) {
+      if (err) {
+        res.json(err);
+      } else {
+        //  verifica se a monitoria já possui plano de trabalho registrado
+        if (monitoria.planoDeTrabalho.length > 0) {
+          flagPlanoT = true;
+
+          //  Verifica se a monitoria já possui atividades registradas pelo monitor ou não
+          if (monitoria.atividadesRegistradas.length > 0) {
+            flagAtivReg = true;
+            res.render('monitores/relatorios', {"perfil": req.session.user.perfilUsuario, "monitoria": monitoria, "possuiPlano": flagPlanoT, "possuiAtividadesRegistradas": flagAtivReg});
+          } else {
+            res.render('monitores/relatorios', {"perfil": req.session.user.perfilUsuario, "monitoria": monitoria, "possuiPlano": flagPlanoT, "possuiAtividadesRegistradas": flagAtivReg});
+          }  
+
+        } else {
+          res.render('monitores/relatorios', {"perfil": req.session.user.perfilUsuario, "monitoria": monitoria, "possuiPlano": flagPlanoT});
+        }  
+      }
+    });  
+
+  } else {
+    res.redirect('/login');
+  }
+};
+
+exports.gerarRelatorio = function(req, res) {
+  if (req.session.user && req.session.user.perfilUsuario == 'Monitor') {
+    //  Verifica campos vindos do formulário
+    if (req.body.mes != null && req.body.periodo != null) {
+      //  Array criado para adicionar as Ids das atividades vinculadas a monitoria
+      var atividadesIds = [];
+      var atividadesRegIds = [];
+      var mes = ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'];
+
+      // Pega o template do relatório
+      var templateString = fs.readFileSync(path.resolve(__dirname, '../templates/relatorioMensal.ejs'), 'utf-8');
+
+      Monitoria.findById(req.session.user.usuario.materiaMonitorada, function(err, monitoria) {
+        if (err) {
+          res.json(err);
+        } else {
+
+          for (var i = 0; i < monitoria.planoDeTrabalho.length; i++) {
+            atividadesIds.push(monitoria.planoDeTrabalho[i]);
+          }
+
+          for (var i = 0; i < monitoria.atividadesRegistradas.length; i++) {
+            atividadesRegIds.push(monitoria.atividadesRegistradas[i]);
+          }
+
+          //  Encontra cada tarefa registrada no Plano de Trabalho
+          Atividade.find({_id:{ $in: atividadesIds }}, function(err, atividades) {
+            if (err) {
+                res.json(err);
+            } else {
+                // Encontra cada tarefa registrada pelo monitor em determinado período e mês
+                AtividadeRegistrada
+                .find(
+                  {_id:{ $in: atividadesRegIds }, 
+                  $and: [{'data.mes': req.body.mes}, {'periodo': req.body.periodo}]},
+                  function(err, atividadesR) {
+                    if (err) {
+                        res.json(err);
+                    } else {
+                        // Renderiza dados no template
+                        var html = ejs.render(templateString, {"atividades": atividades, "atividadesR": atividadesR ,"monitoria": monitoria, "mes": mes[req.body.mes]});
+
+                        // Cria PDF
+                        PDF
+                        .create(html)
+                        .toFile('./pdfs/relatorio'+mes[req.body.mes]+'M'+monitoria.monitorID+'.pdf', function(err, arquivo) {
+                            if (err) {
+                              res.json(err);
+                            } else {
+                              var arquivoDownload = path.resolve(__dirname, '../../pdfs/relatorio'+mes[req.body.mes]+'M'+monitoria.monitorID+'.pdf');
+                              //  Realiza download para o usuário
+                              res.download(arquivoDownload);
+                            }
+                        });
+                    }
+                });
+
+            }
+          });
+        }
+
+      });  
+
+    } else {
+      res.redirect('/monitoriaVigente/gerarRelatorio');
+    }
+  } else {
+    res.redirect('/login');
+  }
 };
 
 exports.mostrarDetalhesMonitoria = function(req,res) {

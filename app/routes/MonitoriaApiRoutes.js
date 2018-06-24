@@ -116,31 +116,55 @@ module.exports = function(app) {
   app
     .route("/monitoriaOrientada/:monitoriaId/planoDeTrabalho")
     .get(metodosProfessor.exibirPlanoDeTrabalho);  
-
-  //TODO:  
-  app
-    .route("/monitoriaOrientada/planoDeTrabalho/editarAtividade/:atividadeId")
-    .post();  
-
-  //TODO:  
-  app
-    .route("/monitoriaOrientada/planoDeTrabalho/excluirAtividade/:atividadeId")
-    .get();  
   
-  //TODO:  
   app
     .route("/monitoriaOrientada/:monitoriaId/planoDeTrabalho/cadastrarAtividade")
-    .get();
+    .get(metodosProfessor.exibirCriacaoAtividadePlano)
+    .post(metodosProfessor.cadastrarAtividadePlano);
 
-  //TODO:  
+  app
+    .route("/monitoriaOrientada/:monitoriaId/planoDeTrabalho/editarAtividade/:atividadeId")
+    .get(metodosProfessor.exibirEditarAtividadePlano)
+    .post(metodosProfessor.editarAtividadePlano);  
+
+  app
+    .route("/monitoriaOrientada/:monitoriaId/planoDeTrabalho/excluirAtividade/:atividadeId")
+    .get(metodosProfessor.excluirAtividadePlano);  
+
+  app 
+    .route("/monitoriaOrientada/:monitoriaId/horarioAtendimento")
+    .get(metodosProfessor.exibirHorarioAtendimento);  
+
+  app 
+    .route("/monitoriaOrientada/:monitoriaId/horarioAtendimento/cadastrarHorario")
+    .get(metodosProfessor.exibircadastroHorarioAtendimento)
+    .post(metodosProfessor.cadastrarHorarioAtendimento);   
+
+  app 
+    .route("/monitoriaOrientada/:monitoriaId/horarioAtendimento/excluirHorario/:horarioId")
+    .get(metodosProfessor.excluirHorarioAtendimento);    
+
   app
     .route("/monitoriaOrientada/:monitoriaId/atividades")
-    .get();  
+    .get(metodosProfessor.exibirAtividadesRegistradas);  
   
-  //TODO:  
   app
     .route("/monitoriaOrientada/:monitoriaId/atividades/pesquisar")
-    .get();   
+    .post(metodosProfessor.pesquisarAtividadesRegistradas);
+    
+  //TODO:  
+  app
+    .route("/monitoriaOrientada/:monitoriaId/atividades/excluirAtividade/:atividadeId")
+    .post(metodosProfessor.excluirAtividadeRegistrada);  
+
+  app
+    .route("/monitoriaOrientada/:monitoriaId/gerarRelatorios")  
+    .get(metodosProfessor.exibirRelatorios);
+
+  //TEST:   
+  app
+    .route("/monitoriaOrientada/:monitoriaId/gerarRelatorios/:tipoRelatorio")  
+    .post(metodosProfessor.gerarRelatorios.bind(metodosProfessor));  
     
     
 
@@ -163,7 +187,14 @@ module.exports = function(app) {
     .route("/relatorio/:relatorioId")
     .get();  
       
-  // MONITOR
+  /*
+  *
+  * *
+  * * * MONITOR
+  * *
+  * 
+  */ 
+
   app
     .route("/monitoriaVigente")
     .get(metodosMonitor.exibirMonitoriaVigente)
@@ -185,6 +216,7 @@ module.exports = function(app) {
     .get(metodosMonitor.exibirCadastroAtividade)
     .post(metodosMonitor.registrarAtividade);   
   
+  //TEST:  
   app
     .route("/monitoriaVigente/atividades/excluirAtividade/:atividadeRegistradaId")
     .get(metodosMonitor.excluirAtividade);  
@@ -193,7 +225,19 @@ module.exports = function(app) {
     .route("/monitoriaVigente/horarioAtendimento")
     .get(metodosMonitor.exibirHorarioDeAtendimento);
   
-  //  MONITORIA
+  app
+    .route("/monitoriaVigente/gerarRelatorio")
+    .get(metodosMonitor.exibirRelatorios)
+    .post(metodosMonitor.gerarRelatorio);
+  
+  /*
+  *
+  * *
+  * * * MONITORIA
+  * *
+  * 
+  */
+
   app
     .route("/monitorias/editar/:monitoriaId")
     .get(metodosMonitoria.mostrarMonitoriaEdicao)
@@ -203,34 +247,19 @@ module.exports = function(app) {
     .route("/monitorias/informacoes/:monitoriaId")
     .get(metodosMonitoria.informacoesMonitoria);
   
-  app
+  /*app
     .route("/monitorias/criarHorarioDeAtendimento/:professorId/:monitoriaId")
     .get(metodosMonitoria.mostrarCadastroHorario)
     .post(metodosMonitoria.cadastrarHorarioMonitor);
 
-    app
+  app
     .route("/monitorias/HorarioDeAtendimento/:professorId/:monitoriaId/:horarioId")
-    .get(metodosMonitoria.mostrarHorarioDeAtendimento);
-
-  //  PLANO DE TRABALHO DAS MONITORIAS E ATIVIDADES REGISTRADAS PELOS MONITORES
-  app
-    .route("/planoMonitoria/index/:professorId/:monitoriaId")
-    .get(metodosPlanodeMonitoria.listarAtividades);   
-
-  app
-    .route("/planoMonitoria/cadastrarAtividade/:professorId/:monitoriaId")
-    .get(metodosPlanodeMonitoria.verPCadastro)
-    .post(metodosPlanodeMonitoria.cadastrarAtividade);
-
+    .get(metodosMonitoria.mostrarHorarioDeAtendimento); 
+ 
   app
     .route("/planoMonitoria/excluirAtividade/:professorId/:monitoriaId/:atividadeId")  
     .get(metodosPlanodeMonitoria.excluirAtividade);
   
-  app
-    .route("/planoMonitoria/editarAtividade/:professorId/:monitoriaId/:atividadeId")  
-    .get(metodosPlanodeMonitoria.mostrarAtivEdicao)
-    .post(metodosPlanodeMonitoria.editarAtividade);
-
   app
     .route("/planoMonitoria/registrarAtividade/:monitorId/:monitoriaId")
     .get(metodosPlanodeMonitoria.mostrarPaginaAtivRegistro)
@@ -244,6 +273,8 @@ module.exports = function(app) {
     .route("/planoMonitoria/excluirAtividadeRegistradaP/:professorId/:monitoriaId/:atividadeRegistradaId")
     .get(metodosPlanodeMonitoria.excluirAtivRegP);  
 
+  */
+
   app
     .route("/testes")
     .get(metodosPlanodeMonitoria.testarString);  
@@ -253,10 +284,4 @@ module.exports = function(app) {
   app
     .route("/erro/:erroId")
     .post(metodosErro.reportarErro);
-
-  // TESTES  
-
-  app 
-    .route("/teste/dataAtividade")
-    .get();  
 };

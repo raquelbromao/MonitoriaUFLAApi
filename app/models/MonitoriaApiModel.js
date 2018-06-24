@@ -179,7 +179,7 @@ var AtividadeSchema = new Schema ({
   tipo: {
     type: String,
     required: true,
-    enum: ["ATV1", ]
+    enum: ["ATV01", "ATV02", "ATV03", "ATV04", "ATV05"]
   },
   titulo: {
     type: String,
@@ -189,6 +189,10 @@ var AtividadeSchema = new Schema ({
   observacoes: {
     type: String,
     maxlength: 200
+  },
+  periodo: {
+    type: String,
+    default: '2018-01'
   },
   horasTotais: {
     type: Number,
@@ -226,12 +230,16 @@ var AtividadeRegistradaSchema = new Schema ({
     type: Number,
     default: null
   },
+  periodo: {
+    type: String,
+    default: '2018-01'
+  },
   data: {
-    registro: Date,
-    mes: String,
-    ano: String,
-    dia: String,
-    hora: String
+    registroHora: String,
+    registroData: String,
+    mes: Number,
+    ano: Number,
+    dia: Number
   },
   horaInicio: {
     type: String,

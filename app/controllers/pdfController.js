@@ -10,7 +10,6 @@ var Atividade           = mongoose.model("Atividades");
 var AtividadeRegistrada = mongoose.model("AtividadesRegistradas");
 
 var templateString = null;
-var templateString = fs.readFileSync('C:/Users/Raquel/Desktop/monitoriaUflaApi/app/templates/relatorioMensalAluno.ejs', 'utf-8');
 
 exports.criarPDF = function(html) {
     console.log('Session: '+req.session);

@@ -15,8 +15,8 @@
         <div class="container">
 
             <div class="jumbotron">
-                <% if (perfil == 'Monitor') { %>
-                    <form class="form-inline" action="/monitoriaVigente/atividades/pesquisar" method="POST">
+                <% if (perfil == 'Professor') { %>
+                    <form class="form-inline" action="/monitoriaOrientada/<%= monitoria %>/atividades/pesquisar" method="POST">
                         <div class="form-group">
                                 <label>Ano:</label>
                                 <select class="form-control" name="ano">
@@ -89,8 +89,6 @@
                             <tbody>
                             </tbody>
                           </table>
-                          <br>
-                          <a class="btn btn-raised btn-primary btn-block" href="/monitoriaVigente/atividades/registrarAtividade">Cadastrar Atividade</a>
                     <% }  else { %>
                         <h1>Usuário não autorizado!</h1>
                     <% } %>

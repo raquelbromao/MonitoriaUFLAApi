@@ -15,7 +15,7 @@
     <div class="jumbotron">
         <% if (perfil == 'Professor') { %> 
         <p>Cadastrar Atividade</p><br>
-        <form action="#" method="post" class="form-horizontal">
+        <form action="/monitoriaOrientada/<%= monitoria %>/planoDeTrabalho/cadastrarAtividade" method="post" class="form-horizontal">
             <div class="form-group">
             <label>Tipo de Atividade:</label>
                 <select multiple class="form-control custom-select" name="tipo" required>
